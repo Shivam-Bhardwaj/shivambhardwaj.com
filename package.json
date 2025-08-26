@@ -57,7 +57,9 @@
     "deploy:safe": "node scripts/run-deploy-agent.js",
     "deploy:staging": "node scripts/run-deploy-agent.js staging",
     "security:audit": "npm audit --audit-level high",
-    "security:scan": "node scripts/security-scan.js"
+    "security:scan": "node scripts/security-scan.js",
+    "validate:pre-push": "node scripts/run-pre-push-agent.js",
+    "push:safe": "npm run validate:pre-push && git push"
   },
   "dependencies": {
     "framer-motion": "^12.23.12",

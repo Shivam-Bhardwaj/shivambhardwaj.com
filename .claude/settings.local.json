@@ -20,7 +20,10 @@
       "Bash(npm install:*)",
       "Bash(npx tsx:*)",
       "Bash(npm run test:build:*)",
-      "Bash(git init:*)"
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(npm run validate:pre-push:*)"
     ],
     "deny": []
   }
