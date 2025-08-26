@@ -46,15 +46,13 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 
     if (hover) {
       return (
-        <motion.div
+        <div
           ref={ref}
           className={classes}
-          whileHover={{ y: -4 }}
-          transition={{ duration: 0.2 }}
           {...props}
         >
           {children}
-        </motion.div>
+        </div>
       );
     }
 

@@ -378,7 +378,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
       'alternative': 'alternative approach',
       'unoptimized': 'unoptimized',
       'interim solution': 'interim solution',
-      'temporary': 'temporary',
       'temporary': 'interim',
       'non-functional': 'non-functional',
       'unexpected': 'unexpected behavior',

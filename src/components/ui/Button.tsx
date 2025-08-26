@@ -92,12 +92,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     return (
-      <motion.button
+      <button
         ref={ref}
         className={classes}
         disabled={disabled || loading}
-        whileTap={{ scale: disabled ? 1 : 0.98 }}
-        transition={{ duration: 0.1 }}
         {...props}
       >
         {/* Ripple effect background */}
@@ -110,7 +108,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <div className="relative z-10 flex items-center justify-center gap-2">
           {content}
         </div>
-      </motion.button>
+      </button>
     );
   }
 );

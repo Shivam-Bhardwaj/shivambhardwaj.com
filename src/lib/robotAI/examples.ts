@@ -104,7 +104,7 @@ export default function ThemedPage() {
       <style jsx>{\`
         /* Custom robot styling could go here */
         .robot {
-          filter: ${theme === 'dark' ? 'brightness(1.2)' : 'brightness(0.8)'};
+          filter: brightness(1.0);
         }
       \`}</style>
     </div>

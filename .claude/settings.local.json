@@ -24,7 +24,9 @@
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
       "Bash(npm run validate:pre-push:*)",
-      "Bash(npm run push:safe:*)"
+      "Bash(npm run push:safe:*)",
+      "Bash(chmod:*)",
+      "Bash(npm run lint:*)"
     ],
     "deny": []
   }

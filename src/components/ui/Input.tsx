@@ -74,12 +74,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
           
-          <motion.input
+          <input
             ref={ref}
             id={inputId}
             className={inputClasses}
-            whileFocus={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
             {...props}
           />
           
