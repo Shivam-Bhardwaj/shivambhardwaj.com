@@ -1290,7 +1290,7 @@ export default function RoombaSimulation() {
             <div>HDG: ${((robot.pose.theta * 180 / Math.PI) % 360).toFixed(0)}°</div>
             <div>CONF: ${(robot.confidence * 100).toFixed(0)}%</div>
             <div>BAT: ${robot.batteryLevel.toFixed(0)}%</div>
-            <div>temporary: ${robot.temperature.toFixed(1)}°C</div>
+            <div>TEMP: ${robot.temperature.toFixed(1)}°C</div>
             <div>CPU: ${robot.processingLoad.toFixed(0)}%</div>
             <div>LAT: ${robot.networkLatency.toFixed(0)}ms</div>
             <div>COMM: ${robot.communicating.size} nodes</div>
