@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 
-const { execSync } = require('child_process');
+const { execSync, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const http = require('http');
+const net = require('net');
 
 class QualityCheckAgent {
   constructor() {
     this.issues = [];
-    this.baseUrl = 'http://localhost:3000';
+    this.port = null;
+    this.baseUrl = null;
     this.sitemap = [];
     this.checkedUrls = new Set();
+    this.devServerProcess = null;
   }
 
   log(message, level = 'info') {
