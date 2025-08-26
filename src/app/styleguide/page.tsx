@@ -3,7 +3,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Button, Card, CardHeader, CardTitle, CardContent, Badge, Input } from '@/components/ui';
 import { fadeIn, slideUp, staggerContainer } from '@/lib/animations';
-
 export default function StyleGuide() {
   return (
     <motion.div
@@ -23,11 +22,9 @@ export default function StyleGuide() {
             animations, and accessibility-first design principles.
           </p>
         </motion.div>
-
         {/* Color Palette */}
         <motion.section variants={slideUp} className="mb-16">
           <h2 className="text-3xl font-bold text-robotics mb-8">Color Palette</h2>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Brand Colors */}
             <Card>
@@ -60,7 +57,6 @@ export default function StyleGuide() {
                 </div>
               </CardContent>
             </Card>
-
             {/* Robotics Colors */}
             <Card>
               <CardHeader>
@@ -92,7 +88,6 @@ export default function StyleGuide() {
                 </div>
               </CardContent>
             </Card>
-
             {/* Status Colors */}
             <Card>
               <CardHeader>
@@ -126,11 +121,9 @@ export default function StyleGuide() {
             </Card>
           </div>
         </motion.section>
-
         {/* Typography */}
         <motion.section variants={slideUp} className="mb-16">
           <h2 className="text-3xl font-bold text-robotics mb-8">Typography</h2>
-          
           <Card>
             <CardContent className="space-y-6">
               <div>
@@ -170,11 +163,9 @@ export default function StyleGuide() {
             </CardContent>
           </Card>
         </motion.section>
-
         {/* Buttons */}
         <motion.section variants={slideUp} className="mb-16">
           <h2 className="text-3xl font-bold text-robotics mb-8">Buttons</h2>
-          
           <Card>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -186,7 +177,6 @@ export default function StyleGuide() {
                     <Button variant="primary" size="lg">Large</Button>
                   </div>
                 </div>
-                
                 <div className="space-y-4">
                   <h3 className="font-semibold">Secondary</h3>
                   <div className="space-y-2">
@@ -195,7 +185,6 @@ export default function StyleGuide() {
                     <Button variant="secondary" size="lg">Large</Button>
                   </div>
                 </div>
-
                 <div className="space-y-4">
                   <h3 className="font-semibold">Robotics</h3>
                   <div className="space-y-2">
@@ -204,7 +193,6 @@ export default function StyleGuide() {
                     <Button variant="robotics" size="lg">Large</Button>
                   </div>
                 </div>
-
                 <div className="space-y-4">
                   <h3 className="font-semibold">Ghost</h3>
                   <div className="space-y-2">
@@ -213,7 +201,6 @@ export default function StyleGuide() {
                     <Button variant="ghost" size="lg">Large</Button>
                   </div>
                 </div>
-
                 <div className="space-y-4">
                   <h3 className="font-semibold">Loading</h3>
                   <div className="space-y-2">
@@ -221,7 +208,6 @@ export default function StyleGuide() {
                     <Button variant="secondary" disabled size="md">Disabled</Button>
                   </div>
                 </div>
-
                 <div className="space-y-4">
                   <h3 className="font-semibold">With Icons</h3>
                   <div className="space-y-2">
@@ -237,11 +223,9 @@ export default function StyleGuide() {
             </CardContent>
           </Card>
         </motion.section>
-
         {/* Cards */}
         <motion.section variants={slideUp} className="mb-16">
           <h2 className="text-3xl font-bold text-robotics mb-8">Cards</h2>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card variant="default">
               <CardHeader>
@@ -251,7 +235,6 @@ export default function StyleGuide() {
                 <p>Standard card with shadow and hover effects.</p>
               </CardContent>
             </Card>
-
             <Card variant="glow">
               <CardHeader>
                 <CardTitle>Glow Card</CardTitle>
@@ -260,7 +243,6 @@ export default function StyleGuide() {
                 <p>Enhanced with subtle glow effects for emphasis.</p>
               </CardContent>
             </Card>
-
             <Card variant="glass">
               <CardHeader>
                 <CardTitle>Glass Card</CardTitle>
@@ -269,7 +251,6 @@ export default function StyleGuide() {
                 <p>Glassmorphism effect with backdrop blur.</p>
               </CardContent>
             </Card>
-
             <Card variant="robotics">
               <CardHeader>
                 <CardTitle>Robotics Card</CardTitle>
@@ -280,11 +261,9 @@ export default function StyleGuide() {
             </Card>
           </div>
         </motion.section>
-
         {/* Badges */}
         <motion.section variants={slideUp} className="mb-16">
           <h2 className="text-3xl font-bold text-robotics mb-8">Badges</h2>
-          
           <Card>
             <CardContent>
               <div className="space-y-6">
@@ -300,7 +279,6 @@ export default function StyleGuide() {
                     <Badge variant="robotics">Robotics</Badge>
                   </div>
                 </div>
-                
                 <div>
                   <h3 className="font-semibold mb-3">Sizes</h3>
                   <div className="flex flex-wrap items-center gap-3">
@@ -309,7 +287,6 @@ export default function StyleGuide() {
                     <Badge variant="primary" size="lg">Large</Badge>
                   </div>
                 </div>
-
                 <div>
                   <h3 className="font-semibold mb-3">Animated</h3>
                   <div className="flex flex-wrap gap-3">
@@ -322,11 +299,9 @@ export default function StyleGuide() {
             </CardContent>
           </Card>
         </motion.section>
-
         {/* Inputs */}
         <motion.section variants={slideUp} className="mb-16">
           <h2 className="text-3xl font-bold text-robotics mb-8">Form Inputs</h2>
-          
           <Card>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -336,14 +311,12 @@ export default function StyleGuide() {
                     placeholder="Enter text here..."
                     helper="This is helper text"
                   />
-                  
                   <Input
                     label="With Icon"
                     placeholder="search@example.com"
                     icon={<span>@</span>}
                     iconPosition="left"
                   />
-                  
                   <Input
                     label="Error State"
                     placeholder="Enter valid email"
@@ -351,7 +324,6 @@ export default function StyleGuide() {
                     defaultValue="invalid-email"
                   />
                 </div>
-                
                 <div className="space-y-4">
                   <Input
                     variant="robotics"
@@ -359,18 +331,16 @@ export default function StyleGuide() {
                     placeholder="Enter robotic command..."
                     helper="Dark theme with electric accents"
                   />
-                  
                   <Input
                     label="Disabled State"
                     placeholder="Disabled input"
                     disabled
                     defaultValue="Cannot edit this"
                   />
-                  
                   <Input
                     label="Right Icon"
                     placeholder="Search..."
-                    icon={<span>🔍</span>}
+                    icon={<span></span>}
                     iconPosition="right"
                   />
                 </div>
@@ -378,11 +348,9 @@ export default function StyleGuide() {
             </CardContent>
           </Card>
         </motion.section>
-
         {/* Gradient Examples */}
         <motion.section variants={slideUp} className="mb-16">
           <h2 className="text-3xl font-bold text-robotics mb-8">Gradients & Effects</h2>
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="bg-gradient-to-r from-fuchsia-400/20 to-cyan-400/20">
               <CardContent className="text-center py-12">
@@ -390,14 +358,12 @@ export default function StyleGuide() {
                 <p className="text-foreground-muted mt-2">Hero gradient</p>
               </CardContent>
             </Card>
-
             <Card className="bg-gradient-to-r from-brand-primary/20 to-brand-accent/20">
               <CardContent className="text-center py-12">
                 <h3 className="text-gradient-brand font-semibold text-xl">Brand Gradient</h3>
                 <p className="text-foreground-muted mt-2">Primary brand colors</p>
               </CardContent>
             </Card>
-
             <Card className="bg-gradient-to-r from-electric/20 to-neon/20">
               <CardContent className="text-center py-12">
                 <h3 className="font-semibold text-xl text-electric">Electric to Neon</h3>
@@ -406,11 +372,9 @@ export default function StyleGuide() {
             </Card>
           </div>
         </motion.section>
-
         {/* Animation Examples */}
         <motion.section variants={slideUp} className="mb-16">
           <h2 className="text-3xl font-bold text-robotics mb-8">Animations</h2>
-          
           <Card>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -419,13 +383,11 @@ export default function StyleGuide() {
                   <p className="font-semibold">Pulse Glow</p>
                   <code className="text-xs bg-gray-100 px-2 py-1 rounded">animate-pulse-glow</code>
                 </div>
-                
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-electric rounded-full mx-auto animate-float"></div>
                   <p className="font-semibold">Float</p>
                   <code className="text-xs bg-gray-100 px-2 py-1 rounded">animate-float</code>
                 </div>
-                
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-neon rounded-full mx-auto animate-bounce-gentle"></div>
                   <p className="font-semibold">Gentle Bounce</p>
@@ -435,7 +397,6 @@ export default function StyleGuide() {
             </CardContent>
           </Card>
         </motion.section>
-
       </div>
     </motion.div>
   );

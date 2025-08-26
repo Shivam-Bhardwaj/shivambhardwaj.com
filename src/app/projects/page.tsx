@@ -2,7 +2,6 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
-
 const projects = [
   {
     title: "Autonomous Navigation System",
@@ -63,7 +62,6 @@ const projects = [
     category: "medical"
   }
 ];
-
 const categories = [
   { id: "all", name: "All Projects", color: "bg-gray-600" },
   { id: "robotics", name: "Robotics", color: "bg-blue-600" },
@@ -71,14 +69,11 @@ const categories = [
   { id: "medical", name: "Medical", color: "bg-green-600" },
   { id: "research", name: "Research", color: "bg-orange-600" }
 ];
-
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  
   const filteredProjects = selectedCategory === "all" 
     ? projects 
     : projects.filter(p => p.category === selectedCategory);
-
   return (
     <div className="min-h-screen py-20 px-4 max-w-7xl mx-auto">
       {/* Header */}
@@ -93,14 +88,12 @@ export default function Projects() {
           </svg>
           Back
         </Link>
-        
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Projects</h1>
         <p className="text-gray-600 dark:text-gray-400 max-w-2xl">
           A selection of robotics, perception, and autonomous systems projects from my work at 
           leading tech companies and research initiatives.
         </p>
       </motion.div>
-
       {/* Category Filter */}
       <div className="flex flex-wrap gap-3 mb-12">
         {categories.map((cat) => (
@@ -117,7 +110,6 @@ export default function Projects() {
           </button>
         ))}
       </div>
-
       {/* Projects Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProjects.map((project, index) => (
@@ -132,13 +124,10 @@ export default function Projects() {
               <h3 className="text-xl font-semibold">{project.title}</h3>
               <span className="text-sm text-gray-500">{project.year}</span>
             </div>
-            
             <p className="text-sm text-blue-600 dark:text-blue-400 mb-3">{project.company}</p>
-            
             <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm">
               {project.description}
             </p>
-            
             {/* Tech Stack */}
             <div className="flex flex-wrap gap-2 mb-4">
               {project.tech.map(tech => (
@@ -147,20 +136,18 @@ export default function Projects() {
                 </span>
               ))}
             </div>
-            
             {/* Achievements */}
             <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
               <h4 className="text-xs font-semibold text-gray-500 mb-2">KEY ACHIEVEMENTS</h4>
               <ul className="space-y-1">
                 {project.achievements.map(achievement => (
                   <li key={achievement} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
-                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span className="text-green-500 mt-0.5"></span>
                     {achievement}
                   </li>
                 ))}
               </ul>
             </div>
-            
             {/* Links */}
             {project.links && (
               <div className="flex gap-3">

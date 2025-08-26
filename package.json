@@ -59,7 +59,9 @@
     "security:audit": "npm audit --audit-level high",
     "security:scan": "node scripts/security-scan.js",
     "validate:pre-push": "node scripts/run-pre-push-agent.js",
-    "push:safe": "npm run validate:pre-push && git push"
+    "push:safe": "npm run validate:pre-push && git push",
+    "fix:validation": "node scripts/run-validation-fix-agent.js",
+    "fix:and-push": "npm run fix:validation && npm run push:safe"
   },
   "dependencies": {
     "framer-motion": "^12.23.12",

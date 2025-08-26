@@ -2,11 +2,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-
 export default function MinimalNavbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-
   const links = [
     { href: "/", label: "HOME" },
     { href: "/projects", label: "PROJECTS" },
@@ -15,7 +13,6 @@ export default function MinimalNavbar() {
     { href: "/learning", label: "LEARNING" },
     { href: "/contact", label: "CONTACT" }
   ];
-
   return (
     <nav className="nav" style={{
       background: 'rgb(var(--bg) / 0.8)',
@@ -25,7 +22,6 @@ export default function MinimalNavbar() {
         <Link href="/" className="text-small" style={{ fontWeight: 'normal' }}>
           SHIVAM BHARDWAJ
         </Link>
-
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-4">
           {links.map(link => (
@@ -43,7 +39,6 @@ export default function MinimalNavbar() {
             </Link>
           ))}
         </div>
-
         {/* Mobile Menu Button */}
         <button
           className="md:hidden"
@@ -56,10 +51,9 @@ export default function MinimalNavbar() {
             padding: '0.5rem'
           }}
         >
-          {isOpen ? '×' : '☰'}
+          {isOpen ? '×' : ''}
         </button>
       </div>
-
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden" style={{

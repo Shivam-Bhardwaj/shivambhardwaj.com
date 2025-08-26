@@ -2,12 +2,10 @@
 import { useState } from "react";
 import AdvancedRobots from "@/components/AdvancedRobots";
 import GTARobots from "@/components/GTARobots";
-
 export default function RobotTestPage() {
   const [debugInfo, setDebugInfo] = useState(true);
   const [robotMode, setRobotMode] = useState<'advanced' | 'gta'>('gta');
   const [gtaCaptureCount, setGtaCaptureCount] = useState(0);
-
   return (
     <div className="min-h-screen bg-gray-900 relative overflow-hidden">
       {/* Robot Systems */}
@@ -20,14 +18,12 @@ export default function RobotTestPage() {
           onCaptureTarget={() => setGtaCaptureCount(prev => prev + 1)}
         />
       )}
-      
       {/* Test UI Elements for Robot Navigation */}
       <div className="relative z-10 p-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-white mb-8">
             Robot AI System Test
           </h1>
-
           {/* Mode Switcher */}
           <div className="bg-black/70 backdrop-blur-md rounded-lg p-4 mb-8">
             <div className="flex items-center justify-between">
@@ -72,17 +68,15 @@ export default function RobotTestPage() {
               </div>
             </div>
           </div>
-          
           {/* Info Panel */}
           <div className="bg-black/50 backdrop-blur-md rounded-lg p-6 mb-8 text-white">
             <h2 className="text-2xl font-bold mb-4">
               {robotMode === 'gta' ? 'GTA Police Chase System' : 'Advanced Navigation System'}
             </h2>
-            
             {robotMode === 'gta' ? (
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-2 text-red-300">🚔 GTA-Style Features</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-red-300"> GTA-Style Features</h3>
                   <ul className="space-y-1 text-sm">
                     <li>• Relentless pursuit behavior</li>
                     <li>• A* pathfinding with dynamic obstacles</li>
@@ -93,7 +87,7 @@ export default function RobotTestPage() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2 text-red-300">⚡ Chase Physics</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-red-300"> Chase Physics</h3>
                   <ul className="space-y-1 text-sm">
                     <li>• Smooth physics-based movement</li>
                     <li>• Dynamic acceleration and friction</li>
@@ -117,7 +111,7 @@ export default function RobotTestPage() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2 text-cyan-300">⚡ Physics System</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-cyan-300"> Physics System</h3>
                   <ul className="space-y-1 text-sm">
                     <li>• Velocity and acceleration based movement</li>
                     <li>• Smooth steering with damping</li>
@@ -129,7 +123,6 @@ export default function RobotTestPage() {
               </div>
             )}
           </div>
-
           {/* Interactive Test Elements */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             <div className="bg-red-500/80 backdrop-blur-sm rounded-lg p-6 h-32">
@@ -149,7 +142,6 @@ export default function RobotTestPage() {
               <p className="text-white/80 text-sm mt-2">Compact obstacle</p>
             </div>
           </div>
-
           {/* Complex Layout Test */}
           <div className="grid md:grid-cols-4 gap-4 mb-8">
             <div className="bg-purple-500/60 backdrop-blur-sm rounded p-4 h-20">
@@ -165,10 +157,9 @@ export default function RobotTestPage() {
               <span className="text-white text-sm">Card 4</span>
             </div>
           </div>
-
           {/* Instructions */}
           <div className="bg-black/50 backdrop-blur-md rounded-lg p-6 text-white">
-            <h3 className="text-lg font-bold mb-4">🎮 Test Instructions</h3>
+            <h3 className="text-lg font-bold mb-4"> Test Instructions</h3>
             {robotMode === 'gta' ? (
               <div className="space-y-2 text-sm">
                 <p>• Move your mouse around - robots will hunt you relentlessly like GTA police</p>
@@ -190,10 +181,9 @@ export default function RobotTestPage() {
               </div>
             )}
           </div>
-
           {/* Performance Metrics */}
           <div className="mt-8 bg-black/50 backdrop-blur-md rounded-lg p-6 text-white">
-            <h3 className="text-lg font-bold mb-4">📊 System Status</h3>
+            <h3 className="text-lg font-bold mb-4"> System Status</h3>
             {robotMode === 'gta' ? (
               <div className="grid md:grid-cols-4 gap-4 text-sm">
                 <div>
@@ -225,7 +215,6 @@ export default function RobotTestPage() {
           </div>
         </div>
       </div>
-
       {/* Fixed Positioned Test Elements */}
       <div className="fixed top-20 right-8 bg-orange-500/80 backdrop-blur-sm rounded-lg p-4 z-20">
         <h4 className="text-white font-bold">Fixed Element</h4>
@@ -233,7 +222,6 @@ export default function RobotTestPage() {
           Tests fixed positioning navigation
         </p>
       </div>
-
       <div className="fixed bottom-20 left-8 bg-teal-500/80 backdrop-blur-sm rounded-lg p-4 z-20">
         <h4 className="text-white font-bold">Bottom Fixed</h4>
         <p className="text-white/80 text-xs">

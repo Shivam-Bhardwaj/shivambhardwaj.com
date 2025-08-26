@@ -67,7 +67,7 @@ export class CommunicationSystem {
         // Handle resource discovery messages
         if (message.data.resourceFound) {
           // Update internal knowledge about resources
-          console.log(`Robot ${this.robot.id} learned about resource at`, message.data.position);
+          // console.log(`Robot ${this.robot.id} learned about resource at`, message.data.position); // Removed for production
         }
         break;
         

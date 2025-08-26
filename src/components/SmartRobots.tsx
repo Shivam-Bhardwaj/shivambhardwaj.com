@@ -257,7 +257,7 @@ export default function SmartRobots() {
         // Calculate desired velocity
         let desiredVx = target.x - robot.x;
         let desiredVy = target.y - robot.y;
-        let distance = Math.sqrt(desiredVx * desiredVx + desiredVy * desiredVy);
+        const distance = Math.sqrt(desiredVx * desiredVx + desiredVy * desiredVy);
         
         if (distance > 0) {
           desiredVx = (desiredVx / distance) * MAX_SPEED;
@@ -296,15 +296,15 @@ export default function SmartRobots() {
         }
 
         // Combine steering forces
-        let steerX = desiredVx + avoidX;
-        let steerY = desiredVy + avoidY;
+        const steerX = desiredVx + avoidX;
+        const steerY = desiredVy + avoidY;
         
         // Apply steering
         robot.vx += steerX * MAX_FORCE;
         robot.vy += steerY * MAX_FORCE;
         
         // Limit speed
-        let speed = Math.sqrt(robot.vx * robot.vx + robot.vy * robot.vy);
+        const speed = Math.sqrt(robot.vx * robot.vx + robot.vy * robot.vy);
         if (speed > MAX_SPEED) {
           robot.vx = (robot.vx / speed) * MAX_SPEED;
           robot.vy = (robot.vy / speed) * MAX_SPEED;
