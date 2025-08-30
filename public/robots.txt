@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://shivambhardwaj.com/sitemap.xml
+
+# Allow all robots
+# This portfolio site welcomes search engine indexing

@@ -259,7 +259,7 @@ export class IMUSensor {
     trueAcceleration: Vector3,
     trueAngularVelocity: Vector3,
     robotOrientation: Quat,
-    magneticDeclination: number = 0
+    _magneticDeclination: number = 0
   ): IMUReading {
     const timestamp = Date.now();
 

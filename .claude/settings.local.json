@@ -26,8 +26,33 @@
       "Bash(npm run validate:pre-push:*)",
       "Bash(npm run push:safe:*)",
       "Bash(chmod:*)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "Bash(npm run fix:dark-mode:*)",
+      "Bash(npm run clean:*)",
+      "Bash(npm run deploy:*)",
+      "Bash(npm run test:all:*)",
+      "Read(C:\\Users\\Curio\\OneDrive\\Desktop\\SbT/**)",
+      "Bash(npx create-next-app:*)",
+      "Bash(node:*)",
+      "Bash(timeout 30s npm run build)",
+      "Bash(move:*)",
+      "WebSearch",
+      "Bash(npm run claude:quick:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run claude -- --help)",
+      "Bash(npm init:*)",
+      "Bash(npm run:*)",
+      "Bash(dir:*)",
+      "Bash(sed:*)",
+      "WebFetch(domain:anti-mony.web.app)",
+      "Bash(git rm:*)",
+      "Bash(pip install:*)",
+      "Bash(master.bat)",
+      "Bash(cmd /c:*)"
     ],
-    "deny": []
+    "deny": [],
+    "additionalDirectories": [
+      "C:\\Users\\Curio\\OneDrive\\Desktop\\SbT"
+    ]
   }
 }

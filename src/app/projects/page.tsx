@@ -2,6 +2,29 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
+// Tech documentation mapping
+const techDocs = {
+  "ROS2": "https://docs.ros.org/en/humble/",
+  "ROS": "https://wiki.ros.org/",
+  "C++": "https://en.cppreference.com/",
+  "Python": "https://docs.python.org/3/",
+  "SLAM": "https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping",
+  "Computer Vision": "https://opencv.org/",
+  "CUDA": "https://docs.nvidia.com/cuda/",
+  "OpenCV": "https://docs.opencv.org/",
+  "Deep Learning": "https://pytorch.org/docs/",
+  "Sensor Fusion": "https://en.wikipedia.org/wiki/Sensor_fusion",
+  "TensorFlow": "https://tensorflow.org/api_docs",
+  "TypeScript": "https://www.typescriptlang.org/docs/",
+  "WebGL": "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API",
+  "Physics Engine": "https://en.wikipedia.org/wiki/Physics_engine",
+  "Graph Theory": "https://en.wikipedia.org/wiki/Graph_theory",
+  "Real-time OS": "https://en.wikipedia.org/wiki/Real-time_operating_system",
+  "IEC 62304": "https://en.wikipedia.org/wiki/IEC_62304",
+  "Safety Critical": "https://en.wikipedia.org/wiki/Safety-critical_system",
+  "GPS/INS": "https://en.wikipedia.org/wiki/Inertial_navigation_system",
+  "Maritime Protocols": "https://en.wikipedia.org/wiki/COLREGs"
+};
 const projects = [
   {
     title: "Autonomous Navigation System",
@@ -69,6 +92,28 @@ const categories = [
   { id: "medical", name: "Medical", color: "bg-green-600" },
   { id: "research", name: "Research", color: "bg-orange-600" }
 ];
+// Component to render tech terms with documentation links
+const TechTag = ({ tech }: { tech: string }) => {
+  const docUrl = techDocs[tech as keyof typeof techDocs];
+  if (docUrl) {
+    return (
+      <a
+        href={docUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer"
+        title={`View ${tech} documentation`}
+      >
+        {tech} ↗
+      </a>
+    );
+  }
+  return (
+    <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
+      {tech}
+    </span>
+  );
+};
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const filteredProjects = selectedCategory === "all" 
@@ -111,38 +156,38 @@ export default function Projects() {
         ))}
       </div>
       {/* Projects Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project, index) => (
           <motion.div
             key={project.title}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+            className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-5 md:p-6 lg:p-8 shadow-lg md:shadow-xl hover:shadow-xl md:hover:shadow-2xl hover:scale-[1.02] md:hover:scale-105 transition-all duration-300 border border-gray-100 dark:border-gray-700"
           >
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-semibold">{project.title}</h3>
-              <span className="text-sm text-gray-500">{project.year}</span>
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex-1 mr-2">
+                <h3 className="text-lg md:text-xl font-bold mb-1 line-clamp-2">{project.title}</h3>
+                <p className="text-xs md:text-sm font-medium text-blue-600 dark:text-blue-400">{project.company}</p>
+              </div>
+              <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full font-medium">{project.year}</span>
             </div>
-            <p className="text-sm text-blue-600 dark:text-blue-400 mb-3">{project.company}</p>
             <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm">
               {project.description}
             </p>
             {/* Tech Stack */}
             <div className="flex flex-wrap gap-2 mb-4">
               {project.tech.map(tech => (
-                <span key={tech} className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
-                  {tech}
-                </span>
+                <TechTag key={tech} tech={tech} />
               ))}
             </div>
             {/* Achievements */}
             <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
-              <h4 className="text-xs font-semibold text-gray-500 mb-2">KEY ACHIEVEMENTS</h4>
-              <ul className="space-y-1">
+              <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Key Achievements</h4>
+              <ul className="space-y-2">
                 {project.achievements.map(achievement => (
                   <li key={achievement} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
-                    <span className="text-green-500 mt-0.5"></span>
+                    <span className="text-green-500 mt-0.5 text-sm"></span>
                     {achievement}
                   </li>
                 ))}

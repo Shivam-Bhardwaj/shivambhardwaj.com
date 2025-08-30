@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Claude Helper Commands
+
+- `npm run claude` - Interactive helper for generating optimized prompts
+- `npm run claude:quick` - Show quick command reference
+- `npm run claude:context` - Generate current project context
+
 ## Commands
 
 ### Development

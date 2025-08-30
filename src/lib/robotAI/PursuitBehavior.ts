@@ -129,7 +129,7 @@ export class PursuitBehavior {
     }
 
     // Update all robots' last known target position
-    for (const [robotId, robot] of this.robots) {
+    for (const [, robot] of this.robots) {
       robot.lastKnownTargetPosition = mousePosition;
     }
   }
@@ -232,7 +232,7 @@ export class PursuitBehavior {
     };
   }
 
-  private predictRandomMovement(predictionTime: number): Vector2D {
+  private predictRandomMovement(_predictionTime: number): Vector2D {
     if (!this.target) return { x: 0, y: 0 };
 
     // For truly random movement, predict the most likely escape route
@@ -269,11 +269,11 @@ export class PursuitBehavior {
       routes.push({
         ...testPos,
         priority: clearDistance // Store as a property for sorting
-      } as any);
+      } as Vector2D & { priority: number });
     }
 
     // Sort by clearance (higher is better)
-    routes.sort((a: any, b: any) => b.priority - a.priority);
+    routes.sort((a: Vector2D & { priority: number }, b: Vector2D & { priority: number }) => b.priority - a.priority);
     
     return routes.slice(0, 3); // Return top 3 escape routes
   }
@@ -376,7 +376,7 @@ export class PursuitBehavior {
     this.formations.push(formation);
   }
 
-  private generatePursuitCommand(robot: RobotState, deltaTime: number): NavigationCommand {
+  private generatePursuitCommand(robot: RobotState, _deltaTime: number): NavigationCommand {
     const state = this.pursuitStates.get(robot.id);
     if (!state || !this.target) {
       return this.generateSearchCommand(robot);
@@ -475,7 +475,7 @@ export class PursuitBehavior {
     };
   }
 
-  private generateCaptureCommand(robot: RobotState, state: PursuitState): NavigationCommand {
+  private generateCaptureCommand(robot: RobotState, _state: PursuitState): NavigationCommand {
     if (!this.target) return this.generateDirectCommand(robot);
 
     // Go straight for the target
@@ -561,7 +561,7 @@ export class PursuitBehavior {
     };
   }
 
-  private generateSearchPattern(robot: RobotState): Vector2D[] {
+  private generateSearchPattern(_robot: RobotState): Vector2D[] {
     const pattern: Vector2D[] = [];
     const centerX = this.screenBounds.width / 2;
     const centerY = this.screenBounds.height / 2;
@@ -612,7 +612,7 @@ export class PursuitBehavior {
    * Force all robots into aggressive pursuit mode
    */
   public triggerAggressivePursuit(): void {
-    for (const [robotId, state] of this.pursuitStates) {
+    for (const [, state] of this.pursuitStates) {
       state.phase = 'capture';
       state.intensity = 1.0;
     }

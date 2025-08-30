@@ -1,10 +1,19 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import SwarmGame from '@/components/SwarmGame'
+import SwarmGame from '@/components/SmartAvoidanceRobots'
 import { mockCanvas, flushAnimationFrames } from '../utils/test-helpers'
+import logger from '@/lib/logger'
 
 describe('Swarm Simulation Integration', () => {
+  beforeAll(() => {
+    logger.clear();
+    logger.log('Starting Swarm Simulation Integration Test Suite');
+  });
+
+  afterAll(() => {
+    logger.log('Finished Swarm Simulation Integration Test Suite');
+  });
   let mockCanvasElement: any
   const user = userEvent.setup()
 
@@ -31,6 +40,7 @@ describe('Swarm Simulation Integration', () => {
   })
 
   it('should complete full game workflow', async () => {
+    logger.log('TEST: should complete full game workflow - START');
     jest.useFakeTimers()
     
     render(<SwarmGame />)
@@ -62,6 +72,7 @@ describe('Swarm Simulation Integration', () => {
   })
 
   it('should handle complete user interaction flow', async () => {
+    logger.log('TEST: should handle complete user interaction flow - START');
     render(<SwarmGame />)
 
     const canvas = screen.getByRole('img', { hidden: true })
@@ -78,6 +89,7 @@ describe('Swarm Simulation Integration', () => {
     // Final state should be correct
     expect(screen.getByText('Robots: 30')).toBeInTheDocument()
     expect(screen.getByText('Time: 0.0s')).toBeInTheDocument()
+    logger.log('TEST: should handle complete user interaction flow - END');
   })
 
   it('should maintain game state consistency', async () => {

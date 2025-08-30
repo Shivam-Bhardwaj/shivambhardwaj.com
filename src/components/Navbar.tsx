@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { siteConfig } from "@/data/site";
 import { useState } from "react";
 
 const Navbar = () => {
@@ -20,36 +19,23 @@ const Navbar = () => {
   ];
 
   const navItemClass = (href: string) =>
-    `relative px-3 py-2 text-sm font-medium transition-all duration-300 rounded-md
+    `relative px-2 py-2 text-sm font-medium transition-all duration-300 rounded-md
      ${pathname === href 
        ? "text-brand-primary bg-brand-primary/10" 
-       : "text-gray-700 hover:text-brand-primary hover:bg-gray-50"
+       : "text-gray-700 dark:text-gray-200 hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-gray-800"
      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2`;
 
   return (
     <motion.nav 
-      className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200/50 shadow-sm"
+      className="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Link 
-              href="/" 
-              className="text-2xl font-bold text-robotics text-gradient-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 rounded-md"
-            >
-              {siteConfig.name}
-            </Link>
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <ul className="hidden md:flex items-center space-x-1">
+        <div className="flex justify-center items-center h-16">
+          {/* Desktop Navigation - Centered */}
+          <ul className="hidden md:flex items-center space-x-2">
             {navItems.map((item, index) => (
               <li key={item.href}>
                 <motion.div
@@ -72,12 +58,13 @@ const Navbar = () => {
             ))}
           </ul>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Absolute positioned */}
           <button
-            className="md:hidden p-2 rounded-md hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            className="md:hidden absolute right-4 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
             aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-nav"
           >
             <motion.div
               animate={isMobileMenuOpen ? "open" : "closed"}
@@ -88,21 +75,21 @@ const Navbar = () => {
                   closed: { rotate: 0, y: 0 },
                   open: { rotate: 45, y: 6 }
                 }}
-                className="w-6 h-0.5 bg-gray-600 block transition-all duration-300 origin-center"
+                className="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 block transition-all duration-300 origin-center"
               />
               <motion.span
                 variants={{
                   closed: { opacity: 1 },
                   open: { opacity: 0 }
                 }}
-                className="w-6 h-0.5 bg-gray-600 block transition-all duration-300 mt-1"
+                className="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 block transition-all duration-300 mt-1"
               />
               <motion.span
                 variants={{
                   closed: { rotate: 0, y: 0 },
                   open: { rotate: -45, y: -6 }
                 }}
-                className="w-6 h-0.5 bg-gray-600 block transition-all duration-300 mt-1 origin-center"
+                className="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 block transition-all duration-300 mt-1 origin-center"
               />
             </motion.div>
           </button>
@@ -118,6 +105,8 @@ const Navbar = () => {
           }}
           transition={{ duration: 0.3 }}
           className="md:hidden overflow-hidden"
+          id="mobile-nav"
+          aria-hidden={!isMobileMenuOpen}
         >
           <ul className="pb-4 space-y-2">
             {navItems.map((item) => (

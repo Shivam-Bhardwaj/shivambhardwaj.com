@@ -45,7 +45,7 @@ export default function Typewriter({
   return (
     <span className="inline-block align-baseline">
       {displayText}
-      <span className="ml-0.5 inline-block w-3 border-r-2 border-gray-600 animate-pulse" />
+      <i className="ml-0.5 inline-block w-3 border-r-2 border-gray-600 animate-pulse" aria-hidden></i>
     </span>
   );
 }

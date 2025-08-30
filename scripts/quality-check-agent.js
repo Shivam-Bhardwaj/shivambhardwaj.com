@@ -264,20 +264,99 @@ class QualityCheckAgent {
     }
   }
 
-  async startDevServer() {
-    this.log('Starting development server...');
+  async findAvailablePort(startPort = 3000) {
     return new Promise((resolve) => {
-      const server = execSync('npm run dev', { 
+      const server = net.createServer();
+      server.listen(startPort, () => {
+        const port = server.address().port;
+        server.close(() => resolve(port));
+      });
+      server.on('error', () => {
+        resolve(this.findAvailablePort(startPort + 1));
+      });
+    });
+  }
+
+  async waitForServer(url, timeout = 30000) {
+    const start = Date.now();
+    while (Date.now() - start < timeout) {
+      try {
+        const result = await this.checkUrl(url);
+        if (result.status === 200) {
+          return true;
+        }
+      } catch (error) {
+        // Server not ready yet
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    return false;
+  }
+
+  async startDevServer() {
+    this.log('Finding available port...');
+    this.port = await this.findAvailablePort(3000);
+    this.baseUrl = `http://localhost:${this.port}`;
+    this.log(`Using port ${this.port}`);
+    
+    return new Promise((resolve, reject) => {
+      this.log('Starting development server...');
+      
+      const isWindows = process.platform === 'win32';
+      const command = isWindows ? 'npm.cmd' : 'npm';
+      
+      this.devServerProcess = spawn(command, ['run', 'dev'], {
+        env: { ...process.env, PORT: this.port.toString() },
         stdio: 'pipe',
-        timeout: 15000,
-        killSignal: 'SIGTERM'
+        shell: isWindows
+      });
+      
+      let serverOutput = '';
+      
+      this.devServerProcess.stdout.on('data', (data) => {
+        serverOutput += data.toString();
+        if (serverOutput.includes('Ready in') || serverOutput.includes('Local:')) {
+          this.log('Development server started');
+          this.waitForServer(this.baseUrl).then(ready => {
+            if (ready) {
+              this.log('Server is responding');
+              resolve();
+            } else {
+              reject(new Error('Server failed to respond'));
+            }
+          });
+        }
+      });
+      
+      this.devServerProcess.stderr.on('data', (data) => {
+        const error = data.toString();
+        if (error.includes('EADDRINUSE') || error.includes('already in use')) {
+          this.log(`Port ${this.port} in use, trying next port...`, 'warning');
+          this.devServerProcess.kill();
+          this.findAvailablePort(this.port + 1).then(newPort => {
+            this.port = newPort;
+            this.baseUrl = `http://localhost:${this.port}`;
+            this.startDevServer().then(resolve).catch(reject);
+          });
+        }
+      });
+      
+      this.devServerProcess.on('error', (error) => {
+        reject(new Error(`Failed to start server: ${error.message}`));
       });
       
       setTimeout(() => {
-        this.log('Development server should be ready');
-        resolve(server);
-      }, 5000);
+        reject(new Error('Server startup timeout'));
+      }, 30000);
     });
+  }
+
+  stopDevServer() {
+    if (this.devServerProcess) {
+      this.log('Stopping development server...');
+      this.devServerProcess.kill('SIGTERM');
+      this.devServerProcess = null;
+    }
   }
 
   generateReport() {
@@ -334,12 +413,11 @@ class QualityCheckAgent {
   async run() {
     this.log('Starting Quality Check Agent...');
     
-    let devServer = null;
     try {
       await this.checkBuildHealth();
       
       if (this.issues.filter(i => i.severity === 'high' && i.type === 'build').length === 0) {
-        devServer = this.startDevServer();
+        await this.startDevServer();
         
         await this.checkBrokenLinks();
         await this.runAccessibilityCheck();
@@ -358,13 +436,7 @@ class QualityCheckAgent {
       this.printSummary(report);
       process.exit(1);
     } finally {
-      if (devServer) {
-        try {
-          process.kill(devServer.pid);
-        } catch (e) {
-          // Server already stopped
-        }
-      }
+      this.stopDevServer();
     }
   }
 }

@@ -1,0 +1,169 @@
+site_name: Robotics Portfolio Documentation
+site_description: 'Comprehensive documentation for Shivam Bhardwaj's interactive robotics portfolio'
+site_author: 'Shivam Bhardwaj'
+site_url: 'https://shivambhardwaj.com'
+
+# Repository
+repo_name: 'Shivam-Bhardwaj/robotics-portfolio'
+repo_url: 'https://github.com/Shivam-Bhardwaj/robotics-portfolio'
+edit_uri: 'edit/main/docs/'
+
+# Copyright
+copyright: 'Copyright &copy; 2024 Shivam Bhardwaj'
+
+# Configuration
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    logo: material/robot
+    repo: fontawesome/brands/github
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+
+# Plugins
+plugins:
+  - search:
+      lang: en
+  - git-revision-date-localized:
+      type: date
+      fallback_to_build_date: true
+  - minify:
+      minify_html: true
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - abbr
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      permalink: true
+      title: Page Contents
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: Shivam-Bhardwaj
+      repo: robotics-portfolio
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Navigation
+nav:
+  - Home:
+    - Overview: index.md
+    - Getting Started: getting-started.md
+    - Features: features.md
+  - Architecture:
+    - Codebase Overview: codebase_summary.md
+    - Component Architecture: architecture/components.md
+    - Technology Stack: architecture/tech-stack.md
+    - Design System: architecture/design-system.md
+  - Development:
+    - Setup Guide: development/setup.md
+    - Development Workflow: development/workflow.md
+    - Code Standards: development/standards.md
+    - Master Guide: MASTER_GUIDE.md
+  - Robotics:
+    - Swarm Intelligence: robotics/swarm-intelligence.md
+    - ROS System: robotics/ros-system.md
+    - Algorithms: robotics/algorithms.md
+    - Calculators: robotics/calculators.md
+  - Testing:
+    - Testing Strategy: testing/strategy.md
+    - Unit Tests: testing/unit-tests.md
+    - Integration Tests: testing/integration-tests.md
+    - E2E Tests: testing/e2e-tests.md
+    - Accessibility: testing/accessibility.md
+  - Deployment:
+    - Build Process: deployment/build-process.md
+    - Firebase Hosting: deployment/firebase.md
+    - CI/CD Pipeline: deployment/cicd.md
+    - Performance: deployment/performance.md
+  - Reference:
+    - API Documentation: reference/api.md
+    - Component Library: reference/components.md
+    - Changelog: ../CHANGELOG.md
+    - License: reference/license.md
+
+# Extra
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Shivam-Bhardwaj
+      name: GitHub Profile
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/shivambdj
+      name: LinkedIn Profile
+    - icon: fontawesome/solid/globe
+      link: https://shivambhardwaj.com
+      name: Portfolio Website
+    - icon: fontawesome/solid/envelope
+      link: mailto:contact@shivambhardwaj.com
+      name: Send Email
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+  generator: false
+
+# Extra CSS
+extra_css:
+  - stylesheets/extra.css
+
+# Extra JavaScript
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

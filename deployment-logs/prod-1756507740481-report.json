@@ -1,0 +1,22 @@
+{
+  "deploymentId": "prod-1756507740481",
+  "timestamp": "2025-08-29T22:49:08.676Z",
+  "duration": "8s",
+  "success": false,
+  "errors": [
+    "Failed: TypeScript type checking - Command failed: npm run type-check"
+  ],
+  "warnings": [
+    "Potential secret in src\\config\\environment-config.ts",
+    "Environment variable NODE_ENV not set",
+    "Environment variable NEXT_PUBLIC_SITE_URL not set"
+  ],
+  "stages": [
+    "validation",
+    "security",
+    "build",
+    "test",
+    "deploy",
+    "verify"
+  ]
+}

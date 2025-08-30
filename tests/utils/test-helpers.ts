@@ -81,10 +81,38 @@ export const mockCanvas = () => ({
 })
 
 // Animation frame helpers
-export const flushAnimationFrames = () => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 0)
-  })
+export const flushAnimationFrames = async (steps: number = 1) => {
+  // Be robust to fake timers (Vitest/Jest) since RAF is mocked via setTimeout(0)
+  const j: any = (globalThis as any).jest
+  const v: any = (globalThis as any).vi
+
+  const tick = async (api: any) => {
+    if (!api) return false
+    try {
+      if (typeof api.advanceTimersToNextTimer === 'function') {
+        api.advanceTimersToNextTimer()
+      } else if (typeof api.runOnlyPendingTimers === 'function') {
+        api.runOnlyPendingTimers()
+      } else if (typeof api.advanceTimersByTime === 'function') {
+        // Use 1ms to ensure 0ms timers are also flushed
+        api.advanceTimersByTime(1)
+      } else {
+        return false
+      }
+      // Yield to allow microtasks to flush between steps
+      await Promise.resolve()
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  for (let i = 0; i < steps; i++) {
+    if (await tick(v)) continue
+    if (await tick(j)) continue
+    // Fallback for real timers
+    await new Promise((resolve) => setTimeout(resolve, 0))
+  }
 }
 
 // User interaction helpers

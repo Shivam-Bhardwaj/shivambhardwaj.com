@@ -42,6 +42,7 @@ export function SensorCalculator() {
 
   useEffect(() => {
     calculateFusion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sensorData]);
 
   return (

@@ -1,0 +1,23 @@
+{
+  "deploymentId": "prod-1756513473237",
+  "timestamp": "2025-08-30T00:25:32.423Z",
+  "duration": "59s",
+  "success": false,
+  "errors": [
+    "Failed: Unit tests - Command failed: npm run test:unit",
+    "Failed: Integration tests - Command failed: npm run test:integration"
+  ],
+  "warnings": [
+    "Potential secret in src\\config\\environment-config.ts",
+    "Environment variable NODE_ENV not set",
+    "Environment variable NEXT_PUBLIC_SITE_URL not set"
+  ],
+  "stages": [
+    "validation",
+    "security",
+    "build",
+    "test",
+    "deploy",
+    "verify"
+  ]
+}

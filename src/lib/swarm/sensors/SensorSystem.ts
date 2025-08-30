@@ -177,7 +177,7 @@ export class SensorSystem {
     ctx.strokeStyle = 'rgba(34, 197, 94, 0.2)';
     ctx.lineWidth = 0.5;
     
-    for (const ray of lidarReading.data) {
+    for (const ray of (lidarReading.data as { angle: number; distance: number; hit: string }[])) {
       if (ray.hit !== 'none') {
         ctx.beginPath();
         ctx.moveTo(0, 0);

@@ -1,23 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
-import { Orbitron } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import MinimalNavbar from "@/components/MinimalNavbar";
-import MinimalFooter from "@/components/MinimalFooter";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import SmartAvoidanceRobots from "@/components/SmartAvoidanceRobots";
 import ThemeToggle from "@/components/ThemeToggle";
 
-const inter = Inter({ 
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: 'swap'
-});
-
-const orbitron = Orbitron({ 
-  subsets: ["latin"], 
-  variable: "--font-orbitron",
-  display: 'swap'
-});
+// Font variables for potential future use
+// const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: 'swap' });
+// const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron", display: 'swap' });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -86,11 +77,11 @@ export default function RootLayout({
         <ThemeToggle />
         
         <div className="relative z-10 flex flex-col min-h-screen">
-          <MinimalNavbar />
-          <main className="flex-grow flex items-center justify-center">
+          <Navbar />
+          <main className="flex-grow flex items-center justify-center py-16">
             {children}
           </main>
-          <MinimalFooter />
+          <Footer />
         </div>
       </body>
     </html>

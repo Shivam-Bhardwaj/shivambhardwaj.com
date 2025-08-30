@@ -1,0 +1,20 @@
+{
+  "deploymentId": "prod-1756509727035",
+  "timestamp": "2025-08-29T23:22:44.432Z",
+  "duration": "37s",
+  "success": true,
+  "errors": [],
+  "warnings": [
+    "Potential secret in src\\config\\environment-config.ts",
+    "Environment variable NODE_ENV not set",
+    "Environment variable NEXT_PUBLIC_SITE_URL not set"
+  ],
+  "stages": [
+    "validation",
+    "security",
+    "build",
+    "test",
+    "deploy",
+    "verify"
+  ]
+}

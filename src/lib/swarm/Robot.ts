@@ -1,6 +1,6 @@
-import { RobotType, RobotStats, Vector2D, SensorReading, RobotBehavior, Pheromone, Resource, Obstacle } from './types';
+import { RobotType, RobotStats, Vector2D, RobotBehavior, Pheromone, Resource, Obstacle } from './types';
 import { SensorSystem } from './sensors/SensorSystem';
-import { CommunicationSystem } from './communication/CommunicationSystem';
+// import { CommunicationSystem } from './communication/CommunicationSystem'; // Temporarily disabled
 
 export class Robot implements RobotStats {
   id: string;
@@ -21,7 +21,7 @@ export class Robot implements RobotStats {
   
   // Public for external access
   public sensors: SensorSystem;
-  public communication: CommunicationSystem;
+  // public communication: CommunicationSystem; // Temporarily disabled
   private behavior: RobotBehavior;
   private target: Vector2D | null = null;
   private neighbors: Robot[] = [];
@@ -128,7 +128,7 @@ export class Robot implements RobotStats {
     this.currentCargo = 0;
 
     this.sensors = new SensorSystem(this);
-    this.communication = new CommunicationSystem(this);
+    // this.communication = new CommunicationSystem(this); // Temporarily disabled
   }
 
   update(

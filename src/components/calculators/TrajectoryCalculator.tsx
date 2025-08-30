@@ -2,6 +2,13 @@
 import { useState, useEffect } from 'react';
 import { Vector3 } from '@/lib/robotics/math';
 
+interface TrajectoryPoint {
+  time: number;
+  position: Vector3;
+  velocity: Vector3;
+  acceleration: Vector3;
+}
+
 export function TrajectoryCalculator() {
   const [start, setStart] = useState({ x: 0, y: 0, z: 0 });
   const [end, setEnd] = useState({ x: 100, y: 100, z: 50 });
@@ -10,12 +17,6 @@ export function TrajectoryCalculator() {
     maxAccel: 20, 
     duration: 3.0 
   });
-interface TrajectoryPoint {
-  time: number;
-  position: Vector3;
-  velocity: Vector3;
-  acceleration: Vector3;
-}
   const [trajectory, setTrajectory] = useState<TrajectoryPoint[]>([]);
 
   const generateTrajectory = () => {
@@ -51,6 +52,7 @@ interface TrajectoryPoint {
 
   useEffect(() => {
     generateTrajectory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start, end, constraints]);
 
   return (

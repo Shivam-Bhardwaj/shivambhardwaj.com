@@ -1,14 +1,15 @@
 import { siteConfig } from "@/data/site";
+import VersionInfo from "./VersionInfo";
 
 export default function MinimalFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-black/80 backdrop-blur-sm mt-auto">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <footer className="w-full border-t border-gray-200/30 dark:border-gray-800/30 backdrop-blur-sm mt-auto">
+      <div className="container mx-auto max-w-4xl px-4 py-8 text-center">
         {/* Tech Stack */}
-        <div className="text-center mb-6">
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        <div className="mb-6">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 text-center">
             Built with
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-xs">
@@ -68,9 +69,12 @@ export default function MinimalFooter() {
         </div>
 
         {/* Copyright */}
-        <div className="text-center text-xs text-gray-500 dark:text-gray-500">
+        <div className="text-xs text-gray-500 dark:text-gray-500">
           <p>© {currentYear} {siteConfig.name}</p>
           <p className="mt-1">All rights reserved</p>
+          <div className="mt-3 flex justify-center relative">
+            <VersionInfo />
+          </div>
         </div>
       </div>
     </footer>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion'; // Reserved for future animated cards
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'glow' | 'glass' | 'robotics';

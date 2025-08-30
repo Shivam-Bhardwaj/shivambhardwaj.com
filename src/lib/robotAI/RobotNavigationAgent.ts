@@ -118,7 +118,7 @@ export class RobotNavigationAgent {
   ): NavigationCommand {
     // Convert screen coordinates to grid coordinates
     const startGrid = this.screenToGrid(robot.position);
-    const targetGrid = this.screenToGrid(mousePosition);
+    // const targetGrid = this.screenToGrid(mousePosition); // Unused for now
 
     // Determine pursuit strategy based on robot's role and other robots' positions
     const strategy = this.determinePursuitStrategy(robot, mousePosition, allRobots);
@@ -465,7 +465,7 @@ export class RobotNavigationAgent {
   private generateAlternativeRoutes(
     start: Vector2D,
     target: Vector2D,
-    mainPath: Vector2D[]
+    _mainPath: Vector2D[]
   ): Vector2D[] {
     const alternatives: Vector2D[] = [];
     
@@ -496,7 +496,7 @@ export class RobotNavigationAgent {
     // Check for obstacles along path
     for (let i = 0; i < path.length - 1; i++) {
       const current = path[i];
-      const next = path[i + 1];
+      // const next = path[i + 1]; // Future path smoothing
       
       if (this.grid[current.y] && this.grid[current.y][current.x] && 
           !this.grid[current.y][current.x].walkable) {

@@ -408,7 +408,7 @@ export class OcclusionDetector {
     const r = data[index];
     const g = data[index + 1];
     const b = data[index + 2];
-    const a = data[index + 3];
+    // const a = data[index + 3]; // Alpha channel not used
 
     // Simple edge detection - look for significant color differences
     const neighbors = [

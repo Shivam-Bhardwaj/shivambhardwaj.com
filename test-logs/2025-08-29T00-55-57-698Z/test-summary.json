@@ -1,0 +1,11 @@
+{
+  "sessionId": "2025-08-29T00-55-57-698Z",
+  "timestamp": "2025-08-29T00:56:21.352Z",
+  "logFiles": [
+    "test-session.log"
+  ],
+  "totalTests": 5,
+  "passedTests": 1,
+  "failedTests": 4,
+  "duration": 0
+}

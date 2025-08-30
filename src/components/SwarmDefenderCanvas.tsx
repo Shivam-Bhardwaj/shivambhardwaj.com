@@ -1,12 +1,15 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SwarmDefender } from "@/lib/swarm/SwarmDefender";
+import { TelemetryCollector } from "@/lib/telemetry/TelemetryCollector";
+import TelemetryDashboard from "@/components/TelemetryDashboard";
 
 export default function SwarmDefenderCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<SwarmDefender | null>(null);
   const animationRef = useRef<number>();
   const lastTimeRef = useRef<number>(0);
+  const [telemetryCollector] = useState(() => new TelemetryCollector());
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -15,7 +18,7 @@ export default function SwarmDefenderCanvas() {
     // Initialize game
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    gameRef.current = new SwarmDefender(canvas);
+    gameRef.current = new SwarmDefender(canvas, telemetryCollector);
 
     // Handle resize
     const handleResize = () => {
@@ -38,6 +41,7 @@ export default function SwarmDefenderCanvas() {
       if (gameRef.current) {
         gameRef.current.update(Math.min(deltaTime, 0.1)); // Cap delta time
         gameRef.current.render();
+        telemetryCollector.updateFrameRate();
       }
     };
 
@@ -50,7 +54,7 @@ export default function SwarmDefenderCanvas() {
       }
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [telemetryCollector]);
 
   return (
     <>
@@ -96,6 +100,9 @@ export default function SwarmDefenderCanvas() {
           <span style={{ color: '#3b82f6', marginLeft: '0.5rem' }}>●</span> Collector
         </div>
       </div>
+      
+      {/* Telemetry Dashboard */}
+      <TelemetryDashboard telemetryCollector={telemetryCollector} />
     </>
   );
 }

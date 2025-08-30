@@ -1,0 +1,48 @@
+{
+  "path": ".",
+  "name": ".",
+  "type": "nextjs",
+  "framework": "Next.js",
+  "language": "typescript",
+  "stats": {
+    "files": 217,
+    "directories": 71,
+    "loc": 31250,
+    "size": 5004519,
+    "dependencies": 5,
+    "devDependencies": 28
+  },
+  "structure": {
+    "src": true,
+    "tests": true,
+    "docs": true,
+    "config": true,
+    "ci": false,
+    "docker": false,
+    "kubernetes": false
+  },
+  "dependencies": {
+    "total": 33,
+    "outdated": [],
+    "security": [],
+    "unused": []
+  },
+  "quality": {
+    "hasLinter": false,
+    "hasFormatter": false,
+    "hasTests": true,
+    "hasTypeChecking": true,
+    "hasCICD": false,
+    "hasDocumentation": true,
+    "testCoverage": 0,
+    "codeComplexity": "unknown"
+  },
+  "suggestions": [
+    "Set up CI/CD pipeline for automated testing",
+    "Configure a linter (ESLint, Pylint, etc.)",
+    "Set up code formatter (Prettier, Black, etc.)",
+    "Improve test coverage (currently 0%)"
+  ],
+  "analyzedAt": "2025-08-27T23:24:44.280Z",
+  "duration": 3565
+}

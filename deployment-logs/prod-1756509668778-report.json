@@ -1,0 +1,22 @@
+{
+  "deploymentId": "prod-1756509668778",
+  "timestamp": "2025-08-29T23:21:19.043Z",
+  "duration": "10s",
+  "success": false,
+  "errors": [
+    "Failed: Next.js production build - Command failed: NODE_ENV=production npm run build"
+  ],
+  "warnings": [
+    "Potential secret in src\\config\\environment-config.ts",
+    "Environment variable NODE_ENV not set",
+    "Environment variable NEXT_PUBLIC_SITE_URL not set"
+  ],
+  "stages": [
+    "validation",
+    "security",
+    "build",
+    "test",
+    "deploy",
+    "verify"
+  ]
+}

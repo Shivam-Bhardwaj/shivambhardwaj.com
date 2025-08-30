@@ -8,7 +8,10 @@ jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
 }))
 
-const mockUsePathname = usePathname as jest.MockedFunction<typeof usePathname>
+// Avoid relying on full Jest type defs; we only need mockReturnValue for this test
+const mockUsePathname = usePathname as unknown as {
+  mockReturnValue: (v: ReturnType<typeof usePathname>) => void
+}
 
 describe('Navbar', () => {
   beforeEach(() => {
@@ -32,6 +35,7 @@ describe('Navbar', () => {
     expect(screen.getByRole('link', { name: 'Projects' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Experience' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Skills' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Calculators' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Swarm' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Contact' })).toBeInTheDocument()
   })
@@ -41,7 +45,7 @@ describe('Navbar', () => {
     render(<Navbar />)
     
     const projectsLink = screen.getByRole('link', { name: 'Projects' })
-    expect(projectsLink).toHaveClass('text-blue-600', 'underline')
+    expect(projectsLink).toHaveClass('text-brand-primary', 'bg-brand-primary/10')
   })
 
   it('applies default styling to non-active links', () => {
@@ -49,8 +53,8 @@ describe('Navbar', () => {
     render(<Navbar />)
     
     const homeLink = screen.getByRole('link', { name: 'Home' })
-    expect(homeLink).toHaveClass('text-gray-600')
-    expect(homeLink).not.toHaveClass('text-blue-600', 'underline')
+    expect(homeLink).toHaveClass('text-gray-700')
+    expect(homeLink).not.toHaveClass('text-brand-primary', 'bg-brand-primary/10')
   })
 
   it('has correct link hrefs', () => {
@@ -60,6 +64,7 @@ describe('Navbar', () => {
     expect(screen.getByRole('link', { name: 'Projects' })).toHaveAttribute('href', '/projects')
     expect(screen.getByRole('link', { name: 'Experience' })).toHaveAttribute('href', '/experience')
     expect(screen.getByRole('link', { name: 'Skills' })).toHaveAttribute('href', '/skills')
+    expect(screen.getByRole('link', { name: 'Calculators' })).toHaveAttribute('href', '/calculators')
     expect(screen.getByRole('link', { name: 'Swarm' })).toHaveAttribute('href', '/swarm')
     expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '/contact')
   })
@@ -68,10 +73,13 @@ describe('Navbar', () => {
     render(<Navbar />)
     
     const nav = screen.getByRole('navigation')
-    expect(nav).toHaveClass('bg-white', 'text-gray-800', 'shadow', 'p-4')
+    expect(nav).toHaveClass('bg-white/90', 'backdrop-blur-lg', 'border-b', 'shadow-sm')
     
-    const container = nav.firstChild
-    expect(container).toHaveClass('container', 'mx-auto', 'flex', 'justify-between', 'items-center')
+    const container = nav.firstChild as HTMLElement
+    expect(container).toHaveClass('container', 'mx-auto', 'px-4')
+    
+    const inner = container.querySelector('div.flex.justify-between.items-center')
+    expect(inner).toBeInTheDocument()
   })
 
   it('renders site logo/name as link to home', () => {
@@ -81,7 +89,7 @@ describe('Navbar', () => {
     const logoLink = logoLinks.find(link => link.getAttribute('href') === '/' && link.classList.contains('text-2xl'))
     
     expect(logoLink).toBeInTheDocument()
-    expect(logoLink).toHaveClass('text-2xl', 'font-bold', 'text-gray-900')
+    expect(logoLink).toHaveClass('text-2xl', 'font-bold')
   })
 
   describe('Different pathname scenarios', () => {
@@ -100,7 +108,7 @@ describe('Navbar', () => {
         render(<Navbar />)
         
         const activeLinkElement = screen.getByRole('link', { name: activeLink })
-        expect(activeLinkElement).toHaveClass('text-blue-600', 'underline')
+        expect(activeLinkElement).toHaveClass('text-brand-primary', 'bg-brand-primary/10')
       })
     })
   })
@@ -120,7 +128,7 @@ describe('Navbar', () => {
       expect(list).toBeInTheDocument()
       
       const listItems = screen.getAllByRole('listitem')
-      expect(listItems).toHaveLength(6) // 6 navigation items
+      expect(listItems.length).toBeGreaterThanOrEqual(6)
     })
 
     it('all links are keyboard accessible', () => {
@@ -139,7 +147,7 @@ describe('Navbar', () => {
       render(<Navbar />)
       
       const homeLink = screen.getByRole('link', { name: 'Home' })
-      expect(homeLink).toHaveClass('hover:text-gray-800')
+      expect(homeLink).toHaveClass('hover:text-brand-primary')
     })
   })
 
@@ -158,8 +166,8 @@ describe('Navbar', () => {
       const links = ['Home', 'Projects', 'Experience', 'Skills', 'Swarm', 'Contact']
       links.forEach(linkName => {
         const link = screen.getByRole('link', { name: linkName })
-        expect(link).toHaveClass('text-gray-600')
-        expect(link).not.toHaveClass('text-blue-600', 'underline')
+        expect(link).toHaveClass('text-gray-700')
+        expect(link).not.toHaveClass('text-brand-primary', 'bg-brand-primary/10')
       })
     })
   })

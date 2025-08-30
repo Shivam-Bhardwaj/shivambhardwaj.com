@@ -1,9 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
 
-export function PIDCalculator() {
-  const [gains, setGains] = useState({ kp: 1.0, ki: 0.1, kd: 0.05 });
-  const [setpoint, setSetpoint] = useState(100);
 interface SimulationPoint {
   time: number;
   position: number;
@@ -11,6 +8,10 @@ interface SimulationPoint {
   error: number;
   output: number;
 }
+
+export function PIDCalculator() {
+  const [gains, setGains] = useState({ kp: 1.0, ki: 0.1, kd: 0.05 });
+  const [setpoint, setSetpoint] = useState(100);
   const [simulation, setSimulation] = useState<SimulationPoint[]>([]);
   const [systemParams, setSystemParams] = useState({ 
     inertia: 1.0, 
@@ -64,6 +65,7 @@ interface SimulationPoint {
 
   useEffect(() => {
     runSimulation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gains, setpoint, systemParams]);
 
   const settlingTime = simulation.find(point => 
@@ -82,7 +84,7 @@ interface SimulationPoint {
           <div className="space-y-3">
             {(['kp', 'ki', 'kd'] as const).map((gain) => (
               <div key={gain}>
-                <label htmlFor={`gain-${gain}`} className="block text-sm font-medium mb-1 uppercase">{gain}</label>
+                <label htmlFor={`gain-${gain}`} className="block text-sm font-medium mb-1">{gain.toUpperCase()}</label>
                 <input
                   id={`gain-${gain}`}
                   type="number"

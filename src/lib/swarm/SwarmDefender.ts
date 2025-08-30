@@ -1,4 +1,5 @@
 import { Vector2D } from './types';
+import { TelemetryCollector } from '../telemetry/TelemetryCollector';
 // Game Types
 export enum EntityType {
   SCOUT = 'scout',
@@ -42,6 +43,7 @@ export class SwarmDefender {
   private lastSpawnTime: number = 0;
   private lastThreatTime: number = 0;
   private gridSize: number = 20; // For fog of war
+  private telemetryCollector: TelemetryCollector | null = null;
   // Game constants
   private readonly BASE_POSITION: Vector2D;
   private readonly BASE_SIZE = 40;
@@ -50,9 +52,10 @@ export class SwarmDefender {
   private readonly THREAT_SPEED = 1;
   private readonly SPAWN_RATE = 5000; // Resources spawn every 5s
   private readonly THREAT_RATE = 8000; // Threats spawn every 8s
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, telemetryCollector?: TelemetryCollector) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d')!;
+    this.telemetryCollector = telemetryCollector || null;
     // Center base
     this.BASE_POSITION = {
       x: canvas.width / 2,
@@ -176,7 +179,7 @@ export class SwarmDefender {
               this.selectedRobots.add(entity.id);
             }
             clickedRobot = true;
-            // console.log(`Selected ${this.selectedRobots.size} robots`); // Removed for production
+            // // console.log(`Selected ${this.selectedRobots.size} robots`); // Removed for production // Removed for production
             break;
           }
         }
@@ -199,7 +202,7 @@ export class SwarmDefender {
               }
             }
           }
-          // console.log(`Commanding ${this.selectedRobots.size} robots to (${Math.round(clickPos.x); // Removed for production}, ${Math.round(clickPos.y)})`);
+          // // console.log(`Commanding ${this.selectedRobots.size} robots to (${Math.round(clickPos.x); // Removed for production // Removed for production}, ${Math.round(clickPos.y)})`);
         } else {
           // No robots selected - select all nearby robots
           for (const entity of this.entities.values()) {
@@ -211,7 +214,7 @@ export class SwarmDefender {
             }
           }
           if (this.selectedRobots.size > 0) {
-            // console.log(`Area selected ${this.selectedRobots.size} robots`); // Removed for production
+            // // console.log(`Area selected ${this.selectedRobots.size} robots`); // Removed for production // Removed for production
           }
         }
       }
@@ -266,10 +269,13 @@ export class SwarmDefender {
     }
     // Update all entities
     for (const entity of this.entities.values()) {
-      this.updateEntity(entity, deltaTime);
+      this.updateEntity(entity);
     }
     // Check collisions
     this.checkCollisions();
+    
+    // Collect telemetry
+    this.collectTelemetry();
     // Remove dead entities
     for (const [id, entity] of this.entities) {
       if (entity.health <= 0 && entity.type !== EntityType.BASE) {
@@ -292,7 +298,7 @@ export class SwarmDefender {
       this.gameState.wave++;
     }
   }
-  private updateEntity(entity: GameEntity, deltaTime: number): void {
+  private updateEntity(entity: GameEntity): void {
     // Update position
     entity.position.x += entity.velocity.x;
     entity.position.y += entity.velocity.y;
@@ -512,6 +518,10 @@ export class SwarmDefender {
                           robot.type === EntityType.SCOUT ? 2 : 1;
             threat.health -= damage;
             robot.health -= 1;
+            // Record collision
+            if (this.telemetryCollector) {
+              this.telemetryCollector.recordCollision();
+            }
           }
           // Threat vs Base
           if ((a.type === EntityType.BASE && b.type === EntityType.THREAT) ||
@@ -802,6 +812,42 @@ export class SwarmDefender {
     this.initializeFogOfWar();
     this.spawnInitialUnits();
   }
+  private collectTelemetry(): void {
+    if (!this.telemetryCollector) return;
+
+    // Convert entities to robot data format
+    const robots = Array.from(this.entities.values())
+      .filter(entity => entity.team === 'player' && entity.type !== EntityType.BASE)
+      .map(entity => ({
+        id: entity.id,
+        type: entity.type as 'scout' | 'follower' | 'leader' | 'defender' | 'collector',
+        role: entity.type as 'scout' | 'follower' | 'leader' | 'defender' | 'collector',
+        x: entity.position.x,
+        y: entity.position.y,
+        vx: entity.velocity.x,
+        vy: entity.velocity.y,
+        velocity: entity.velocity,
+        position: entity.position,
+        health: entity.health,
+        energy: Math.random() * 100, // Placeholder since SwarmDefender doesn't have energy
+        isAvoiding: false, // Would need to track this in entity state
+        isAttacking: false, // Would need to track this in entity state
+        isCollecting: entity.type === EntityType.COLLECTOR,
+        patrolling: entity.type === EntityType.DEFENDER
+      }));
+
+    // Get threat count
+    const threats = Array.from(this.entities.values())
+      .filter(entity => entity.type === EntityType.THREAT).length;
+
+    const gameStateForTelemetry = {
+      ...this.gameState,
+      threats
+    };
+
+    this.telemetryCollector.collectSnapshot(robots, gameStateForTelemetry);
+  }
+
   private getDistance(a: Vector2D, b: Vector2D): number {
     const dx = a.x - b.x;
     const dy = a.y - b.y;

@@ -92,7 +92,7 @@ export class SwarmManager {
       this.handleResourceCollection(robot);
       
       // Handle robot communication
-      robot.communication.transmit(robotArray);
+      // robot.communication.transmit(robotArray); // Temporarily disabled
       
       // Deposit pheromones
       if (Math.random() < 0.01) { // 1% chance per update
@@ -143,11 +143,11 @@ export class SwarmManager {
         this.sessionScore += resource.value * 10;
         
         // Broadcast discovery
-        robot.communication.broadcast('discovery', {
-          resourceFound: true,
-          resourceType: resource.type,
-          position: resource.position
-        });
+        // robot.communication.broadcast('discovery', {
+        //   resourceFound: true,
+        //   resourceType: resource.type,
+        //   position: resource.position
+        // }); // Temporarily disabled
         
         // Deposit pheromone trail
         const pheromone = robot.depositPheromone('food');

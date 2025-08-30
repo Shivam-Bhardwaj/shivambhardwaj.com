@@ -1,115 +1,157 @@
 "use client";
 import { useEffect, useRef } from "react";
+import logger from "@/lib/logger";
+import { robotEngine, type Robot, type Obstacle } from "@/lib/robot/RobotEngine";
+import { getCurrentTheme, getThemeColor, getRobotColor } from "@/lib/theme/themeUtils";
 
-// Smart robots with proper text/button avoidance
-const NUM_ROBOTS = 4;
-const ROBOT_SIZE = 10;
+// Refactored SmartAvoidanceRobots using modular RobotEngine
+const NUM_ROBOTS = 6;
+const ROBOT_SIZE = 12;
 const MAX_SPEED = 3;
-const SEEK_FORCE = 0.08;
-const AVOID_FORCE = 1.5;
-const TEXT_AVOID_DISTANCE = 70; // Larger avoidance for text
-const BUTTON_AVOID_DISTANCE = 80; // Even larger for interactive elements
+// GTA-style seeking and avoidance with improved stability constants
+const SEEK_FORCE = 0.2;
+const AVOID_FORCE = 1.2;
+const OBSTACLE_AVOIDANCE_DISTANCE = 120;
+// const WALL_AVOIDANCE_DISTANCE = 80;
+// Enhanced swarm coordination constants
+const SEPARATION_DISTANCE = 70;
+const ALIGNMENT_FORCE = 0.1;
+const COHESION_FORCE = 0.05;
+const SEPARATION_FORCE = 0.2;
+// Advanced ray casting constants
+const RAY_ANGLES = [-Math.PI/3, -Math.PI/6, 0, Math.PI/6, Math.PI/3];
+// const RAY_STEP = 8;
+const NEIGHBOR_RADIUS = 100;
+const WANDER_FORCE = 0.02;
+// Obstacle avoidance distances for different element types
+const TEXT_AVOID_DISTANCE = 60;
+const BUTTON_AVOID_DISTANCE = 80;
 
-interface Robot {
-  id: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  color: string;
-  trail: { x: number; y: number }[];
+interface TelemetryCollector {
+  collectSnapshot: (robots: Robot[]) => void;
+  updateFrameRate: () => void;
 }
 
-interface Obstacle {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  type: 'text' | 'button' | 'interactive' | 'container';
-  avoidDistance: number;
+interface SmartAvoidanceRobotsProps {
+  telemetryCollector?: TelemetryCollector;
 }
 
-export default function SmartAvoidanceRobots() {
+export default function SmartAvoidanceRobots({ telemetryCollector }: SmartAvoidanceRobotsProps = {}) {
+  logger.log('SmartAvoidanceRobots component mounted.');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const robotsRef = useRef<Robot[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
   const obstaclesRef = useRef<Obstacle[]>([]);
+  const logoImagesRef = useRef<Map<string, HTMLImageElement>>(new Map());
 
-  // Initialize robots
+  // Static obstacles will be initialized after component mounts
+  const STATIC_OBSTACLES: Obstacle[] = [];
+
+  // Initialize robots using the modular engine
   useEffect(() => {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    
-    const colors = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b"];
-    
-    robotsRef.current = Array.from({ length: NUM_ROBOTS }, (_, i) => ({
-      id: i,
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: 0,
-      vy: 0,
-      color: colors[i],
-      trail: []
-    }));
 
+    // Configure the robot engine with appropriate settings
+    robotEngine.updateConfig({
+      seekForce: SEEK_FORCE,
+      avoidForce: AVOID_FORCE,
+      separationForce: SEPARATION_FORCE,
+      alignmentForce: ALIGNMENT_FORCE,
+      cohesionForce: COHESION_FORCE,
+      wanderForce: WANDER_FORCE,
+      maxSpeed: MAX_SPEED,
+      obstacleAvoidanceDistance: OBSTACLE_AVOIDANCE_DISTANCE,
+      separationDistance: SEPARATION_DISTANCE,
+      neighborRadius: NEIGHBOR_RADIUS
+    });
+
+    // Create robots using the engine
+    robotsRef.current = robotEngine.createRobots(NUM_ROBOTS, width, height);
     mouseRef.current = { x: width / 2, y: height / 2 };
   }, []);
 
-  // Track mouse
+  // Track pointer/mouse/touch
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
+    const updateMouse = (x: number, y: number) => {
+      mouseRef.current = { x, y };
+      if (Math.random() < 0.1) {
+        // console.log('Mouse:', x, y); // Removed for production
+      }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    const handlePointerMove = (e: PointerEvent) => updateMouse(e.clientX, e.clientY);
+    const handleMouseMove = (e: MouseEvent) => updateMouse(e.clientX, e.clientY);
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches && e.touches[0]) updateMouse(e.touches[0].clientX, e.touches[0].clientY);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove, { capture: true });
+    window.addEventListener("mousemove", handleMouseMove, { capture: true });
+    window.addEventListener("touchmove", handleTouchMove, { capture: true });
+    // console.log('Pointer tracking initialized'); // Removed for production
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove, { capture: true });
+      window.removeEventListener("mousemove", handleMouseMove, { capture: true });
+      window.removeEventListener("touchmove", handleTouchMove, { capture: true });
+    };
   }, []);
 
-  // Smart obstacle detection - categorize elements
   const updateObstacles = () => {
-    const allElements = Array.from(document.querySelectorAll("*"));
-    
-    obstaclesRef.current = allElements
+    // Only consider semantic text and interactive elements, skip large containers
+    const selector = "button, a, input, textarea, select, [role='button'], h1, h2, h3, h4, h5, h6, p, label";
+    const allElements = Array.from(document.querySelectorAll(selector));
+
+    // Create dynamic obstacles from DOM elements
+    const dynamicObstacles = allElements
       .map(el => {
         if (el === canvasRef.current || el === document.body || el === document.documentElement) return null;
         
         const rect = el.getBoundingClientRect();
         
-        // Skip tiny or hidden elements
-        if (rect.width < 10 || rect.height < 10) return null;
+        // Skip tiny, hidden, or very large layout containers
+        if (rect.width < 20 || rect.height < 20) return null;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        if (rect.width > vw * 0.85 || rect.height > vh * 0.6) return null;
         
         const style = window.getComputedStyle(el);
         if (style.visibility === 'hidden' || style.opacity === '0' || style.display === 'none') return null;
         
-        // Check if element has text content
-        const hasText = el.textContent && el.textContent.trim().length > 0;
+        // Check if element has text content (simplified logic)
+        const hasText = el.textContent && el.textContent.trim().length > 2;
         if (!hasText) return null;
         
         // Categorize element type
         let type: 'text' | 'button' | 'interactive' | 'container' = 'text';
         let avoidDistance = TEXT_AVOID_DISTANCE;
-        let padding = 25;
+        let padding = 40;
         
         const tagName = el.tagName.toLowerCase();
         const role = el.getAttribute('role');
         
-        if (tagName === 'button' || tagName === 'a' || role === 'button') {
+        if (tagName === 'button' || role === 'button' || el.getAttribute('data-role') === 'button') {
           type = 'button';
           avoidDistance = BUTTON_AVOID_DISTANCE;
-          padding = 35;
+          padding = 60;
+        } else if (tagName === 'a' && (el as HTMLAnchorElement).href) {
+          // Only treat links with href as interactive elements
+          type = 'button';
+          avoidDistance = BUTTON_AVOID_DISTANCE;
+          padding = 50;
         } else if (tagName === 'input' || tagName === 'textarea' || tagName === 'select') {
           type = 'interactive';
           avoidDistance = BUTTON_AVOID_DISTANCE;
-          padding = 30;
+          padding = 50;
         } else if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
           type = 'text';
           avoidDistance = TEXT_AVOID_DISTANCE;
-          padding = 30;
-        } else if (['p', 'span', 'div', 'label'].includes(tagName)) {
+          padding = 45;
+        } else if (["p", "label"].includes(tagName)) {
           type = 'text';
-          avoidDistance = TEXT_AVOID_DISTANCE - 20; // Less avoidance for body text
-          padding = 20;
+          avoidDistance = TEXT_AVOID_DISTANCE - 10;
+          padding = 35;
         }
         
         return {
@@ -122,18 +164,11 @@ export default function SmartAvoidanceRobots() {
         };
       })
       .filter(Boolean) as Obstacle[];
+
+    obstaclesRef.current = [...dynamicObstacles, ...STATIC_OBSTACLES];
+    logger.log(`Updated obstacles. Found ${dynamicObstacles.length} dynamic obstacles and ${STATIC_OBSTACLES.length} static obstacles.`);
   };
 
-  // Check if robot will collide with obstacle
-  const willCollideWithObstacle = (robot: Robot, obstacle: Obstacle): boolean => {
-    const futureX = robot.x + robot.vx * 5;
-    const futureY = robot.y + robot.vy * 5;
-    
-    return futureX > obstacle.x && 
-           futureX < obstacle.x + obstacle.width &&
-           futureY > obstacle.y && 
-           futureY < obstacle.y + obstacle.height;
-  };
 
   // Animation loop
   useEffect(() => {
@@ -150,115 +185,80 @@ export default function SmartAvoidanceRobots() {
     const obstacleInterval = setInterval(updateObstacles, 800);
 
     const animate = () => {
-      // Clear with fade
-      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+      // Use theme utilities
+      const currentTheme = getCurrentTheme();
+      const isDarkMode = currentTheme === 'dark';
+      
+      // Clear with fade - theme aware
+      ctx.fillStyle = getThemeColor('background.overlay');
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const mouse = mouseRef.current;
 
-      // Update each robot
+      // Update each robot using the modular engine
       robotsRef.current.forEach(robot => {
-        // SEEK: Move towards mouse
-        let seekX = mouse.x - robot.x;
-        let seekY = mouse.y - robot.y;
-        const distance = Math.sqrt(seekX * seekX + seekY * seekY);
-        
-        if (distance > 0) {
-          seekX = (seekX / distance) * MAX_SPEED;
-          seekY = (seekY / distance) * MAX_SPEED;
-        }
+        // Calculate all forces using the engine
+        const forces = robotEngine.calculateForces(
+          robot,
+          robotsRef.current,
+          obstaclesRef.current,
+          mouse
+        );
 
-        // AVOID: Smart obstacle avoidance
-        let avoidX = 0;
-        let avoidY = 0;
-        
-        obstaclesRef.current.forEach(obstacle => {
-          // Calculate distance to obstacle edge
-          const closestX = Math.max(obstacle.x, Math.min(robot.x, obstacle.x + obstacle.width));
-          const closestY = Math.max(obstacle.y, Math.min(robot.y, obstacle.y + obstacle.height));
-          
-          const dx = robot.x - closestX;
-          const dy = robot.y - closestY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          
-          if (dist < obstacle.avoidDistance && dist > 0) {
-            // Stronger avoidance for closer obstacles
-            const force = (obstacle.avoidDistance - dist) / obstacle.avoidDistance;
-            
-            // Extra force multiplier based on obstacle type
-            let multiplier = 1;
-            if (obstacle.type === 'button' || obstacle.type === 'interactive') {
-              multiplier = 2; // Avoid buttons more strongly
-            }
-            
-            avoidX += (dx / dist) * force * AVOID_FORCE * multiplier;
-            avoidY += (dy / dist) * force * AVOID_FORCE * multiplier;
-          }
-          
-          // Predictive avoidance - check future collision
-          if (willCollideWithObstacle(robot, obstacle)) {
-            // Strong emergency avoidance
-            const emergencyX = robot.x - (obstacle.x + obstacle.width / 2);
-            const emergencyY = robot.y - (obstacle.y + obstacle.height / 2);
-            const emergencyDist = Math.sqrt(emergencyX * emergencyX + emergencyY * emergencyY);
-            
-            if (emergencyDist > 0) {
-              avoidX += (emergencyX / emergencyDist) * AVOID_FORCE * 3;
-              avoidY += (emergencyY / emergencyDist) * AVOID_FORCE * 3;
-            }
-          }
-        });
+        // Apply role-based multipliers
+        const roleMultiplier = robot.role === 'leader' ? 1.3 :
+                              robot.role === 'scout' ? 0.7 : 1.0;
 
-        // Apply steering forces
-        robot.vx += (seekX - robot.vx) * SEEK_FORCE;
-        robot.vy += (seekY - robot.vy) * SEEK_FORCE;
-        
-        // Apply avoidance
-        robot.vx += avoidX * 0.2;
-        robot.vy += avoidY * 0.2;
-        
-        // Limit speed (keep this speed - it's good)
-        const speed = Math.sqrt(robot.vx * robot.vx + robot.vy * robot.vy);
-        if (speed > MAX_SPEED) {
-          robot.vx = (robot.vx / speed) * MAX_SPEED;
-          robot.vy = (robot.vy / speed) * MAX_SPEED;
-        }
+        // Scale forces based on role and mouse proximity
+        const distance = Math.sqrt((mouse.x - robot.x) ** 2 + (mouse.y - robot.y) ** 2);
+        const nearMouseFactor = Math.min(1, distance / 150);
 
-        // Update position
-        robot.x += robot.vx;
-        robot.y += robot.vy;
+        forces.seek.x *= roleMultiplier;
+        forces.seek.y *= roleMultiplier;
+        forces.avoid.x *= nearMouseFactor;
+        forces.avoid.y *= nearMouseFactor;
 
-        // Screen boundaries
-        robot.x = Math.max(ROBOT_SIZE, Math.min(canvas.width - ROBOT_SIZE, robot.x));
-        robot.y = Math.max(ROBOT_SIZE, Math.min(canvas.height - ROBOT_SIZE, robot.y));
-
-        // Update trail
-        robot.trail.push({ x: robot.x, y: robot.y });
-        if (robot.trail.length > 25) robot.trail.shift();
+        // Update robot using the engine
+        robotEngine.updateRobot(robot, forces, canvas.width, canvas.height);
       });
 
-      // Draw prediction paths (velocity direction only - no mouse line)
-      robotsRef.current.forEach(robot => {
-        // Only show velocity vector
-        ctx.strokeStyle = robot.color + "88";
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 3]);
-        ctx.beginPath();
-        ctx.moveTo(robot.x, robot.y);
-        
-        const futureX = robot.x + robot.vx * 25;
-        const futureY = robot.y + robot.vy * 25;
-        ctx.lineTo(futureX, futureY);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      });
+      // Collect telemetry data
+      if (telemetryCollector) {
+        telemetryCollector.collectSnapshot(robotsRef.current);
+        telemetryCollector.updateFrameRate();
+      }
 
-      // Draw robots
+      // Draw all obstacles as logos
+      STATIC_OBSTACLES.forEach((obstacle: Obstacle & { logoName?: string }) => {
+        const logoImage = obstacle.logoName ? logoImagesRef.current.get(obstacle.logoName) : null;
+        
+        if (logoImage && logoImage.complete) {
+          // Draw logo image
+          ctx.save();
+          ctx.globalAlpha = 0.6;
+          ctx.drawImage(logoImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+          ctx.restore();
+          
+          // Add subtle glow effect - theme aware
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = isDarkMode ? 'rgba(100, 200, 255, 0.7)' : 'rgba(100, 200, 255, 0.5)';
+          ctx.strokeStyle = isDarkMode ? 'rgba(100, 200, 255, 0.5)' : 'rgba(100, 200, 255, 0.3)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+          ctx.shadowBlur = 0;
+        } else {
+          // Fallback to simple shapes if image not loaded - theme aware
+          ctx.fillStyle = isDarkMode ? "rgba(200, 200, 200, 0.25)" : "rgba(100, 100, 100, 0.15)";
+          ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        }
+      });
+      
+      // Draw robots with enhanced role-based visuals
       robotsRef.current.forEach(robot => {
-        // Trail
+        // Enhanced trail with role-based styling - using theme utilities
         if (robot.trail.length > 1) {
-          ctx.strokeStyle = robot.color + "44";
-          ctx.lineWidth = 3;
+          ctx.strokeStyle = getRobotColor(robot.role as 'leader' | 'scout' | 'worker', 'trail');
+          ctx.lineWidth = robot.role === 'leader' ? 4 : 3;
           ctx.beginPath();
           robot.trail.forEach((point, i) => {
             if (i === 0) ctx.moveTo(point.x, point.y);
@@ -267,33 +267,78 @@ export default function SmartAvoidanceRobots() {
           ctx.stroke();
         }
 
-        // Robot body
+        // Robot body with role-based size and shape
         ctx.save();
         ctx.translate(robot.x, robot.y);
         
         const angle = Math.atan2(robot.vy, robot.vx);
         ctx.rotate(angle);
         
-        // Triangle shape
-        ctx.fillStyle = robot.color;
+        // Role-based size modifier
+        const sizeMultiplier = robot.role === 'leader' ? 1.3 : robot.role === 'scout' ? 0.8 : 1.0;
+        const size = ROBOT_SIZE * sizeMultiplier;
+        
+        // Robot shape based on role - using theme utilities
+        ctx.fillStyle = getRobotColor(robot.role as 'leader' | 'scout' | 'worker', 'body');
         ctx.beginPath();
-        ctx.moveTo(ROBOT_SIZE, 0);
-        ctx.lineTo(-ROBOT_SIZE/2, -ROBOT_SIZE/2);
-        ctx.lineTo(-ROBOT_SIZE/2, ROBOT_SIZE/2);
+        
+        if (robot.role === 'leader') {
+          // Diamond shape for leaders
+          ctx.moveTo(size, 0);
+          ctx.lineTo(0, -size/2);
+          ctx.lineTo(-size/2, 0);
+          ctx.lineTo(0, size/2);
+        } else if (robot.role === 'scout') {
+          // Circle for scouts
+          ctx.arc(0, 0, size/2, 0, Math.PI * 2);
+        } else {
+          // Triangle for followers
+          ctx.moveTo(size, 0);
+          ctx.lineTo(-size/2, -size/2);
+          ctx.lineTo(-size/2, size/2);
+        }
+        
         ctx.closePath();
         ctx.fill();
         
-        // Direction indicator
-        ctx.fillStyle = "white";
+        // Role indicator outline - using theme utilities
+        ctx.strokeStyle = getRobotColor(robot.role as 'leader' | 'scout' | 'worker', 'outline');
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        
+        // Direction indicator - theme aware
+        ctx.fillStyle = getThemeColor('text.primary');
         ctx.beginPath();
-        ctx.arc(ROBOT_SIZE/2, 0, 2, 0, Math.PI * 2);
+        ctx.arc(size/3, 0, 2, 0, Math.PI * 2);
         ctx.fill();
         
         ctx.restore();
+
+        // Debug: Show avoidance rays for the first robot
+        if (robot.id === 0) {
+          const robotAngle = Math.atan2(robot.vy, robot.vx);
+          
+          ctx.strokeStyle = isDarkMode ? "rgba(255, 100, 100, 0.6)" : "rgba(255, 0, 0, 0.4)";
+          ctx.lineWidth = 1;
+          
+          RAY_ANGLES.forEach(angleOffset => {
+            const rayAngle = robotAngle + angleOffset;
+            const rayDx = Math.cos(rayAngle);
+            const rayDy = Math.sin(rayAngle);
+            
+            ctx.beginPath();
+            ctx.moveTo(robot.x, robot.y);
+            ctx.lineTo(
+              robot.x + rayDx * OBSTACLE_AVOIDANCE_DISTANCE, 
+              robot.y + rayDy * OBSTACLE_AVOIDANCE_DISTANCE
+            );
+            ctx.stroke();
+          });
+        }
       });
 
-      // Draw mouse target
-      ctx.strokeStyle = "rgba(255, 0, 100, 0.6)";
+      // Draw mouse target - theme aware
+      ctx.strokeStyle = isDarkMode ? "rgba(255, 100, 150, 0.8)" : "rgba(255, 0, 100, 0.6)";
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(mouse.x, mouse.y, 15, 0, Math.PI * 2);
@@ -309,7 +354,6 @@ export default function SmartAvoidanceRobots() {
       canvas.height = window.innerHeight;
       updateObstacles();
     };
-    
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -319,13 +363,14 @@ export default function SmartAvoidanceRobots() {
         cancelAnimationFrame(animationRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none -z-10"
-      style={{ background: "transparent" }}
+      className="fixed inset-0 -z-10"
+      style={{ background: "transparent", pointerEvents: "none" }}
     />
   );
 }

@@ -1,4 +1,4 @@
-import { Mission, MissionType, Objective, SwarmState, Vector2D, RobotType } from '../types';
+import { Mission, MissionType, SwarmState, Vector2D, RobotType } from '../types';
 
 export class MissionManager {
   private currentMission: Mission | null = null;

@@ -1,0 +1,30 @@
+[2025-08-26T22:20:36.096Z] INFO: Starting Swarm Simulation Integration Test Suite
+[2025-08-26T22:20:36.116Z] INFO: TEST: should complete full game workflow - START
+[2025-08-26T22:20:36.118Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.118Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.118Z] INFO: TEST: should handle complete user interaction flow - START
+[2025-08-26T22:20:36.118Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.118Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.339Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.339Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.339Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.339Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.373Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.373Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.390Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.390Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.400Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.400Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.410Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.410Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.418Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.418Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.418Z] INFO: Robot 0 seeking mouse at (512, 384) from (327, 428) distance: 190
+[2025-08-26T22:20:36.418Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.418Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.418Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.418Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.418Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.418Z] INFO: SmartAvoidanceRobots component mounted.
+[2025-08-26T22:20:36.418Z] INFO: Updated obstacles. Found 0 dynamic obstacles and 3 static obstacles.
+[2025-08-26T22:20:36.418Z] INFO: Finished Swarm Simulation Integration Test Suite

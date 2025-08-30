@@ -27,6 +27,7 @@ export function TransformCalculator() {
 
   useEffect(() => {
     calculateTransform();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [translation, rotation, point]);
 
   return (

@@ -20,7 +20,7 @@ export interface Vector2D {
 
 export interface SensorReading {
   type: 'lidar' | 'proximity' | 'camera' | 'energy';
-  data: any;
+  data: unknown;
   timestamp: number;
 }
 
@@ -102,7 +102,7 @@ export interface CommunicationMessage {
   senderId: string;
   receiverId: string | 'broadcast';
   type: 'discovery' | 'help' | 'status' | 'command';
-  data: any;
+  data: unknown;
   timestamp: number;
   hops: number;
 }

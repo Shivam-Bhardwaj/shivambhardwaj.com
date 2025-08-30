@@ -139,30 +139,33 @@ export function KinematicsCalculator() {
           <h3 className="text-lg font-semibold mb-3">Target Position</h3>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">X (mm)</label>
+              <label htmlFor="ik-target-x" className="block text-sm font-medium mb-1">X (mm)</label>
               <input
                 type="number"
                 value={targetPose.x}
                 onChange={(e) => setTargetPose({...targetPose, x: parseFloat(e.target.value) || 0})}
                 className="w-full px-3 py-2 border rounded"
+                id="ik-target-x"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Y (mm)</label>
+              <label htmlFor="ik-target-y" className="block text-sm font-medium mb-1">Y (mm)</label>
               <input
                 type="number"
                 value={targetPose.y}
                 onChange={(e) => setTargetPose({...targetPose, y: parseFloat(e.target.value) || 0})}
                 className="w-full px-3 py-2 border rounded"
+                id="ik-target-y"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Z (mm)</label>
+              <label htmlFor="ik-target-z" className="block text-sm font-medium mb-1">Z (mm)</label>
               <input
                 type="number"
                 value={targetPose.z}
                 onChange={(e) => setTargetPose({...targetPose, z: parseFloat(e.target.value) || 0})}
                 className="w-full px-3 py-2 border rounded"
+                id="ik-target-z"
               />
             </div>
           </div>
@@ -177,7 +180,7 @@ export function KinematicsCalculator() {
 
       {result && (
         <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded">
-          <h3 className="text-lg font-semibold mb-2">End Effector Pose</h3>
+          <h3 className="text-lg font-semibold mb-2">End Effector Position</h3>
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div>Position X: {result.position.x.toFixed(2)} mm</div>
             <div>Position Y: {result.position.y.toFixed(2)} mm</div>
