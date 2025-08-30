@@ -106,8 +106,7 @@ const nextConfig: NextConfig = {
 
   // Development optimizations
   ...(config.isDevelopment && {
-    // Enable React Fast Refresh
-    fastRefresh: true,
+    // React Fast Refresh is enabled by default in Next.js 15
   }),
 }
 

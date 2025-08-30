@@ -48,7 +48,8 @@
       "Bash(git rm:*)",
       "Bash(pip install:*)",
       "Bash(master.bat)",
-      "Bash(cmd /c:*)"
+      "Bash(cmd /c:*)",
+      "Bash(npm ls:*)"
     ],
     "deny": [],
     "additionalDirectories": [
