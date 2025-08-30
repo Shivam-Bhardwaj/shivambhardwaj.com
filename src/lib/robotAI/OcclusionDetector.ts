@@ -111,6 +111,9 @@ export class OcclusionDetector {
   private getVisibleElements(): Element[] {
     const elements: Element[] = [];
     
+    // Check if document.body exists (SSR safety)
+    if (!document.body) return elements;
+    
     // Get all elements in the document
     const walker = document.createTreeWalker(
       document.body,

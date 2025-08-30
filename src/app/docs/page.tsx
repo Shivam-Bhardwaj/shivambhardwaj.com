@@ -537,7 +537,7 @@ export default function DocsPage() {
                     </button>
                   ))}
                 </div>
-                {selectedAlgorithm && (
+                {selectedAlgorithm && algorithmDetails[selectedAlgorithm] && (
                   <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
                     <h3 className="text-xl font-bold text-white mb-4">
                       {algorithmDetails[selectedAlgorithm].title}
@@ -547,7 +547,7 @@ export default function DocsPage() {
                     </p>
                     <h4 className="text-lg font-semibold text-white mb-3">Key Features</h4>
                     <ul className="space-y-2 mb-6">
-                      {algorithmDetails[selectedAlgorithm].features.map((feature, idx) => (
+                      {algorithmDetails[selectedAlgorithm].features?.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2">
                           <ChevronRight className="w-5 h-5 text-cyan-400 mt-0.5" />
                           <span className="text-gray-300">{feature}</span>
@@ -563,7 +563,7 @@ export default function DocsPage() {
                       </pre>
                       <button
                         className="absolute top-2 right-2 p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-                        onClick={() => navigator.clipboard?.writeText(algorithmDetails[selectedAlgorithm].code)}
+                        onClick={() => navigator.clipboard?.writeText(algorithmDetails[selectedAlgorithm]?.code || '')}
                       >
                         <FileText className="w-4 h-4 text-gray-300" />
                       </button>

@@ -106,7 +106,7 @@ export default function SmartAvoidanceRobots({ telemetryCollector }: SmartAvoida
     // Create dynamic obstacles from DOM elements
     const dynamicObstacles = allElements
       .map(el => {
-        if (el === canvasRef.current || el === document.body || el === document.documentElement) return null;
+        if (el === canvasRef.current || el === document.body || el === document.documentElement || !document.body) return null;
         
         const rect = el.getBoundingClientRect();
         

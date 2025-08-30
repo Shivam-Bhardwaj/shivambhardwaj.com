@@ -197,7 +197,7 @@ export default function GTARobots() {
     const domObstacles: Obstacle[] = [];
 
     allElements.forEach(el => {
-      if (el === canvasRef.current || el === document.body || el === document.documentElement) return;
+      if (el === canvasRef.current || el === document.body || el === document.documentElement || !document.body) return;
       
       const rect = el.getBoundingClientRect();
       
