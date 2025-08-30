@@ -16,8 +16,6 @@ import {
   Terminal,
   Zap,
   Bot,
-  Navigation,
-  Settings,
   Brain
 } from 'lucide-react'
 const documentationSections = [
@@ -398,8 +396,8 @@ export default function DocsPage() {
                   <h3 className="text-xl font-bold text-white mb-6"> Welcome to My Interactive Robotics Portfolio</h3>
                   <div className="mb-6">
                     <p className="text-gray-300 text-lg leading-relaxed">
-                      This isn't just a static portfolio—it's a fully interactive demonstration of production-grade robotics systems. 
-                      Every simulation, algorithm, and tool represents real-world solutions I've deployed in industrial environments at 
+                      This isn&apos;t just a static portfolio—it&apos;s a fully interactive demonstration of production-grade robotics systems. 
+                      Every simulation, algorithm, and tool represents real-world solutions I&apos;ve deployed in industrial environments at 
                       companies like Applied Materials, Meta, Saildrone, and Tesla.
                     </p>
                   </div>
@@ -565,7 +563,7 @@ export default function DocsPage() {
                       </pre>
                       <button
                         className="absolute top-2 right-2 p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-                        onClick={() => navigator.clipboard.writeText(algorithmDetails[selectedAlgorithm].code)}
+                        onClick={() => navigator.clipboard?.writeText(algorithmDetails[selectedAlgorithm].code)}
                       >
                         <FileText className="w-4 h-4 text-gray-300" />
                       </button>
@@ -613,7 +611,7 @@ export default function DocsPage() {
                   <ol className="space-y-3 text-gray-300">
                     <li>1. Fork the repository</li>
                     <li>2. Create a feature branch: <code className="text-cyan-400">git checkout -b feature/amazing-feature</code></li>
-                    <li>3. Commit changes: <code className="text-cyan-400">git commit -m 'feat: add amazing feature'</code></li>
+                    <li>3. Commit changes: <code className="text-cyan-400">git commit -m &apos;feat: add amazing feature&apos;</code></li>
                     <li>4. Push to branch: <code className="text-cyan-400">git push origin feature/amazing-feature</code></li>
                     <li>5. Open a Pull Request</li>
                   </ol>
