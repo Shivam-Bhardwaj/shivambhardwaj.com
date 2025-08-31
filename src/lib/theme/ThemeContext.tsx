@@ -76,8 +76,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check for saved theme or system preference
-    const savedTheme = localStorage.getItem('theme');
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    if (typeof window === 'undefined') return;
+    
+    const savedTheme = localStorage?.getItem('theme');
+    const systemTheme = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light';
     const initialTheme = (savedTheme as Theme) || systemTheme;
     
     setTheme(initialTheme);
@@ -86,6 +88,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const applyTheme = (newTheme: Theme) => {
     // Apply both Tailwind dark class and data-theme attribute
+    if (typeof document === 'undefined') return;
+    
     if (newTheme === 'dark') {
       document.documentElement.classList.add('dark');
       document.documentElement.setAttribute('data-theme', 'dark');
@@ -99,7 +103,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     applyTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
+    if (typeof window !== 'undefined' && localStorage) {
+      localStorage.setItem('theme', newTheme);
+    }
   };
 
   const value: ThemeContextType = {

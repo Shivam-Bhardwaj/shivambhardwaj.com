@@ -14,18 +14,18 @@ echo Select an option:
 echo.
 echo [1] Development       [D] Quick Dev Start
 echo [2] Testing           [T] Quick Test Run
-echo [3] Build & Deploy    [B] Quick Build
-echo [4] Code Quality      [L] Quick Lint
-echo [5] Security          [S] Security Check
+echo [3] Build and Deploy  [B] Quick Build      [F] Firebase Deploy
+echo [4] Code Quality      [L] Quick Lint       [P] Production Deploy  
+echo [5] Security          [S] Security Check   [R] Quick Deploy        [X] Firebase Only
 echo [6] Utilities         [U] Project Status
 echo [7] Git Operations    [G] Git Status
 echo [8] Help              [C] Claude Helper
 echo [0] Exit              [Q] Quick Exit
 echo.
-echo Quick Commands: D/T/B/L/S/U/G/C/Q (no Enter needed)
+echo Quick Commands: D/T/B/L/S/U/G/C/Q/F/P/R/X (no Enter needed)
 echo Menu Options: 0-8 (press Enter)
 echo.
-choice /c 123456780DTBLSUGCQ /n /m "Select option: "
+choice /c 123456780DTBLSUGCQFPRX /n /m "Select option: "
 set choice=%errorlevel%
 
 if "%choice%"=="1" goto DEV
@@ -46,6 +46,10 @@ if "%choice%"=="15" goto QUICK_STATUS
 if "%choice%"=="16" goto QUICK_GIT
 if "%choice%"=="17" goto QUICK_CLAUDE
 if "%choice%"=="18" goto QUICK_EXIT
+if "%choice%"=="19" goto QUICK_FIREBASE
+if "%choice%"=="20" goto QUICK_PRODUCTION
+if "%choice%"=="21" goto QUICK_DEPLOY
+if "%choice%"=="22" goto FIREBASE_ONLY
 goto INVALID
 
 :DEV
@@ -616,6 +620,108 @@ goto MAIN
 :QUICK_CLAUDE
 echo Starting Claude helper...
 npm run claude:quick
+pause
+goto MAIN
+
+:QUICK_FIREBASE
+echo Firebase deployment...
+echo.
+echo [1/2] Building for production...
+npm run build
+if %errorlevel%==0 (
+    echo [2/2] Build successful. Deploying to Firebase...
+    echo.
+    if exist "scripts\deploy-firebase.js" (
+        node scripts\deploy-firebase.js
+    ) else (
+        firebase deploy --only hosting
+    )
+    if %errorlevel%==0 (
+        echo ✅ Firebase deployment completed successfully!
+        echo 🌐 Check: https://shivambhardwaj.com
+    ) else (
+        echo ❌ Firebase deployment failed.
+        echo Try: firebase login (if authentication needed)
+    )
+) else (
+    echo ❌ Build failed. Deployment cancelled.
+)
+echo.
+pause
+goto MAIN
+
+:QUICK_PRODUCTION
+echo Production deployment (build already completed)...
+echo.
+echo Skipping build since it just completed successfully.
+echo [1/2] Checking Firebase authentication...
+firebase projects:list >nul 2>&1
+if %errorlevel%==0 (
+    echo ✅ Firebase authenticated.
+    echo [2/2] Deploying to Firebase (hosting only)...
+    timeout 300 firebase deploy --only hosting
+    if %errorlevel%==0 (
+        echo.
+        echo ✅ Production deployment completed successfully!
+        echo 🌐 Site should be live at: https://shivambhardwaj.com
+    ) else (
+        echo.
+        echo ❌ Firebase deployment failed or timed out.
+        echo Try: firebase login (if needed)
+    )
+) else (
+    echo ❌ Firebase authentication required.
+    echo Please run: firebase login
+    echo Then try deployment again.
+)
+echo.
+pause
+goto MAIN
+
+:QUICK_DEPLOY
+echo Quick deployment...
+echo.
+echo [1/2] Building for production...
+npm run build
+if %errorlevel%==0 (
+    echo [2/2] Build successful. Quick deploying...
+    echo.
+    if exist "scripts\deploy-quick.js" (
+        node scripts\deploy-quick.js
+    ) else (
+        echo Quick deploy script not found. Using Firebase...
+        firebase deploy --only hosting
+    )
+    if %errorlevel%==0 (
+        echo ✅ Quick deployment completed successfully!
+        echo 🚀 Fast deployment done!
+    ) else (
+        echo ❌ Quick deployment failed.
+        echo Check Firebase authentication or logs.
+    )
+) else (
+    echo ❌ Build failed. Quick deployment cancelled.
+)
+echo.
+pause
+goto MAIN
+
+:FIREBASE_ONLY
+echo Firebase deployment only (assumes build exists)...
+echo.
+echo Deploying existing build to Firebase...
+firebase deploy --only hosting
+if %errorlevel%==0 (
+    echo ✅ Firebase deployment completed!
+    echo 🌐 Check: https://shivambhardwaj.com
+) else (
+    echo ❌ Firebase deployment failed.
+    echo Possible issues:
+    echo   1. Not logged in: firebase login
+    echo   2. No build exists: npm run build
+    echo   3. Wrong project: firebase use [project-id]
+)
+echo.
 pause
 goto MAIN
 
