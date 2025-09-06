@@ -1,0 +1,219 @@
+{
+  "main": {
+    "id": "d66529a04fd157c5",
+    "type": "split",
+    "children": [
+      {
+        "id": "29cc82ed8af2f4b9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9f3759d129008d7e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3e1d30f4a7a1b2bb",
+    "type": "split",
+    "children": [
+      {
+        "id": "ac589dec9762bfa8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fd095181a9d23068",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "5a6758bf0725a1d4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "0c522aff2d5ad625",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "5bf6a07fd4a57f7e",
+    "type": "split",
+    "children": [
+      {
+        "id": "809a7d757a8e3b2f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c9666df7c2d875d8",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "hello-gke/PERPLEXITY_AUTOMATION_PROMPT.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for PERPLEXITY_AUTOMATION_PROMPT"
+            }
+          },
+          {
+            "id": "91d5dd790abbadcc",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "hello-gke/PERPLEXITY_AUTOMATION_PROMPT.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from PERPLEXITY_AUTOMATION_PROMPT"
+            }
+          },
+          {
+            "id": "5cd588d5a9952496",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "5643efffbabfc0e0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "hello-gke/PERPLEXITY_AUTOMATION_PROMPT.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of PERPLEXITY_AUTOMATION_PROMPT"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "9f3759d129008d7e",
+  "lastOpenFiles": [
+    "TODO.md",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "cloudbuild.yaml",
+    "app.yaml",
+    "shivambhardwaj-gc/node_modules/jsdom/package.json",
+    "shivambhardwaj-gc/node_modules/next/navigation.d.ts",
+    "shivambhardwaj-gc/node_modules/next/link.d.ts",
+    "shivambhardwaj-gc/node_modules/next/headers.d.ts",
+    "shivambhardwaj-gc/node_modules/next/head.d.ts",
+    "shivambhardwaj-gc/node_modules/next/error.d.ts",
+    "public/favicon.svg",
+    "shivambhardwaj-gc/node_modules/@types/hast/README.md",
+    "shivambhardwaj-gc/node_modules/remark-rehype/readme.md",
+    "shivambhardwaj-gc/node_modules/remark-parse/readme.md",
+    "shivambhardwaj-gc/node_modules/react-icons/README.md",
+    "shivambhardwaj-gc/node_modules/puppeteer-core/README.md",
+    "shivambhardwaj-gc/node_modules/playwright-core/README.md",
+    "shivambhardwaj-gc/node_modules/check-error/README.md",
+    "shivambhardwaj-gc/node_modules/chalk/readme.md",
+    "shivambhardwaj-gc/node_modules/chai/README.md",
+    "shivambhardwaj-gc/node_modules/caniuse-lite/README.md",
+    "shivambhardwaj-gc/node_modules/camelcase-css/README.md",
+    "shivambhardwaj-gc/node_modules/callsites/readme.md",
+    "shivambhardwaj-gc/node_modules/call-bound/README.md",
+    "shivambhardwaj-gc/node_modules/call-bind-apply-helpers/CHANGELOG.md",
+    "shivambhardwaj-gc/node_modules/call-bind-apply-helpers/README.md",
+    "shivambhardwaj-gc/node_modules/call-bind/CHANGELOG.md",
+    "shivambhardwaj-gc/node_modules/call-bind/README.md",
+    "shivambhardwaj-gc/node_modules/cac/README.md",
+    "shivambhardwaj-gc/node_modules/buffer-equal-constant-time/README.md",
+    "shivambhardwaj-gc/node_modules/buffer/AUTHORS.md",
+    "shivambhardwaj-gc/node_modules/buffer/README.md",
+    "shivambhardwaj-gc/node_modules/braces/README.md",
+    "shivambhardwaj-gc/node_modules/bignumber.js/CHANGELOG.md",
+    "shivambhardwaj-gc/node_modules/bignumber.js/LICENCE.md",
+    "shivambhardwaj-gc/node_modules/bignumber.js/README.md",
+    "shivambhardwaj-gc/public/favicon.svg",
+    "shivambhardwaj-gc/node_modules/playwright-core/lib/vite/traceViewer/playwright-logo.svg",
+    "shivambhardwaj-gc/node_modules/playwright-core/lib/vite/recorder/playwright-logo.svg",
+    "shivambhardwaj-gc/node_modules/playwright-core/lib/server/chromium/appIcon.png",
+    "shivambhardwaj-gc/node_modules/istanbul-reports/lib/html-spa/assets/sort-arrow-sprite.png",
+    "shivambhardwaj-gc/node_modules/istanbul-reports/lib/html/assets/sort-arrow-sprite.png",
+    "shivambhardwaj-gc/node_modules/istanbul-reports/lib/html/assets/favicon.png"
+  ]
+}
