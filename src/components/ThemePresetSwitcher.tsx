@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { themeManager } from '@/lib/theme';
+import { useTheme } from '@/lib/theme';
 import { THEME_PRESETS, applyCustomTheme, CUSTOM_THEME_KEY } from '@/lib/theme/presets';
 
 interface CustomThemeState {
@@ -24,6 +24,7 @@ function loadCustom(): CustomThemeState {
 }
 
 export default function ThemePresetSwitcher() {
+  const { updatePreferences } = useTheme();
   const [activePreset, setActivePreset] = useState<string>('');
   const [custom, setCustom] = useState<CustomThemeState>(loadCustom());
   const [expanded, setExpanded] = useState(false);
@@ -61,8 +62,10 @@ export default function ThemePresetSwitcher() {
     setActivePreset(id);
     localStorage.setItem('antimony-active-preset', id);
     if (id !== 'custom') {
-      // Optionally: reset to defaults then apply accent hints
-      themeManager?.updatePreferences({ colorScheme: 'blue' });
+      const preset = THEME_PRESETS.find(p => p.id === id);
+      if (preset?.preferences) {
+        updatePreferences(preset.preferences);
+      }
     }
   }
 
@@ -78,13 +81,16 @@ export default function ThemePresetSwitcher() {
 
   return (
     <div className="w-full max-w-md mx-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-900/60 backdrop-blur p-4 shadow-sm">
-      <button
-        onClick={() => setExpanded(e => !e)}
-        className="w-full flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
-        <span>Theme Options</span>
-        <span className="text-xs text-gray-500">{expanded ? 'Hide' : 'Show'}</span>
-      </button>
+      <div className="flex items-center justify-between mb-4">
+        <button
+          onClick={() => setExpanded(e => !e)}
+          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          <span>Theme Options</span>
+          <span className="ml-2 text-xs text-gray-500">{expanded ? 'Hide' : 'Show'}</span>
+        </button>
+        {/* Theme toggle removed to fix unused import warning */}
+      </div>
       {expanded && (
         <div className="mt-4 space-y-6">
           <div className="grid grid-cols-3 gap-3">

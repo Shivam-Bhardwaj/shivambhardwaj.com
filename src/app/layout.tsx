@@ -4,6 +4,7 @@ import './globals.css';
 import { logger } from '@/lib/logging';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { ThemeProvider } from '@/lib/theme';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -74,11 +75,13 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <Navigation />
-        <div id="root" className="pt-16 min-h-screen flex flex-col">
-          <div className="flex-1">{children}</div>
-          <Footer />
-        </div>
+        <ThemeProvider>
+          <Navigation />
+          <div id="root" className="pt-16 min-h-screen flex flex-col">
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
