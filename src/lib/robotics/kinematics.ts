@@ -74,15 +74,13 @@ export class ForwardKinematics {
    */
   private multiplyMatrices(a: number[][], b: number[][]): number[][] {
     const result = Array(4).fill(null).map(() => Array(4).fill(0));
-    
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         for (let k = 0; k < 4; k++) {
-          result[i][j] += a[i][k] * b[k][j];
+          result[i]![j]! += a[i]![k]! * b[k]![j]!;
         }
       }
     }
-    
     return result;
   }
 
@@ -106,20 +104,20 @@ export class ForwardKinematics {
 
     // Apply each joint transformation
     for (let i = 0; i < this.dhParameters.length; i++) {
-      const params = { ...this.dhParameters[i], theta: jointAngles[i] };
+      const params: DHParameters = { ...(this.dhParameters[i] as DHParameters), theta: jointAngles[i]! };
       const dhMatrix = this.dhTransform(params);
       transform = this.multiplyMatrices(transform, dhMatrix);
     }
 
     // Extract position and orientation
-    const x = Number(transform[0][3].toFixed(this.precision));
-    const y = Number(transform[1][3].toFixed(this.precision));
-    const z = Number(transform[2][3].toFixed(this.precision));
+  const x = Number(transform[0]![3]!.toFixed(this.precision));
+  const y = Number(transform[1]![3]!.toFixed(this.precision));
+  const z = Number(transform[2]![3]!.toFixed(this.precision));
 
     // Extract Euler angles from rotation matrix
-    const roll = Math.atan2(transform[2][1], transform[2][2]);
-    const pitch = Math.atan2(-transform[2][0], Math.sqrt(transform[2][1] ** 2 + transform[2][2] ** 2));
-    const yaw = Math.atan2(transform[1][0], transform[0][0]);
+  const roll = Math.atan2(transform[2]![1]!, transform[2]![2]!);
+  const pitch = Math.atan2(-transform[2]![0]!, Math.sqrt(transform[2]![1]! ** 2 + transform[2]![2]! ** 2));
+  const yaw = Math.atan2(transform[1]![0]!, transform[0]![0]!);
 
     const result: Pose3D = {
       x,
@@ -146,22 +144,22 @@ export class ForwardKinematics {
     
     for (let i = 0; i < jointAngles.length; i++) {
       const jointAnglesPlus = [...jointAngles];
-      jointAnglesPlus[i] += epsilon;
+      jointAnglesPlus[i]! += epsilon;
       
       const posePlus = this.calculateEndEffectorPose(jointAnglesPlus);
       
       // Linear velocity components
-      jacobian[0][i] = (posePlus.x - endEffector.x) / epsilon;
-      jacobian[1][i] = (posePlus.y - endEffector.y) / epsilon;
-      jacobian[2][i] = (posePlus.z - endEffector.z) / epsilon;
+  jacobian[0]![i]! = (posePlus.x - endEffector.x) / epsilon;
+  jacobian[1]![i]! = (posePlus.y - endEffector.y) / epsilon;
+  jacobian[2]![i]! = (posePlus.z - endEffector.z) / epsilon;
       
       // Angular velocity components
-      jacobian[3][i] = (posePlus.roll - endEffector.roll) / epsilon;
-      jacobian[4][i] = (posePlus.pitch - endEffector.pitch) / epsilon;
-      jacobian[5][i] = (posePlus.yaw - endEffector.yaw) / epsilon;
+  jacobian[3]![i]! = (posePlus.roll - endEffector.roll) / epsilon;
+  jacobian[4]![i]! = (posePlus.pitch - endEffector.pitch) / epsilon;
+  jacobian[5]![i]! = (posePlus.yaw - endEffector.yaw) / epsilon;
     }
 
-    logger.debug('Jacobian calculated', { jacobianSize: `${jacobian.length}x${jacobian[0].length}` });
+  logger.debug('Jacobian calculated', { jacobianSize: `${jacobian.length}x${jacobian[0]!.length}` });
     return jacobian;
   }
 }
@@ -193,7 +191,8 @@ export class InverseKinematics {
     logger.info('Starting inverse kinematics calculation', { targetPose });
 
     const dofCount = this.fk['dhParameters'].length;
-    let jointAngles = initialGuess || Array(dofCount).fill(0);
+  // Use a mutable working copy but avoid shadowing prefer-const lint; we intentionally mutate this array
+  const jointAngles: number[] = (initialGuess ? [...initialGuess] : Array(dofCount).fill(0));
     let iterations = 0;
     let error = Infinity;
 
@@ -218,15 +217,15 @@ export class InverseKinematics {
       }
 
       // Calculate pseudo-inverse of Jacobian
-      const jacobianT = this.transposeMatrix(jacobian);
-      const jacobianPinv = this.pseudoInverse(jacobian);
+  // Compute pseudo-inverse directly (transpose computed internally) to avoid unused variable
+  const jacobianPinv = this.pseudoInverse(jacobian);
       
       // Update joint angles
       const deltaJoints = this.multiplyMatrixVector(jacobianPinv, poseError);
       
       for (let i = 0; i < jointAngles.length; i++) {
-        jointAngles[i] += deltaJoints[i] * 0.5; // Damping factor
-        jointAngles[i] = Number(jointAngles[i].toFixed(this.precision));
+        jointAngles[i]! += deltaJoints[i]! * 0.5; // Damping factor
+        jointAngles[i] = Number(jointAngles[i]!.toFixed(this.precision));
       }
 
       iterations++;
@@ -250,12 +249,12 @@ export class InverseKinematics {
   }
 
   private transposeMatrix(matrix: number[][]): number[][] {
-    return matrix[0].map((_, i) => matrix.map(row => row[i]));
+  return matrix[0]!.map((_, i) => matrix.map(row => row[i]!));
   }
 
   private multiplyMatrixVector(matrix: number[][], vector: number[]): number[] {
     return matrix.map(row => 
-      row.reduce((sum, val, i) => sum + val * vector[i], 0)
+  row.reduce((sum, val, i) => sum + val * vector[i]!, 0)
     );
   }
 
@@ -268,12 +267,12 @@ export class InverseKinematics {
   }
 
   private multiplyMatrices(a: number[][], b: number[][]): number[][] {
-    const result = Array(a.length).fill(null).map(() => Array(b[0].length).fill(0));
+  const result = Array(a.length).fill(null).map(() => Array(b[0]!.length).fill(0));
     
     for (let i = 0; i < a.length; i++) {
-      for (let j = 0; j < b[0].length; j++) {
+    for (let j = 0; j < b[0]!.length; j++) {
         for (let k = 0; k < b.length; k++) {
-          result[i][j] += a[i][k] * b[k][j];
+      result[i]![j]! += a[i]![k]! * b[k]![j]!;
         }
       }
     }
@@ -286,20 +285,20 @@ export class InverseKinematics {
     const n = matrix.length;
     
     if (n === 2) {
-      const det = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+      const det = matrix[0]![0]! * matrix[1]![1]! - matrix[0]![1]! * matrix[1]![0]!;
       if (Math.abs(det) < 1e-10) throw new Error('Matrix is singular');
       
       return [
-        [matrix[1][1] / det, -matrix[0][1] / det],
-        [-matrix[1][0] / det, matrix[0][0] / det]
+        [matrix[1]![1]! / det, -matrix[0]![1]! / det],
+        [-matrix[1]![0]! / det, matrix[0]![0]! / det]
       ];
     }
     
     // For larger matrices, use Gaussian elimination (simplified)
-    const augmented = matrix.map((row, i) => [
-      ...row,
-      ...Array(n).fill(0).map((_, j) => i === j ? 1 : 0)
-    ]);
+  // const augmented = matrix.map((row, i) => [
+  //   ...row,
+  //   ...Array(n).fill(0).map((_, j) => i === j ? 1 : 0)
+  // ]); // Placeholder for future larger-matrix inversion implementation
     
     // Forward elimination and back substitution would go here
     // This is a simplified version - in production, use a proper linear algebra library
@@ -331,19 +330,19 @@ export class DifferentialKinematics {
     const jacobian = this.fk.calculateJacobian(jointAngles);
     
     const endEffectorVelocity = jacobian.map(row =>
-      row.reduce((sum, val, i) => sum + val * jointVelocities[i], 0)
+      row.reduce((sum, val, i) => sum + val * (jointVelocities[i] ?? 0), 0)
     );
 
     const result = {
       linear: {
-        x: Number(endEffectorVelocity[0].toFixed(this.precision)),
-        y: Number(endEffectorVelocity[1].toFixed(this.precision)),
-        z: Number(endEffectorVelocity[2].toFixed(this.precision))
+  x: Number(endEffectorVelocity[0]!.toFixed(this.precision)),
+  y: Number(endEffectorVelocity[1]!.toFixed(this.precision)),
+  z: Number(endEffectorVelocity[2]!.toFixed(this.precision))
       },
       angular: {
-        x: Number(endEffectorVelocity[3].toFixed(this.precision)),
-        y: Number(endEffectorVelocity[4].toFixed(this.precision)),
-        z: Number(endEffectorVelocity[5].toFixed(this.precision))
+  x: Number(endEffectorVelocity[3]!.toFixed(this.precision)),
+  y: Number(endEffectorVelocity[4]!.toFixed(this.precision)),
+  z: Number(endEffectorVelocity[5]!.toFixed(this.precision))
       }
     };
 
@@ -371,7 +370,7 @@ export class DifferentialKinematics {
     // Use pseudo-inverse for velocity calculation
     const jacobianPinv = this.pseudoInverse(jacobian);
     const jointVelocities = jacobianPinv.map(row =>
-      Number(row.reduce((sum, val, i) => sum + val * desiredVelocityVector[i], 0).toFixed(this.precision))
+      Number(row.reduce((sum, val, i) => sum + val * (desiredVelocityVector[i] ?? 0), 0).toFixed(this.precision))
     );
 
     logger.debug('Inverse velocity kinematics calculated', { jointVelocities });
@@ -380,9 +379,9 @@ export class DifferentialKinematics {
 
   private pseudoInverse(matrix: number[][]): number[][] {
     // Simplified pseudo-inverse implementation
-    const transpose = matrix[0].map((_, i) => matrix.map(row => row[i]));
-    // In a real implementation, you would use SVD or other robust methods
-    return transpose;
+  const transpose = matrix[0]!.map((_, i) => matrix.map(row => row[i]!));
+  // In a real implementation, you would use SVD or other robust methods
+  return transpose as number[][];
   }
 }
 

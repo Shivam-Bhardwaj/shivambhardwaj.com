@@ -166,7 +166,8 @@ export default function SwarmSimulation() {
 
     // Draw obstacles
     if (algorithm) {
-      const environment = (algorithm as any).environment as SwarmEnvironment;
+      // Access private environment via bracket (typed) to avoid any cast
+      const environment = (algorithm as unknown as { environment: SwarmEnvironment }).environment;
       ctx.fillStyle = '#ef4444';
       ctx.globalAlpha = 0.3;
       
@@ -195,11 +196,10 @@ export default function SwarmSimulation() {
           ctx.beginPath();
           if (agent.trail[0]) {
             ctx.moveTo(agent.trail[0].x, agent.trail[0].y);
-            for (let i = 1; i < agent.trail.length; i++) {
-              if (agent.trail[i]) {
-                ctx.lineTo(agent.trail[i].x, agent.trail[i].y);
+              for (let i = 1; i < agent.trail.length; i++) {
+                const pt = agent.trail[i];
+                if (pt) ctx.lineTo(pt.x, pt.y);
               }
-            }
           }
           ctx.stroke();
         }
@@ -308,7 +308,7 @@ export default function SwarmSimulation() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [controls.isRunning, algorithm, animate]);
+  }, [controls.isRunning, algorithm, animate, agents.length]);
 
   // Draw when agents update
   useEffect(() => {
@@ -399,7 +399,7 @@ export default function SwarmSimulation() {
                   value={controls.preset}
                   onChange={(e) => setControls(prev => ({
                     ...prev,
-                    preset: e.target.value as any
+                    preset: e.target.value as SimulationControls['preset']
                   }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded bg-white dark:bg-gray-700 dark:border-gray-600"
                   disabled={controls.isRunning}

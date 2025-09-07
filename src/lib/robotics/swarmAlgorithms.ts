@@ -1,7 +1,16 @@
 import { logger } from '@/lib/logging';
-import { config } from '@/config';
 
 // Core types for swarm algorithms
+export interface PersonalBest {
+  position: { x: number; y: number };
+  fitness: number;
+}
+
+export interface AgentMetadata {
+  personalBest?: PersonalBest;
+  [key: string]: unknown;
+}
+
 export interface Agent {
   id: string;
   position: { x: number; y: number; z?: number };
@@ -17,7 +26,7 @@ export interface Agent {
   trail?: { x: number; y: number }[];
   energy?: number;
   state?: string;
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata;
 }
 
 export interface SwarmParameters {
@@ -457,7 +466,7 @@ export class ParticleSwarmOptimization {
     count: number, 
     searchSpace: { min: { x: number; y: number }; max: { x: number; y: number } }
   ): Agent[] {
-    return Array.from({ length: count }, (_, i) => ({
+  return Array.from({ length: count }, (_, i) => ({
       id: `particle_${i}`,
       position: {
         x: Math.random() * (searchSpace.max.x - searchSpace.min.x) + searchSpace.min.x,
@@ -476,7 +485,7 @@ export class ParticleSwarmOptimization {
       neighbors: [],
       metadata: {
         personalBest: { position: { x: 0, y: 0 }, fitness: -Infinity }
-      }
+      } satisfies AgentMetadata
     }));
   }
 
@@ -488,12 +497,18 @@ export class ParticleSwarmOptimization {
     for (const particle of this.particles) {
       const fitness = fitnessFunction(particle.position);
 
+      // Ensure metadata structure exists
+      if (!particle.metadata) {
+        particle.metadata = { personalBest: { position: { ...particle.position }, fitness: -Infinity } };
+      } else if (!particle.metadata.personalBest) {
+        particle.metadata.personalBest = { position: { ...particle.position }, fitness: -Infinity };
+      }
+
+      const personalBest = particle.metadata.personalBest!;
+
       // Update personal best
-      if (fitness > particle.metadata.personalBest.fitness) {
-        particle.metadata.personalBest = {
-          position: { ...particle.position },
-          fitness
-        };
+      if (fitness > personalBest.fitness) {
+        particle.metadata.personalBest = { position: { ...particle.position }, fitness };
       }
 
       // Update global best
@@ -507,7 +522,7 @@ export class ParticleSwarmOptimization {
 
     // Update velocities and positions
     for (const particle of this.particles) {
-      const personal = particle.metadata.personalBest.position;
+      const personal = particle.metadata?.personalBest?.position ?? { x: particle.position.x, y: particle.position.y };
       const global = this.globalBest.position;
 
       // Update velocity components
@@ -619,9 +634,9 @@ export const SwarmUtils = {
     centerOfMass: { x: number; y: number };
   } {
     const n = agents.length;
-    let totalSpeed = 0;
-    let centerOfMass = { x: 0, y: 0 };
-    let avgVelocity = { x: 0, y: 0 };
+  let totalSpeed = 0; // total speed accumulator
+  const centerOfMass = { x: 0, y: 0 };
+  const avgVelocity = { x: 0, y: 0 };
 
     // Calculate basic metrics
     for (const agent of agents) {
@@ -655,9 +670,13 @@ export const SwarmUtils = {
     let totalSeparation = 0;
     let separationCount = 0;
     for (let i = 0; i < n; i++) {
+      const ai = agents[i];
+      if (!ai) continue;
       for (let j = i + 1; j < n; j++) {
-        const dx = agents[i].position.x - agents[j].position.x;
-        const dy = agents[i].position.y - agents[j].position.y;
+        const aj = agents[j];
+        if (!aj) continue;
+        const dx = ai.position.x - aj.position.x;
+        const dy = ai.position.y - aj.position.y;
         totalSeparation += Math.sqrt(dx * dx + dy * dy);
         separationCount++;
       }

@@ -1,0 +1,5 @@
+# Ignore legacy deployment CommonJS copies (using .cjs versions instead)
+scripts/deployment/deploy-*.js
+
+# Ignore duplicate theme shim if still present
+src/lib/theme/index.ts

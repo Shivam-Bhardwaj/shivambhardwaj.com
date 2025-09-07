@@ -16,7 +16,7 @@ export const blogPosts: BlogPost[] = [
     date: '2025-01-08',
     excerpt: 'A comprehensive guide for AI assistants and developers working with Kubernetes microservice deployments, covering Node.js, Docker, and AWS EKS.',
     readTime: '8 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Kubernetes', 'Docker', 'AWS', 'Node.js', 'DevOps'],
     content: `
 # AI Context: Building a Kubernetes Microservice
@@ -146,7 +146,7 @@ Currently no automated tests. Manual testing via:
     date: '2025-01-07',
     excerpt: 'Learn how to configure AWS Route 53 for Google domain verification and Cloud Run integration with step-by-step instructions.',
     readTime: '5 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['AWS', 'Route53', 'DNS', 'Google Cloud', 'DevOps'],
     content: `
 # AWS Route 53 DNS Configuration
@@ -199,7 +199,7 @@ gcloud beta run domain-mappings describe --domain shivambhardwaj.com --region us
     date: '2025-01-07',
     excerpt: 'Fix Error 525 (SSL Handshake Failed) when using Cloudflare with Google App Engine. Complete guide with quick fixes and troubleshooting.',
     readTime: '10 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Cloudflare', 'SSL', 'Google Cloud', 'Security', 'DevOps'],
     content: `
 # Cloudflare + Google App Engine SSL Setup Guide
@@ -365,7 +365,7 @@ nslookup shivambhardwaj.com 1.1.1.1
     date: '2025-01-07',
     excerpt: 'Step-by-step guide for migrating your domain to Cloudflare, configuring DNS for Google Cloud Run, and optimizing settings.',
     readTime: '6 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Cloudflare', 'DNS', 'Migration', 'Google Cloud', 'DevOps'],
     content: `
 # Complete Cloudflare Migration Steps
@@ -438,7 +438,7 @@ gcloud beta run domain-mappings create --service hello-world-service --domain sh
     date: '2025-01-07',
     excerpt: 'Complete guide for verifying your domain ownership with Google Search Console using DNS TXT records.',
     readTime: '5 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['DNS', 'Google', 'Verification', 'Tutorial'],
     content: `
 # DNS Verification Guide for shivambhardwaj.com
@@ -518,7 +518,7 @@ gcloud beta run domain-mappings describe --domain shivambhardwaj.com --region us
     date: '2025-01-07',
     excerpt: 'Complete guide for setting up a custom domain with Google App Engine, including DNS configuration and SSL certificate setup.',
     readTime: '8 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Google Cloud', 'App Engine', 'DNS', 'SSL', 'Tutorial'],
     content: `
 # Domain Setup Guide: shivambhardwaj.com to Google App Engine
@@ -684,7 +684,7 @@ Contact Google Cloud Support or check:
     date: '2025-01-07',
     excerpt: 'Compare the best domain registrars for Google Cloud integration: Cloudflare, Squarespace, and WordPress.com.',
     readTime: '6 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Domain', 'Cloudflare', 'Google Cloud', 'Comparison'],
     content: `
 # Domain Registrar Comparison 2025
@@ -772,7 +772,7 @@ This is the most cost-effective and performant setup!
     date: '2025-01-06',
     excerpt: 'Discover how to hide secret messages, ASCII art, and fun surprises in your DNS records. Learn the technical tricks that companies like Google and Discord use to create memorable developer experiences.',
     readTime: '15 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['DNS', 'DevOps', 'Fun', 'Tutorial', 'Web Development'],
     content: `
 # DNS Easter Eggs: Hidden Messages in Plain Sight
@@ -1122,7 +1122,7 @@ So next time you register a domain, remember: those DNS records aren't just for 
     date: '2025-01-05',
     excerpt: 'Context and instructions for AI assistants working with this codebase.',
     readTime: '4 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['AI', 'Kubernetes', 'Development', 'Instructions'],
     content: `
 # AI_CONTEXT.md
@@ -1252,7 +1252,7 @@ Currently no automated tests. Manual testing via:
     date: '2025-01-05',
     excerpt: 'Instructions on how to configure AWS Route 53 for Google Verification and Cloud Run integration.',
     readTime: '2 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['AWS', 'Route53', 'DNS', 'Google Cloud'],
     content: `
 # AWS Route 53 DNS Configuration
@@ -1305,7 +1305,7 @@ gcloud beta run domain-mappings describe --domain shivambhardwaj.com --region us
     date: '2025-01-05',
     excerpt: 'Guidance for Claude Code (claude.ai/code) when working with code in this repository.',
     readTime: '2 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['AI', 'Claude', 'Development', 'Instructions'],
     content: `
 # CLAUDE.md
@@ -1367,7 +1367,7 @@ The deployment references AWS ECR in us-west-2 region. Images must be pushed to 
     date: '2025-01-05',
     excerpt: 'A guide to setting up Cloudflare SSL with Google App Engine and fixing common errors.',
     readTime: '5 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Cloudflare', 'SSL', 'Google Cloud', 'DevOps'],
     content: `
 # Cloudflare + Google App Engine SSL Setup Guide
@@ -1533,7 +1533,7 @@ nslookup shivambhardwaj.com 1.1.1.1
     date: '2025-01-05',
     excerpt: 'A step-by-step guide for migrating your domain to Cloudflare.',
     readTime: '3 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Cloudflare', 'DNS', 'Migration', 'Google Cloud'],
     content: `
 # Complete Cloudflare Migration Steps
@@ -1606,7 +1606,7 @@ gcloud beta run domain-mappings create --service hello-world-service --domain sh
     date: '2025-01-05',
     excerpt: 'A guide to verifying your domain ownership with Google Search Console using DNS TXT records.',
     readTime: '3 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['DNS', 'Google', 'Verification', 'Tutorial'],
     content: `
 # DNS Verification Guide for shivambhardwaj.com
@@ -1686,7 +1686,7 @@ gcloud beta run domain-mappings describe --domain shivambhardwaj.com --region us
     date: '2025-01-05',
     excerpt: 'A guide for setting up a custom domain with Google App Engine.',
     readTime: '6 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Google Cloud', 'App Engine', 'DNS', 'SSL'],
     content: `
 # Domain Setup Guide: shivambhardwaj.com to Google App Engine
@@ -1852,7 +1852,7 @@ Contact Google Cloud Support or check:
     date: '2025-01-05',
     excerpt: 'A comparison of domain registrars for Google Cloud integration.',
     readTime: '3 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Domain', 'Cloudflare', 'Google Cloud', 'Comparison'],
     content: `
 # Domain Registrar Comparison 2025
@@ -1940,7 +1940,7 @@ This is the most cost-effective and performant setup!
     date: '2025-01-05',
     excerpt: 'Steps required for domain migration to shivambhardwaj.com.',
     readTime: '2 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['DNS', 'Google Cloud', 'Migration'],
     content: `
 # Domain Migration to shivambhardwaj.com
@@ -1983,7 +1983,7 @@ Google Cloud Run automatically provisions SSL certificates for verified domains.
     date: '2025-01-05',
     excerpt: 'A collection of fun and creative DNS tricks.',
     readTime: '15 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['DNS', 'DevOps', 'Fun', 'Tutorial'],
     content: `
 # Fun DNS Tricks for shivambhardwaj.com
@@ -2497,7 +2497,7 @@ watch -n 5 'dig +short TXT yourdomain.com'
     date: '2025-01-05',
     excerpt: 'A comprehensive project plan for creating a Google Cloud version of the shivambhardwaj.com website.',
     readTime: '15 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Google Cloud', 'Project Plan', 'Architecture'],
     content: `
 # GC Version of Shivam Bhardwaj Portfolio - Comprehensive Project Plan
@@ -2984,7 +2984,7 @@ This comprehensive plan ensures the GC version will exceed the original website'
     date: '2025-01-05',
     excerpt: 'A guide to migrating to the complete Google ecosystem.',
     readTime: '3 min read',
-    author: 'Shivam Bhardwaj',
+  author: 'Antimony Labs',
     tags: ['Google Cloud', 'Migration', 'DNS', 'Google Domains'],
     content: `
 # Complete Google Ecosystem Migration

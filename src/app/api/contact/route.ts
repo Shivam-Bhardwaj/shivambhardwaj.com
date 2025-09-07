@@ -480,26 +480,6 @@ async function sendAutoResponse(
   submissionId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const autoResponseTemplate = `
-Dear ${contactData.name},
-
-Thank you for reaching out! I have received your message about "${contactData.subject}" and will get back to you within 24 hours.
-
-Your submission ID: ${submissionId}
-
-In the meantime, feel free to:
-- Check out my latest projects at shivambhardwaj.com
-- Connect with me on LinkedIn
-- View my code on GitHub
-
-Best regards,
-Shivam Bhardwaj
-Robotics Engineer & Full Stack Developer
-
----
-This is an automated response. Please do not reply to this email.
-    `.trim();
-
     logger.info('Auto-response email sent', {
       id: submissionId,
       to: contactData.email,

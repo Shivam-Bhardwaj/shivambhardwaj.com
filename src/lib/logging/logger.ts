@@ -1,8 +1,16 @@
 import { LogEntry, LogLevel, LoggerConfig, PerformanceMetrics } from './types';
 
+type Metadata = Record<string, unknown>;
+interface GcpLoggingLike {
+  log(name: string): {
+    entry(meta: Record<string, unknown>, entry: LogEntry): unknown;
+    write(entry: unknown): Promise<unknown>;
+  };
+}
+
 class Logger {
   private config: LoggerConfig;
-  private gcpLogging: any = null;
+  private gcpLogging: GcpLoggingLike | null = null;
   private performanceTrackers = new Map<string, PerformanceMetrics>();
 
   constructor(config: Partial<LoggerConfig> = {}) {
@@ -50,7 +58,7 @@ class Logger {
   private createLogEntry(
     level: LogLevel,
     message: string,
-    metadata?: any,
+    metadata?: Metadata,
     error?: Error
   ): LogEntry {
     const entry: LogEntry = {
@@ -58,8 +66,8 @@ class Logger {
       level,
       component: this.config.component,
       message,
-      metadata,
-    };
+      ...(metadata ? { metadata } : {}),
+    } as LogEntry;
 
     // Add request context if available
     if (typeof window !== 'undefined') {
@@ -75,7 +83,7 @@ class Logger {
         name: error.name,
         message: error.message,
         ...(error.stack && { stack: error.stack }),
-        ...((error as any).code && { code: (error as any).code }),
+  ...((error as unknown as { code?: string }).code && { code: (error as unknown as { code?: string }).code }),
       };
     }
 
@@ -127,7 +135,7 @@ class Logger {
   private async log(
     level: LogLevel,
     message: string,
-    metadata?: any,
+    metadata?: Metadata,
     error?: Error
   ) {
     if (!this.shouldLog(level)) return;
@@ -143,37 +151,37 @@ class Logger {
     }
   }
 
-  debug(message: string, metadata?: any) {
+  debug(message: string, metadata?: Metadata) {
     return this.log('DEBUG', message, metadata);
   }
 
-  info(message: string, metadata?: any) {
+  info(message: string, metadata?: Metadata) {
     return this.log('INFO', message, metadata);
   }
 
-  warn(message: string, metadata?: any) {
+  warn(message: string, metadata?: Metadata) {
     return this.log('WARN', message, metadata);
   }
 
-  error(message: string, error?: Error, metadata?: any) {
+  error(message: string, error?: Error, metadata?: Metadata) {
     return this.log('ERROR', message, metadata, error);
   }
 
-  fatal(message: string, error?: Error, metadata?: any) {
+  fatal(message: string, error?: Error, metadata?: Metadata) {
     return this.log('FATAL', message, metadata, error);
   }
 
   // Performance tracking methods
-  startPerformanceTracking(operationId: string, metadata?: any) {
+  startPerformanceTracking(operationId: string, metadata?: Metadata) {
     const startTime = performance.now();
     this.performanceTrackers.set(operationId, {
       startTime,
-      customMetrics: metadata,
+      customMetrics: metadata as Record<string, number> | undefined,
     });
     this.debug(`Started tracking performance for ${operationId}`, metadata);
   }
 
-  endPerformanceTracking(operationId: string, metadata?: any) {
+  endPerformanceTracking(operationId: string, metadata?: Metadata) {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
       this.warn(`No performance tracker found for ${operationId}`);
@@ -203,7 +211,7 @@ class Logger {
   }
 
   // Utility method for structured error logging
-  logError(error: Error, context?: any) {
+  logError(error: Error, context?: Metadata) {
     const errorContext = {
       name: error.name,
       message: error.message,

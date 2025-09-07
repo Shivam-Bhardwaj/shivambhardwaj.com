@@ -1,6 +1,6 @@
 # Antimony Labs - Personal Portfolio
 
-Shivam Bhardwaj's personal portfolio website built with Next.js and deployed on Google Cloud Platform.
+Antimony Labs's personal portfolio website built with Next.js and deployed on Google Cloud Platform.
 
 ## 🚀 Features
 
@@ -211,5 +211,5 @@ MIT License - Feel free to use this as a template for your own portfolio.
 
 ---
 
-**Built with ❤️ by Shivam Bhardwaj**  
+**Built with ❤️ by Antimony Labs**  
 Powered by Google Cloud Platform

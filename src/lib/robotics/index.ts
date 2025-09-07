@@ -1,9 +1,3 @@
+// Public robotics exports (only existing modules)
 export * from './kinematics';
-export * from './dynamics';
-export * from './pathPlanning';
 export * from './swarmAlgorithms';
-export * from './sensors';
-export * from './actuators';
-export * from './controllers';
-export * from './simulation';
-export * from './utils';

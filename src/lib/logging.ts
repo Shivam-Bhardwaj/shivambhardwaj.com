@@ -1,4 +1,41 @@
-import { Logging } from '@google-cloud/logging';
+// Defer importing GCP logging to server runtime to avoid bundling Node built-ins in client
+// Define minimal interfaces so we don't rely on the actual library types (keeps bundle slim and avoids ESM/CJS issues)
+interface GcpLog {
+  entry(
+    metadata: {
+      resource: { type: string; labels: Record<string, string> };
+      severity: string;
+      timestamp: string;
+      labels: Record<string, string>;
+    },
+    data: {
+      message: string;
+      metadata?: Record<string, unknown>;
+      error?: LogEntry['error'];
+      performance?: LogEntry['performance'];
+    }
+  ): unknown;
+  write(entry: unknown): Promise<void>;
+}
+
+interface GcpLoggingInstance {
+  log(name: string): GcpLog;
+}
+
+// Constructor signature for deferred import
+// Using a narrower surface keeps us independent of downstream library changes
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type GcpLoggingConstructor = new (options: { projectId?: string | undefined; keyFilename?: string | undefined }) => GcpLoggingInstance;
+
+let LoggingCtor: GcpLoggingConstructor | null = null;
+if (typeof window === 'undefined') {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    LoggingCtor = require('@google-cloud/logging').Logging;
+  } catch {
+    LoggingCtor = null;
+  }
+}
 
 export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'FATAL';
 
@@ -7,19 +44,19 @@ export interface LogEntry {
   level: LogLevel;
   component: string;
   message: string;
-  metadata?: Record<string, unknown>;
-  requestId?: string;
-  userId?: string;
+  metadata?: Record<string, unknown> | undefined;
+  requestId?: string | undefined;
+  userId?: string | undefined;
   performance?: {
     duration: number;
     memory: number;
     cpu: number;
-  };
+  } | undefined;
   error?: {
     name: string;
     message: string;
-    stack?: string;
-  };
+    stack?: string | undefined;
+  } | undefined;
 }
 
 export interface Logger {
@@ -31,8 +68,8 @@ export interface Logger {
 }
 
 class EnhancedLogger implements Logger {
-  private gcpLogging: Logging | null = null;
-  private gcpLog: any = null;
+  private gcpLogging: GcpLoggingInstance | null = null;
+  private gcpLog: GcpLog | null = null;
   private isServer: boolean = typeof window === 'undefined';
   private logBuffer: LogEntry[] = [];
   private readonly maxBufferSize = 100;
@@ -47,9 +84,10 @@ class EnhancedLogger implements Logger {
     }
 
     try {
-      this.gcpLogging = new Logging({
-        projectId: process.env.GCP_PROJECT_ID,
-        keyFilename: process.env.GCP_SERVICE_ACCOUNT_KEY,
+  if (!LoggingCtor) return;
+  this.gcpLogging = new LoggingCtor({
+        projectId: process.env.GCP_PROJECT_ID ?? undefined,
+        keyFilename: process.env.GCP_SERVICE_ACCOUNT_KEY ?? undefined,
       });
       this.gcpLog = this.gcpLogging.log('portfolio-app');
     } catch (error) {
@@ -137,9 +175,9 @@ class EnhancedLogger implements Logger {
         },
         {
           message: entry.message,
-          metadata: entry.metadata,
-          error: entry.error,
-          performance: entry.performance,
+          ...(entry.metadata ? { metadata: entry.metadata } : {}),
+          ...(entry.error ? { error: entry.error } : {}),
+          ...(entry.performance ? { performance: entry.performance } : {}),
         }
       );
 

@@ -5,7 +5,7 @@ export interface LogEntry {
   level: LogLevel;
   component: string;
   message: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   requestId?: string;
   userId?: string;
   performance?: {
@@ -43,5 +43,5 @@ export interface PerformanceMetrics {
   endTime?: number;
   duration?: number;
   memoryUsage?: NodeJS.MemoryUsage;
-  customMetrics?: Record<string, number>;
+  customMetrics?: Record<string, number> | undefined;
 }

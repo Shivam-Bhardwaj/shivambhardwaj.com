@@ -1,5 +1,9 @@
+"use client";
 import { logger } from '@/lib/logging';
-import TechStack from '@/components/TechStack';
+import dynamic from 'next/dynamic';
+
+// Dynamic import (no need to disable SSR now that page is client component)
+const ThemePresetSwitcher = dynamic(() => import('@/components/ThemePresetSwitcher'));
 
 export default function HomePage() {
   // Log page access
@@ -15,7 +19,7 @@ export default function HomePage() {
           <div className="text-center space-y-8 animate-in">
             <div className="space-y-4">
               <h1 className="heading-1 gradient-text">
-                Shivam Bhardwaj
+                Welcome to Antimony Labs
               </h1>
               <p className="text-xl text-muted max-w-2xl mx-auto">
                 Robotics Engineer & Portfolio - Google Cloud Version
@@ -34,6 +38,11 @@ export default function HomePage() {
               <button className="btn-outline px-8 py-3">
                 View Experience
               </button>
+            </div>
+
+            {/* Theme preset switcher (collapsible) */}
+            <div className="mt-4">
+              <ThemePresetSwitcher />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 max-w-4xl mx-auto">
@@ -67,33 +76,7 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-
-            <div className="mt-16 p-6 bg-white/50 dark:bg-primary-800/50 backdrop-blur-sm rounded-lg border">
-              <h3 className="text-lg font-semibold mb-4">System Status</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-6">
-                <div>
-                  <span className="text-muted-foreground">Environment:</span>
-                  <span className="ml-2 font-mono">{process.env.NODE_ENV}</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Platform:</span>
-                  <span className="ml-2 font-mono">Google Cloud</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Version:</span>
-                  <span className="ml-2 font-mono">1.0.0</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Status:</span>
-                  <span className="ml-2 font-mono text-secondary-600">Active</span>
-                </div>
-              </div>
-
-              <div className="border-t pt-4">
-                <h4 className="text-md font-semibold mb-3">Technology Stack</h4>
-                <TechStack />
-              </div>
-            </div>
+            {/* System Status & Tech Stack moved to global Footer */}
           </div>
         </div>
       </div>

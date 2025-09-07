@@ -29,7 +29,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="font-bold text-xl text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-            Shivam Bhardwaj
+            Antimony Labs
           </Link>
 
           {/* Desktop Navigation */}
