@@ -34,6 +34,8 @@ export interface ExperienceRole {
   endDate?: string;  // ISO or undefined for current
   achievements?: string[]; // bullet points
   technologies?: string[];
+  description?: string; // longer form description
+  metrics?: { label: string; value: string }[]; // quantifiable achievements
 }
 
 export interface Experience {
@@ -48,9 +50,38 @@ export interface Experience {
   priority?: number;
 }
 
+export interface Education {
+  institution: string;
+  period: string;
+  degree: string;
+  focus: string[];
+}
+
+export interface Language {
+  name: string;
+  level: 'Native' | 'Professional' | 'Limited working proficiency' | 'Elementary';
+}
+
+export interface Skills {
+  robotics: string[];
+  programming: string[];
+  frameworks: string[];
+  platforms: string[];
+  specialties: string[];
+}
+
+export interface AboutSection {
+  summary: string;
+  education: Education[];
+  skills: Skills;
+  achievements: string[];
+  languages: Language[];
+}
+
 export interface PortfolioData {
   generatedAt: string; // ISO timestamp of last update
   projects: Project[];
+  about?: AboutSection;
   experience: Experience[];
 }
 

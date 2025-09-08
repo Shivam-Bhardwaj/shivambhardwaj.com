@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -10,10 +11,12 @@ export default function Navigation() {
 
   const navItems = [
     { href: '/', label: 'Home' },
-    { href: '/blog', label: 'Blog' },
+    { href: '/blog', label: 'Smoke in the net' },
+    { href: '/sbl-logs', label: 'SbL Logs' },
     { href: '/projects', label: 'Projects' },
+    { href: '/agents', label: 'AI Agents' },
+    { href: '/infrastructure', label: 'Infrastructure' },
     { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
   ];
 
   const isActive = (href: string) => {
@@ -26,13 +29,8 @@ export default function Navigation() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="font-bold text-xl text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-            Antimony Labs
-          </Link>
-
-          {/* Desktop Navigation */}
+        <div className="flex items-center justify-center h-16">
+          {/* Centered Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
@@ -47,12 +45,13 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
+            <ThemeToggle />
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - positioned absolutely for centering */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="md:hidden absolute right-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="Toggle menu"
           >
             <svg
@@ -90,6 +89,9 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
+            <div className="px-4 py-2">
+              <ThemeToggle />
+            </div>
           </div>
         )}
       </div>

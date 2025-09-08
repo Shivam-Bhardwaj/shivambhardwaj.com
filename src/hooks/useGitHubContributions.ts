@@ -1,5 +1,8 @@
+  'use client';
+
 import { useState, useEffect } from 'react';
 import { ContributionCalendar } from '@/types/github';
+import { fillMissingDates } from '@/lib/github-utils';
 
 interface UseGitHubContributionsResult {
   data: ContributionCalendar | null;
@@ -19,17 +22,28 @@ export const useGitHubContributions = (username: string = 'Shivam-Bhardwaj'): Us
       setError(null);
 
       const response = await fetch(`/api/github/contributions?username=${encodeURIComponent(username)}`);
-
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP ${response.status}`);
+        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
       }
 
       const contributionData: ContributionCalendar = await response.json();
-      setData(contributionData);
+
+      if (!contributionData) {
+        throw new Error('No contribution data received');
+      }
+
+      const filledWeeks = fillMissingDates(contributionData.weeks);
+      const processedData: ContributionCalendar = {
+        ...contributionData,
+        weeks: filledWeeks,
+      };
+
+      setData(processedData);
     } catch (err: any) {
       console.error('Error fetching GitHub contributions:', err);
       setError(err.message || 'Failed to fetch contribution data');
+      setData(null);
     } finally {
       setLoading(false);
     }
@@ -37,7 +51,7 @@ export const useGitHubContributions = (username: string = 'Shivam-Bhardwaj'): Us
 
   useEffect(() => {
     fetchContributions();
-  }, [username]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [username]);
 
   const refetch = () => {
     fetchContributions();

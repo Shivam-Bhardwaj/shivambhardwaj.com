@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ContributionCalendar } from '@/types/github';
+import { ContributionCalendar, ContributionDay, ContributionWeek } from '@/types/github';
 
 const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql';
 
 const CONTRIBUTION_QUERY = `
-  query($userName: String!) {
+  query($userName: String!, $from: DateTime!, $to: DateTime!) {
     user(login: $userName) {
-      contributionsCollection {
+      login
+      contributionsCollection(from: $from, to: $to) {
         contributionCalendar {
           totalContributions
           weeks {
@@ -36,6 +37,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const to = new Date();
+    const from = new Date();
+    from.setDate(to.getDate() - 371);
+
     const response = await fetch(GITHUB_GRAPHQL_URL, {
       method: 'POST',
       headers: {
@@ -45,16 +50,30 @@ export async function GET(request: NextRequest) {
       },
       body: JSON.stringify({
         query: CONTRIBUTION_QUERY,
-        variables: { userName: username }
+        variables: {
+          userName: username,
+          from: from.toISOString(),
+          to: to.toISOString(),
+        }
       })
     });
 
+    console.log('GitHub API Response Status:', response.status);
+    // console.log('GitHub API Response Headers:', Object.fromEntries(response.headers.entries()));
+
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('GitHub GraphQL API error:', errorData);
+      const errorText = await response.text();
+      console.error('GitHub API Error Response:', errorText);
+
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { error: errorText };
+      }
 
       return NextResponse.json(
-        { error: 'Failed to fetch contribution data', details: errorData },
+        { error: 'Failed to fetch contribution data', details: errorData, status: response.status },
         { status: response.status }
       );
     }
@@ -72,11 +91,24 @@ export async function GET(request: NextRequest) {
     const calendar = data.data?.user?.contributionsCollection?.contributionCalendar;
 
     if (!calendar) {
+      console.error('No contribution calendar found in response:', {
+        userExists: !!data.data?.user,
+        userLogin: data.data?.user?.login,
+        hasContributionsCollection: !!data.data?.user?.contributionsCollection
+        // Removed fullResponse to keep logs clean
+      });
       return NextResponse.json(
-        { error: 'No contribution data found for user' },
+        { error: 'No contribution data found for user', details: { userExists: !!data.data?.user, userLogin: data.data?.user?.login } },
         { status: 404 }
       );
     }
+
+    // Debug logging
+    console.log('GitHub API Response Debug:', {
+      totalContributions: calendar.totalContributions,
+      weeksCount: calendar.weeks?.length
+      // Removed detailed week data to keep logs clean
+    });
 
     // Transform the data to match our interface
     const transformedCalendar: ContributionCalendar = {
@@ -85,12 +117,22 @@ export async function GET(request: NextRequest) {
         contributionDays: week.contributionDays.map((day: any) => ({
           date: day.date,
           count: day.contributionCount,
-          level: day.contributionLevel
-        }))
-      }))
+          level: day.contributionLevel,
+        })),
+      })),
     };
 
-    return NextResponse.json(transformedCalendar);
+    console.log('Transformed calendar:', {
+      totalContributions: transformedCalendar.totalContributions,
+      weeksCount: transformedCalendar.weeks.length
+      // Removed sample week data to keep logs clean
+    });
+
+    return NextResponse.json(transformedCalendar, {
+      headers: {
+        'Cache-Control': 'public, max-age=3600'
+      }
+    });
 
   } catch (error: any) {
     console.error('Error fetching GitHub contributions:', error);

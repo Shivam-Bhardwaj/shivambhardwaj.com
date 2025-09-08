@@ -3,8 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
-    typedRoutes: true
+    optimizePackageImports: ['lucide-react', 'framer-motion', '@react-three/fiber', 'three'],
+    typedRoutes: true,
+    serverComponentsExternalPackages: ['three', '@react-three/fiber'],
+    optimizeServerReact: true,
+    serverActions: true
   },
   serverExternalPackages: ['@google-cloud/logging', '@google-cloud/error-reporting', '@google-cloud/monitoring'],
   eslint: {

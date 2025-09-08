@@ -207,6 +207,10 @@ export interface ContributionCalendar {
   weeks: ContributionWeek[];
 }
 
+export interface MonthLabel {
+  month: string;
+  weekIndex: number;
+}
 // Configuration
 export interface GitHubConfig {
   username: string;

@@ -5,6 +5,12 @@ import { logger } from '@/lib/logging';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { ThemeProvider } from '@/lib/theme';
+import { registerAllComponents } from '@/lib/components/loader';
+import FeatureFlag, { FeatureFlagAdmin } from '@/components/system/FeatureFlag';
+import RobotSwarm from '@/components/robotics/RobotSwarm';
+
+// Register all components on app initialization
+registerAllComponents();
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -76,11 +82,23 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ThemeProvider>
+          <FeatureFlag flag="robotics_enabled">
+            <RobotSwarm 
+              robotCount={12}
+              enableCollisionAvoidance={true}
+              enableFlocking={true}
+              enableMouseInteraction={true}
+              enable3DVisualization={true}
+              swarmBehavior="autonomous"
+              className="z-0"
+            />
+          </FeatureFlag>
           <Navigation />
-          <div id="root" className="pt-16 min-h-screen flex flex-col">
+          <div id="root" className="pt-16 min-h-screen flex flex-col relative z-10">
             <div className="flex-1">{children}</div>
             <Footer />
           </div>
+          <FeatureFlagAdmin />
         </ThemeProvider>
       </body>
     </html>
