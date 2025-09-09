@@ -103,7 +103,7 @@ class ProductionDeployment {
       try { this.run(`curl --ssl-no-revoke -f ${url}/api/health`, `Canary health attempt ${i}`); break; }
       catch {
         try { this.run(`curl -k -f ${url}/api/health`, `Canary health attempt ${i} (insecure)`); break; }
-        catch (e) {
+        catch (_e) {
           if (i === attempts) throw new Error('Canary health failed');
           const wait = 2000 * i;
           this.log(`Canary health retry in ${wait}ms`, 'warning');

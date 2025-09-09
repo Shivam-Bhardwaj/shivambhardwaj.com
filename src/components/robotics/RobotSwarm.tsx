@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { Vector3 } from 'three';
 import { RobotConfig, CollisionZone } from '../../lib/components/types';
 import { AvoidanceBehavior } from './behaviors/avoidance';
@@ -8,7 +9,12 @@ import { FlockingBehavior } from './behaviors/flocking';
 import { InteractionBehavior, InteractionMode } from './behaviors/interaction';
 import CollisionSystem from './CollisionSystem';
 import MouseTracker from './MouseTracker';
-import RoboticsCanvas from './RoboticsCanvas';
+
+// Dynamically import RoboticsCanvas to avoid SSR issues
+const RoboticsCanvas = dynamic(() => import('./RoboticsCanvas'), {
+  ssr: false,
+  loading: () => null
+});
 
 interface RobotSwarmProps {
   robotCount?: number;
@@ -137,7 +143,7 @@ export default function RobotSwarm({
 
     setRobots(prevRobots => {
       return prevRobots.map(robot => {
-        let totalForce = { x: 0, y: 0 };
+        const totalForce = { x: 0, y: 0 };
 
         // Collision avoidance
         if (enableCollisionAvoidance && collisionZones.length > 0) {
@@ -192,7 +198,7 @@ export default function RobotSwarm({
           totalForce.y = (totalForce.y / forceLength) * maxForce;
         }
 
-        let newVelocity = {
+        const newVelocity = {
           x: robot.velocity.x + totalForce.x,
           y: robot.velocity.y + totalForce.y,
           z: robot.velocity.z,
@@ -300,14 +306,16 @@ export default function RobotSwarm({
         />
       )}
 
-      {/* 3D visualization */}
-      {enable3DVisualization && (
-        <RoboticsCanvas
-          robots={robots}
-          trails={robotTrails.current}
-          backgroundOpacity={0.1}
-          performanceMode={performanceMode}
-        />
+      {/* 3D visualization - wrapped in Suspense for lazy loading */}
+      {enable3DVisualization && typeof window !== 'undefined' && (
+        <Suspense fallback={null}>
+          <RoboticsCanvas
+            robots={robots}
+            trails={robotTrails.current}
+            backgroundOpacity={0.1}
+            performanceMode={performanceMode}
+          />
+        </Suspense>
       )}
 
       {/* Development controls */}

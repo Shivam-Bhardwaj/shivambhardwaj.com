@@ -175,7 +175,7 @@ export class InteractionBehavior {
       return { x: 0, y: 0, magnitude: 0 };
     }
 
-    let totalInfluence = { x: 0, y: 0 };
+    const totalInfluence = { x: 0, y: 0 };
     let influenceCount = 0;
 
     for (const other of nearbyRobots) {

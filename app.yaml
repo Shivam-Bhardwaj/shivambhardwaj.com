@@ -1,29 +1,60 @@
-# Google App Engine configuration
+# Google App Engine configuration - Enhanced for SSR and Robotics
 runtime: nodejs20
 
-instance_class: F2
+instance_class: F4  # Upgraded for SSR and 3D content
 automatic_scaling:
-  min_instances: 0
-  max_instances: 10
-  target_cpu_utilization: 0.6
+  min_instances: 2  # Always warm instances
+  max_instances: 20  # Handle traffic spikes for robotics demos
+  target_cpu_utilization: 0.65
   target_throughput_utilization: 0.6
 
 env_variables:
   NODE_ENV: "production"
   GCP_PROJECT_ID: "anti-mony"
   GCP_REGION: "us-central1"
+  # Component registry settings
+  COMPONENT_REGISTRY_CACHE_TTL: "300"
+  FEATURE_FLAGS_REFRESH_INTERVAL: "60"
+  # 3D content optimization
+  THREE_JS_WORKER_ENABLED: "true"
+  ROBOTICS_LOD_ENABLED: "true"
 
 handlers:
-  # Handle Next.js static files
+  # API routes with enhanced security
+  - url: /api/.*
+    script: auto
+    secure: always
+    
+  # Admin routes (if implemented)
+  - url: /admin
+    script: auto
+    secure: always
+    login: admin
+    
+  # Storybook static files (if deployed)
+  - url: /storybook
+    static_dir: storybook-static
+    secure: always
+    
+  # 3D model and texture files with caching
+  - url: /(.*\.(gltf|glb|obj|fbx|hdr|exr))$
+    static_files: public/\1
+    upload: public/.*\.(gltf|glb|obj|fbx|hdr|exr)$
+    secure: always
+    expiration: "1d"
+    
+  # Handle Next.js static files with long cache
   - url: /_next/static
     static_dir: .next/static
     secure: always
+    expiration: "365d"
     
-  # Handle public static files
-  - url: /(.*\.(gif|png|jpg|jpeg|svg|css|js|ico|woff|woff2))$
+  # Handle public static files with appropriate caching
+  - url: /(.*\.(gif|png|jpg|jpeg|svg|css|js|ico|woff|woff2|webp))$
     static_files: public/\1
-    upload: public/.*\.(gif|png|jpg|jpeg|svg|css|js|ico|woff|woff2)$
+    upload: public/.*\.(gif|png|jpg|jpeg|svg|css|js|ico|woff|woff2|webp)$
     secure: always
+    expiration: "7d"
     
   # Handle all other requests with the Next.js server
   - url: /.*
@@ -45,8 +76,22 @@ liveness_check:
   failure_threshold: 4
   success_threshold: 2
 
-# Resource limits
+# Enhanced resource limits for 3D content and SSR
 resources:
-  cpu: 1
-  memory_gb: 0.5
-  disk_size_gb: 10
+  cpu: 2  # Increased for 3D processing
+  memory_gb: 1  # Increased for SSR and component registry
+  disk_size_gb: 20  # Space for 3D models and assets
+
+# Network settings for global performance
+network:
+  forwarded_ports:
+    - 8080
+  session_affinity: false
+
+# Security headers
+beta_settings:
+  cloud_sql_instances: []
+  
+# Additional monitoring and logging
+inbound_services:
+  - warmup

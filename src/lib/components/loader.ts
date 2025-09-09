@@ -47,6 +47,10 @@ export const loadComponentPlayground = () =>
 
 // Register all components
 export function registerAllComponents() {
+  // Only register on server side to avoid hydration mismatch
+  if (typeof window !== 'undefined') {
+    return;
+  }
   // UI Components
   componentRegistry.registerLazy(
     {

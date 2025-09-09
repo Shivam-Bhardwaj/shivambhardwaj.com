@@ -1,4 +1,6 @@
 import { getExperience, getAbout } from '@/lib/portfolio';
+
+export const dynamic = 'force-dynamic';
 import { SiGooglecloud, SiKubernetes, SiNodedotjs, SiTypescript, SiThreedotjs, SiNextdotjs, SiTailwindcss, SiDocker, SiCplusplus, SiPython, SiOpencv, SiTensorflow } from 'react-icons/si';
 import ExperienceTimeline from '@/components/ExperienceTimeline';
 

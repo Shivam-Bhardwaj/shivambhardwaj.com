@@ -1,3 +1,5 @@
+'use client';
+
 // Add error boundary class
 import React, { ErrorInfo, ReactNode, Component, useState } from 'react';
 import { FiSettings } from 'react-icons/fi';

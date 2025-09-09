@@ -36,6 +36,7 @@ class ComponentRegistry {
       try {
         const component = await item.loader();
         item.component = component;
+        delete item.loader; // Remove loader to prevent duplicate loading
         this.loadingComponents.delete(id);
       } catch (error) {
         this.loadingComponents.delete(id);

@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Mesh, Vector3, Color, BufferGeometry, BufferAttribute } from 'three';
 import { RobotConfig } from '../../lib/components/types';
+import { ErrorBoundary } from 'react-error-boundary';
 
 interface Robot3DProps {
   robot: RobotConfig;
@@ -198,38 +199,45 @@ export default function RoboticsCanvas({
       className="fixed inset-0 pointer-events-none z-0"
       style={{ opacity: backgroundOpacity }}
     >
-      <Canvas
-        ref={canvasRef}
-        gl={renderSettings}
-        camera={{
-          position: [0, 0, 5],
-          fov: 75,
-          near: 0.1,
-          far: 1000,
-        }}
-        onCreated={(state) => {
-          state.gl.setClearColor('#000000', 0);
-        }}
+      <ErrorBoundary 
+        fallbackRender={() => null}
+        onError={(error) => console.error('RoboticsCanvas error:', error)}
       >
-        <Lights />
-        {!performanceMode && <Background />}
-        
-        {/* Render all robots */}
-        {robots.map((robot) => (
-          <Robot3D
-            key={robot.id}
-            robot={robot}
-            trails={trails.get(robot.id) || []}
-          />
-        ))}
-        
-        {/* Add post-processing effects if enabled */}
-        {enablePostProcessing && !performanceMode && (
-          // Post-processing effects would go here
-          // For now, we'll keep it simple to avoid additional dependencies
-          null
-        )}
-      </Canvas>
+        <Canvas
+          ref={canvasRef}
+          gl={renderSettings}
+          camera={{
+            position: [0, 0, 5],
+            fov: 75,
+            near: 0.1,
+            far: 1000,
+          }}
+          onCreated={(state) => {
+            state.gl.setClearColor('#000000', 0);
+          }}
+        >
+          <Suspense fallback={null}>
+            <Lights />
+            {!performanceMode && <Background />}
+            
+            {/* Render all robots */}
+            {robots.map((robot) => (
+              <Robot3D
+                key={robot.id}
+                robot={robot}
+                trails={trails.get(robot.id) || []}
+              />
+            ))}
+            
+            {/* Add post-processing effects if enabled */}
+            {enablePostProcessing && !performanceMode && (
+              // Post-processing effects would go here
+              // For now, we'll keep it simple to avoid additional dependencies
+              null
+            )}
+          </Suspense>
+        </Canvas>
+      </ErrorBoundary>
     </div>
   );
 }

@@ -7,9 +7,9 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : 2,
   reporter: [
-    ['html', { outputFolder: './tests/reports/playwright-html-report' }],
-    ['junit', { outputFile: './tests/reports/junit-results.xml' }],
-    ['json', { outputFile: './tests/reports/test-results.json' }],
+    ['html', { outputFolder: './test-results/playwright-report' }],
+    ['junit', { outputFile: './test-results/e2e-junit.xml' }],
+    ['json', { outputFile: './test-results/e2e-results.json' }],
     ...(process.env.CI ? [] : [['list'] as const])
   ],
   use: {
@@ -67,7 +67,7 @@ export default defineConfig({
   globalTeardown: './tests/global-teardown.ts',
 
   // Output directories
-  outputDir: './tests/reports/playwright-artifacts',
+  outputDir: './test-results/e2e-artifacts',
   
   // Metadata for reporting
   metadata: {

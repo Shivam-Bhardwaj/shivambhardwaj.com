@@ -69,7 +69,7 @@ export class FlockingBehavior {
   }
 
   private calculateSeparation(robot: RobotConfig, neighbors: RobotConfig[]): FlockingForce {
-    let steer = { x: 0, y: 0 };
+    const steer = { x: 0, y: 0 };
     let count = 0;
 
     for (const neighbor of neighbors) {
@@ -113,7 +113,7 @@ export class FlockingBehavior {
   }
 
   private calculateAlignment(robot: RobotConfig, neighbors: RobotConfig[]): FlockingForce {
-    let sum = { x: 0, y: 0 };
+    const sum = { x: 0, y: 0 };
     let count = 0;
 
     for (const neighbor of neighbors) {
@@ -150,7 +150,7 @@ export class FlockingBehavior {
   }
 
   private calculateCohesion(robot: RobotConfig, neighbors: RobotConfig[]): FlockingForce {
-    let sum = { x: 0, y: 0 };
+    const sum = { x: 0, y: 0 };
     let count = 0;
 
     for (const neighbor of neighbors) {

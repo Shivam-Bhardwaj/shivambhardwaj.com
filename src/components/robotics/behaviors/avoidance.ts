@@ -26,7 +26,7 @@ export class AvoidanceBehavior {
     robot: RobotConfig,
     collisionZones: CollisionZone[]
   ): AvoidanceForce {
-    let totalForce = { x: 0, y: 0, magnitude: 0 };
+    const totalForce = { x: 0, y: 0, magnitude: 0 };
 
     for (const zone of collisionZones) {
       const avoidanceForce = this.calculateZoneAvoidance(robot, zone);
@@ -48,7 +48,7 @@ export class AvoidanceBehavior {
     robot: RobotConfig,
     nearbyRobots: RobotConfig[]
   ): AvoidanceForce {
-    let totalForce = { x: 0, y: 0, magnitude: 0 };
+    const totalForce = { x: 0, y: 0, magnitude: 0 };
 
     for (const other of nearbyRobots) {
       if (other.id === robot.id) continue;
@@ -76,7 +76,7 @@ export class AvoidanceBehavior {
     boundaries: { width: number; height: number }
   ): AvoidanceForce {
     const margin = 50;
-    let force = { x: 0, y: 0, magnitude: 0 };
+    const force = { x: 0, y: 0, magnitude: 0 };
 
     // Left wall
     if (robot.position.x < margin) {

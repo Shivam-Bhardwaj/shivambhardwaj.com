@@ -7,10 +7,12 @@ import Footer from '@/components/Footer';
 import { ThemeProvider } from '@/lib/theme';
 import { registerAllComponents } from '@/lib/components/loader';
 import FeatureFlag, { FeatureFlagAdmin } from '@/components/system/FeatureFlag';
-import RobotSwarm from '@/components/robotics/RobotSwarm';
+import RobotFeature from '@/components/system/RobotFeature';
 
 // Register all components on app initialization
-registerAllComponents();
+if (typeof window === 'undefined') {
+  registerAllComponents();
+}
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -51,6 +53,9 @@ export const metadata: Metadata = {
   },
 };
 
+// Force dynamic rendering
+export const dynamicRendering = 'force-dynamic';
+
 export default function RootLayout({
   children,
 }: {
@@ -82,17 +87,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ThemeProvider>
-          <FeatureFlag flag="robotics_enabled">
-            <RobotSwarm 
-              robotCount={12}
-              enableCollisionAvoidance={true}
-              enableFlocking={true}
-              enableMouseInteraction={true}
-              enable3DVisualization={true}
-              swarmBehavior="autonomous"
-              className="z-0"
-            />
-          </FeatureFlag>
+          <RobotFeature />
           <Navigation />
           <div id="root" className="pt-16 min-h-screen flex flex-col relative z-10">
             <div className="flex-1">{children}</div>

@@ -27,6 +27,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       reportsDirectory: './coverage',
+      include: [
+        'src/lib/components/**/*.{js,ts,tsx}',
+        'src/components/robotics/**/*.{js,ts,tsx}',
+        'src/hooks/**/*.{js,ts,tsx}',
+        'src/services/**/*.{js,ts,tsx}',
+      ],
       exclude: [
         'node_modules/**',
         'tests/**',
@@ -35,15 +41,28 @@ export default defineConfig({
         'dist/**',
         '**/*.d.ts',
         '**/*.config.*',
+        '**/*.stories.{js,ts,tsx}',
         'scripts/**'
       ],
       thresholds: {
         global: {
-          branches: 0,
-          functions: 0,
-          lines: 0,
-          statements: 0
-        }
+          branches: 80,
+          functions: 80,
+          lines: 85,
+          statements: 85,
+        },
+        'src/lib/components/': {
+          branches: 90,
+          functions: 90,
+          lines: 95,
+          statements: 95,
+        },
+        'src/components/robotics/': {
+          branches: 85,
+          functions: 85,
+          lines: 90,
+          statements: 90,
+        },
       },
       all: true,
       clean: true
