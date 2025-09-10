@@ -1,0 +1,52 @@
+# Google App Engine configuration
+runtime: nodejs20
+
+instance_class: F2
+automatic_scaling:
+  min_instances: 0
+  max_instances: 10
+  target_cpu_utilization: 0.6
+  target_throughput_utilization: 0.6
+
+env_variables:
+  NODE_ENV: "production"
+  GCP_PROJECT_ID: "anti-mony"
+  GCP_REGION: "us-central1"
+
+handlers:
+  # Handle Next.js static files
+  - url: /_next/static
+    static_dir: .next/static
+    secure: always
+    
+  # Handle public static files
+  - url: /(.*\.(gif|png|jpg|jpeg|svg|css|js|ico|woff|woff2))$
+    static_files: public/\1
+    upload: public/.*\.(gif|png|jpg|jpeg|svg|css|js|ico|woff|woff2)$
+    secure: always
+    
+  # Handle all other requests with the Next.js server
+  - url: /.*
+    script: auto
+    secure: always
+
+# Health check configuration
+readiness_check:
+  path: "/api/health"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+liveness_check:
+  path: "/api/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 4
+  success_threshold: 2
+
+# Resource limits
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10

@@ -1,8 +1,7 @@
 {
   "extends": [
     "next/core-web-vitals",
-    "next/typescript",
-    "plugin:storybook/recommended"
+    "next/typescript"
   ],
   "rules": {
     "@typescript-eslint/no-explicit-any": "warn",
@@ -10,33 +9,22 @@
   },
   "overrides": [
     {
-      "files": [
-        "scripts/**/*.cjs"
-      ],
-      "env": {
-        "node": true
-      },
+      "files": ["scripts/**/*.cjs"],
+      "env": { "node": true },
       "rules": {
         "@typescript-eslint/no-require-imports": "off",
         "@typescript-eslint/no-var-requires": "off"
       }
     },
     {
-      "files": [
-        "src/lib/logging.ts"
-      ],
+      "files": ["src/lib/logging.ts"],
       "rules": {
         "@typescript-eslint/no-require-imports": "off",
         "@typescript-eslint/no-explicit-any": "warn"
       }
     },
     {
-      "files": [
-        "src/lib/robotics/**/*.ts",
-        "src/lib/tech/**/*.ts",
-        "src/components/**/*.tsx",
-        "src/lib/theme/**/*.ts*"
-      ],
+      "files": ["src/lib/robotics/**/*.ts", "src/lib/tech/**/*.ts", "src/components/**/*.tsx", "src/lib/theme/**/*.ts*"],
       "rules": {
         "@typescript-eslint/no-explicit-any": "warn"
       }

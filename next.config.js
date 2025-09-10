@@ -2,11 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  typedRoutes: true,
   experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000', 'shivambhardwaj.com']
-    }
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    typedRoutes: true
   },
   serverExternalPackages: ['@google-cloud/logging', '@google-cloud/error-reporting', '@google-cloud/monitoring'],
   eslint: {

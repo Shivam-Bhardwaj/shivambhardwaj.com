@@ -1,0 +1,70 @@
+steps:
+  # Install dependencies
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+    dir: '.'
+
+  # Run ESLint for code quality
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'lint']
+    dir: '.'
+
+  # Run TypeScript type checking
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'type-check']
+    dir: '.'
+
+  # Run comprehensive test suite
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'test:coverage']
+    dir: '.'
+    env:
+      - 'NODE_ENV=test'
+
+  # Run security audit
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'security:audit']
+    dir: '.'
+
+  # Build the Next.js application
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'build']
+    dir: '.'
+    env:
+      - 'NODE_ENV=production'
+      - 'NEXT_TELEMETRY_DISABLED=1'
+
+  # Deploy to Google App Engine
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy', '--quiet', '--promote']
+    dir: '.'
+
+  # Run post-deployment health checks
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'browse', '--no-launch-browser']
+    dir: '.'
+
+  # Run post-deployment E2E tests
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'test:e2e']
+    dir: '.'
+    env:
+      - 'BASE_URL=https://${PROJECT_ID}.appspot.com'
+      - 'NODE_ENV=production'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+  diskSizeGb: 100
+  substitution_option: ALLOW_LOOSE
+
+timeout: '1800s'
+
+substitutions:
+  _DEPLOY_ENV: 'production'
+  _BUILD_VERSION: '${SHORT_SHA}'
+
+tags:
+  - 'portfolio'
+  - 'nextjs'
+  - 'deployment'
