@@ -1,0 +1,221 @@
+{
+  "main": {
+    "id": "d66529a04fd157c5",
+    "type": "split",
+    "children": [
+      {
+        "id": "29cc82ed8af2f4b9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9f3759d129008d7e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "docs/agent-prompts/MAJOR_CHANGES_WORKFLOW.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "MAJOR_CHANGES_WORKFLOW"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3e1d30f4a7a1b2bb",
+    "type": "split",
+    "children": [
+      {
+        "id": "ac589dec9762bfa8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fd095181a9d23068",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "5a6758bf0725a1d4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "0c522aff2d5ad625",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "5bf6a07fd4a57f7e",
+    "type": "split",
+    "children": [
+      {
+        "id": "809a7d757a8e3b2f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c9666df7c2d875d8",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "hello-gke/PERPLEXITY_AUTOMATION_PROMPT.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for PERPLEXITY_AUTOMATION_PROMPT"
+            }
+          },
+          {
+            "id": "91d5dd790abbadcc",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "hello-gke/PERPLEXITY_AUTOMATION_PROMPT.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from PERPLEXITY_AUTOMATION_PROMPT"
+            }
+          },
+          {
+            "id": "5cd588d5a9952496",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "5643efffbabfc0e0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "hello-gke/PERPLEXITY_AUTOMATION_PROMPT.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of PERPLEXITY_AUTOMATION_PROMPT"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "9f3759d129008d7e",
+  "lastOpenFiles": [
+    "node_modules/@types/mdx/types.d.ts",
+    "node_modules/@types/mdx/package.json",
+    "node_modules/@types/mdx/README.md",
+    "node_modules/@types/mdx/LICENSE",
+    "node_modules/@types/mdx/index.d.ts",
+    "node_modules/@types/mdx",
+    "stories/TechStack.stories.tsx",
+    "stories/Navigation.stories.tsx",
+    "stories/Footer.stories.tsx",
+    "node_modules/recast/lib/util.js",
+    "node_modules/recast/lib/util.d.ts",
+    "node_modules/recast/lib/printer.js",
+    "node_modules/@storybook/addon-a11y/README.md",
+    "node_modules/@vitest/browser/node_modules/@testing-library/dom/README.md",
+    "node_modules/@vitest/browser/dist/client/__vitest__/favicon.svg",
+    "node_modules/@vitest/browser/dist/client/__vitest__/bg.png",
+    "node_modules/@vitest/browser/node_modules/aria-query/README.md",
+    "node_modules/@vitest/browser/node_modules/aria-query/CHANGELOG.md",
+    "node_modules/@vitest/browser/dist/client/favicon.svg",
+    "node_modules/@vitest/browser/README.md",
+    "node_modules/@rollup/pluginutils/node_modules/estree-walker/README.md",
+    "node_modules/@rollup/pluginutils/node_modules/estree-walker/CHANGELOG.md",
+    "node_modules/@rollup/pluginutils/node_modules/picomatch/README.md",
+    "node_modules/@rollup/pluginutils/README.md",
+    "node_modules/@storybook/react-vite/node_modules/yocto-queue/readme.md",
+    "node_modules/@storybook/react-vite/node_modules/tsconfig-paths/README.md",
+    "node_modules/@storybook/react-vite/node_modules/tsconfig-paths/CHANGELOG.md",
+    "node_modules/@storybook/react-vite/node_modules/strip-indent/readme.md",
+    "node_modules/@storybook/react-vite/node_modules/path-exists/readme.md",
+    "node_modules/@storybook/react-vite/node_modules/locate-path/readme.md",
+    "node_modules/@storybook/react-vite/node_modules/p-locate/readme.md",
+    "node_modules/@storybook/react-vite/node_modules/p-limit/readme.md",
+    "node_modules/@storybook/react-vite/node_modules/find-up/readme.md",
+    "node_modules/@storybook/react-vite/node_modules/doctrine/README.md",
+    "node_modules/@storybook/react-vite/node_modules/doctrine/CHANGELOG.md",
+    "node_modules/@storybook/react-vite/README.md",
+    "node_modules/react-error-boundary/README.md",
+    "node_modules/tsconfck/README.md",
+    "node_modules/globrex/readme.md",
+    "src/stories/assets/youtube.svg",
+    "src/stories/assets/tutorials.svg",
+    "src/stories/assets/theming.png",
+    "src/stories/assets/testing.png",
+    "src/stories/assets/share.png",
+    "src/stories/assets/styling.png",
+    "src/stories/assets/github.svg"
+  ]
+}
