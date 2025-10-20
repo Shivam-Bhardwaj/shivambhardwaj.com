@@ -34,7 +34,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Architecture
 
 ### Tech Stack
-- **Next.js 15.4.5** with App Router - Static export configured for Firebase hosting
+- **Next.js 15.4.5** with App Router - Static export
 - **React 18.3.1** with TypeScript 5 (strict mode)
 - **Tailwind CSS v4** with PostCSS processing
 - **Framer Motion 12.23.12** for animations
@@ -42,10 +42,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Project Structure
 ```
-robotics-portfolio/
+shivambhardwaj.com/
 ├── src/
 │   ├── app/              # Next.js App Router pages
-│   │   ├── (pages)/      # Individual page routes
 │   │   ├── layout.tsx    # Root layout with RoombaSimulation background
 │   │   └── globals.css   # Global styles and Tailwind directives
 │   ├── components/       # Reusable React components
@@ -60,8 +59,7 @@ robotics-portfolio/
 │   ├── accessibility/  # WCAG compliance tests
 │   ├── performance/   # Lighthouse and Core Web Vitals
 │   └── security/      # Security vulnerability tests
-├── public/             # Static assets and logos
-└── out/               # Static export build output
+└── public/             # Static assets and logos
 ```
 
 ### Key Patterns
@@ -71,33 +69,65 @@ robotics-portfolio/
 - **Static export**: No server-side features, pure static HTML/CSS/JS
 - **Testing coverage**: Minimum 70% coverage threshold enforced
 
-### Styling Conventions
-- Tailwind utility classes with consistent design tokens
-- Color scheme: Fuchsia-600 and cyan-600 gradients
-- Responsive breakpoints: Mobile-first with `md:` modifiers
-- Backdrop blur effects for depth
-- Fonts: Inter (primary), Orbitron (accent)
+### Deployment - Load Balanced Multi-Server
 
-### Testing Strategy
-- **Unit tests**: Jest with React Testing Library for components
-- **E2E tests**: Playwright across Chrome, Firefox, Safari, and mobile
-- **Accessibility**: jest-axe for WCAG compliance
-- **Performance**: Lighthouse audits via Playwright
-- **Security**: npm audit + custom security scanning
-- **Coverage**: 70% minimum for branches, functions, lines, statements
+**Production Architecture**:
+```
+Cloudflare Global CDN
+        ↓
+  Tunnel: xps2018-multi
+   (8 connections)
+    /            \
+xps2018         RPi
+(Primary)    (Backup)
+Port 80      Port 80
+```
 
-### Deployment
-- **Primary**: xps2018 server (curious@10.0.0.109)
-- **Domain**: shivambhardwaj.com (via Cloudflare)
-- **Build**: `npm run build` creates static export in /out
-- **Deploy**: Run `./deploy-xps2018.sh` on xps2018 server
-- **Web Server**: Nginx serving from /var/www/shivambhardwaj.com
-- **CDN**: Cloudflare (DNS + SSL/TLS + caching)
+**Deployment Servers**:
+- **xps2018** (10.0.0.109) - Primary, 32GB RAM, x86_64, Ubuntu 24.04
+- **RPi/sbl1** (10.0.0.174) - Backup, 7.7GB RAM, ARM64, Armbian
+- **Load Balancing**: Cloudflare Tunnel automatically distributes traffic
+- **Failover**: < 1 second if either server goes down
+- **Repository**: https://github.com/Shivam-Bhardwaj/shivambhardwaj.com
+
+**Deployment Process (on xps2018)**:
+```bash
+cd ~/shivambhardwaj.com
+git pull
+npm install
+npm run build
+rsync -av --delete ./out/ /var/www/shivambhardwaj.com/
+```
+
+**Sync to RPi** (for redundancy):
+```bash
+# Option 1: Git pull on RPi
+ssh curious@10.0.0.174
+cd ~/shivambhardwaj.com && git pull && npm run build
+rsync -av --delete ./out/ /var/www/shivambhardwaj.com/
+
+# Option 2: Direct sync from xps2018
+sshpass -p 'iou' rsync -av /var/www/shivambhardwaj.com/ curious@10.0.0.174:/var/www/shivambhardwaj.com/
+```
+
+### AI-First Repository
+
+**Philosophy**: This codebase is designed for AI agents to maintain, not humans.
+
+- **Code Documentation**: For AI context and understanding
+- **User Documentation**: Lives on the deployed website, not in repo
+- **Deployment**: Fully automated via scripts
+- **Maintenance**: AI agents handle updates
+- **Orchestration**: Human provides direction, AI executes
+
+**Credentials**: Never commit credentials
+- API keys, tokens, passwords go in `~/SbL/.secrets/` on servers
+- .gitignore blocks .secrets/, *.env files
+- See `~/SbL/PRODUCTION_STATUS.md` on xps2018 for deployment details
 
 ### Critical Notes
-- Always use absolute paths starting with `/` for file operations
-- Preserve exact indentation when editing files
-- No server-side features allowed (static export only)
-- Test commands available for comprehensive validation
-- Deployment script runs ON xps2018 server (not remotely)
-- See DEPLOYMENT.md for complete deployment guide
+- Static export only (no SSR, no API routes in production)
+- Build creates `/out` directory with all static files
+- Both servers must be kept in sync for failover to work
+- Cloudflare Tunnel handles SSL/TLS, no certificates needed locally
+- See ~/SbL/ directory on xps2018 for deployment documentation
