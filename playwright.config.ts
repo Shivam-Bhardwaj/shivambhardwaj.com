@@ -44,36 +44,43 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Chrome'] },
     },
 
     {
       name: 'firefox',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Firefox'] },
     },
 
     {
       name: 'webkit',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Safari'] },
     },
 
     /* Test against mobile viewports. */
     {
       name: 'Mobile Chrome',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Pixel 5'] },
     },
     {
       name: 'Mobile Safari',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['iPhone 12'] },
     },
 
     /* Test against branded browsers. */
     {
       name: 'Microsoft Edge',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Edge'], channel: 'msedge' },
     },
     {
       name: 'Google Chrome',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
 
@@ -81,7 +88,7 @@ export default defineConfig({
     {
       name: 'performance',
       testMatch: '**/*.performance.spec.ts',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
         // Use Lighthouse for performance audits
         trace: 'on',
