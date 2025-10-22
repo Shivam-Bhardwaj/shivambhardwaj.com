@@ -203,6 +203,19 @@ Configured in `playwright.config.ts`:
 }
 ```
 
+### Standard Browser Projects
+Visual tests are **excluded** from standard browser testing:
+
+```typescript
+{
+  name: 'chromium',
+  testIgnore: '**/*.visual.spec.ts',  // Don't run visual tests
+  use: { ...devices['Desktop Chrome'] },
+}
+```
+
+This prevents visual tests from running in CI when standard E2E tests execute, avoiding timeouts and conflicts.
+
 ### Default Project Settings
 ```typescript
 {

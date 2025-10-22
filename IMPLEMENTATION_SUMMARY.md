@@ -219,6 +219,15 @@ The visual tests complement existing functional tests:
 ### Configuration
 ```typescript
 // playwright.config.ts
+
+// Standard browser projects exclude visual tests
+{
+  name: 'chromium',
+  testIgnore: '**/*.visual.spec.ts',  // Don't run visual tests here
+  use: { ...devices['Desktop Chrome'] },
+},
+
+// Visual project only runs visual tests
 {
   name: 'visual',
   testMatch: '**/*.visual.spec.ts',
@@ -228,6 +237,8 @@ The visual tests complement existing functional tests:
   },
 }
 ```
+
+**Important**: Visual tests are excluded from standard E2E test runs to prevent CI timeouts and conflicts. They should only be run explicitly with `npm run test:e2e:visual`.
 
 ### File Organization
 ```
