@@ -34,21 +34,22 @@ const Navbar = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-center items-center h-16 relative">
           {/* Logo */}
           <motion.div
+            className="absolute left-0"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.2 }}
           >
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-2xl font-bold text-robotics text-gradient-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 rounded-md"
             >
               {siteConfig.name}
             </Link>
           </motion.div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Centered */}
           <ul className="hidden md:flex items-center space-x-1">
             {navItems.map((item, index) => (
               <li key={item.href}>
