@@ -26,16 +26,16 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    
+
     /* Take screenshot on failure */
     screenshot: 'only-on-failure',
-    
+
     /* Record video on failure */
     video: 'retain-on-failure',
-    
+
     /* Timeout for each action */
     actionTimeout: 30000,
-    
+
     /* Navigation timeout */
     navigationTimeout: 30000,
   },
@@ -44,36 +44,43 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Chrome'] },
     },
 
     {
       name: 'firefox',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Firefox'] },
     },
 
     {
       name: 'webkit',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Safari'] },
     },
 
     /* Test against mobile viewports. */
     {
       name: 'Mobile Chrome',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Pixel 5'] },
     },
     {
       name: 'Mobile Safari',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['iPhone 12'] },
     },
 
     /* Test against branded browsers. */
     {
       name: 'Microsoft Edge',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Edge'], channel: 'msedge' },
     },
     {
       name: 'Google Chrome',
+      testIgnore: '**/*.visual.spec.ts',
       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
 
@@ -81,7 +88,7 @@ export default defineConfig({
     {
       name: 'performance',
       testMatch: '**/*.performance.spec.ts',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
         // Use Lighthouse for performance audits
         trace: 'on',
@@ -94,6 +101,19 @@ export default defineConfig({
       name: 'accessibility',
       testMatch: '**/*.a11y.spec.ts',
       use: { ...devices['Desktop Chrome'] },
+    },
+
+    /* Visual testing configuration - captures screenshots for documentation */
+    {
+      name: 'visual',
+      testMatch: '**/*.visual.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        /* Always capture screenshots for visual tests */
+        screenshot: 'on',
+        /* Capture video for visual documentation */
+        video: 'on',
+      },
     },
   ],
 
