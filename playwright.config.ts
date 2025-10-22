@@ -26,16 +26,16 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    
+
     /* Take screenshot on failure */
     screenshot: 'only-on-failure',
-    
+
     /* Record video on failure */
     video: 'retain-on-failure',
-    
+
     /* Timeout for each action */
     actionTimeout: 30000,
-    
+
     /* Navigation timeout */
     navigationTimeout: 30000,
   },
@@ -94,6 +94,19 @@ export default defineConfig({
       name: 'accessibility',
       testMatch: '**/*.a11y.spec.ts',
       use: { ...devices['Desktop Chrome'] },
+    },
+
+    /* Visual testing configuration - captures screenshots for documentation */
+    {
+      name: 'visual',
+      testMatch: '**/*.visual.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        /* Always capture screenshots for visual tests */
+        screenshot: 'on',
+        /* Capture video for visual documentation */
+        video: 'on',
+      },
     },
   ],
 
