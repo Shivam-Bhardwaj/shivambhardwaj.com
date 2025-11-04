@@ -35,7 +35,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-center items-center h-16 relative">
           {/* Desktop Navigation - Centered */}
-          <ul className="hidden md:flex items-center justify-center space-x-2">
+          <ul className="hidden md:flex items-center justify-center space-x-6">
             {navItems.map((item, index) => (
               <li key={item.href}>
                 <motion.div
