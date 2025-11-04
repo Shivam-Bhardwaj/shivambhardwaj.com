@@ -202,7 +202,7 @@ export class FogOfWar {
     const rows = this.exploredGrid.length;
     
     // Draw fog overlay
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'; // Dark fog
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // Dark fog - reduced opacity
     ctx.fillRect(0, 0, this.width, this.height);
     
     // Clear explored areas

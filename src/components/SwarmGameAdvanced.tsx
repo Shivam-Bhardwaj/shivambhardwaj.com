@@ -84,6 +84,9 @@ export default function SwarmGameAdvanced() {
     
     if (!fogOfWar || !obstacleAvoidance || !communicationGraph) return;
     
+    // Early return if robots not initialized
+    if (robotsRef.current.length === 0) return;
+    
     const animate = (currentTime: number) => {
       const deltaTime = lastFrameTimeRef.current === 0 
         ? 0.016 
@@ -146,22 +149,7 @@ export default function SwarmGameAdvanced() {
       // Use robots from ref for rendering
       const currentRobots = robotsRef.current;
       
-      // Render fog of war (as overlay)
-      fogOfWar.render(ctx);
-      
-      // Render communication graph
-      if (showCommunication) {
-        communicationGraph.render(ctx);
-      }
-      
-      // Render sensors
-      if (showSensors) {
-        for (const robot of currentRobots) {
-          SensorVisualization.render(ctx, robot, ROBOT_SIZE, currentTime);
-        }
-      }
-      
-      // Render robots
+      // Render robots first (before fog of war overlay)
       for (const robot of currentRobots) {
         if (!robot.isOperational()) continue;
         
@@ -196,6 +184,21 @@ export default function SwarmGameAdvanced() {
         ctx.arc(pos.x, pos.y - ROBOT_SIZE - 3, 2, 0, Math.PI * 2);
         ctx.fill();
       }
+      
+      // Render sensors
+      if (showSensors) {
+        for (const robot of currentRobots) {
+          SensorVisualization.render(ctx, robot, ROBOT_SIZE, currentTime);
+        }
+      }
+      
+      // Render communication graph
+      if (showCommunication) {
+        communicationGraph.render(ctx);
+      }
+      
+      // Render fog of war (as overlay - last so it's on top)
+      fogOfWar.render(ctx);
       
       // Draw mouse target indicator
       if (mouseTargetRef.current) {
@@ -239,7 +242,7 @@ export default function SwarmGameAdvanced() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [robots, isRunning, bestTime, showSensors, showCommunication]);
+  }, [isRunning, bestTime, showSensors, showCommunication]);
 
   // Handle mouse movement
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
