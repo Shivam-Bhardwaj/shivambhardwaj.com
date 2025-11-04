@@ -166,6 +166,17 @@ Deploy the `out/` directory to any static hosting service.
 
 We welcome contributions to improve the portfolio website! Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) file for detailed guidelines.
 
+### Development Workflow
+
+This project uses a streamlined workflow for issue tracking and deployment:
+
+1. **Report Issue** → Create an issue (or paste problem description)
+2. **Implement Solution** → Code changes with automatic CI checks
+3. **Create PR** → Vercel automatically deploys preview
+4. **Review & Deploy** → Approve changes or request modifications
+
+📖 See [WORKFLOW.md](./WORKFLOW.md) for detailed workflow documentation.
+
 ### Quick Start for Contributors
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`

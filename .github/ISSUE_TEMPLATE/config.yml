@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussion
+    url: https://github.com/Shivam-Bhardwaj/shivambhardwaj.com/discussions
+    about: Ask questions and discuss ideas
+  - name: 📧 Email Support
+    url: mailto:contact@shivambhardwaj.com
+    about: Contact directly via email
+
