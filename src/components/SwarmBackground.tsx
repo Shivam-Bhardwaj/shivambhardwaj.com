@@ -15,6 +15,7 @@ import { CommunicationGraph } from "@/lib/robotics/communication";
 import { SensorVisualization } from "@/lib/robotics/sensorVisualization";
 import { SLAMSystem } from "@/lib/robotics/slam";
 import { CommunicationGraph as GraphTheoryGraph } from "@/lib/robotics/graphTheory";
+import { useTheme } from "@/lib/ThemeProvider";
 
 const ROBOT_COUNT = 15; // Fewer robots for background performance
 const ROBOT_SIZE = 6; // Smaller robots for subtle background effect
@@ -30,6 +31,7 @@ export default function SwarmBackground() {
   const graphTheoryRef = useRef<GraphTheoryGraph | null>(null);
   const lastFrameTimeRef = useRef(0);
   const [isVisible, setIsVisible] = useState(true);
+  const { theme } = useTheme();
 
   // Initialize robots
   useEffect(() => {
@@ -143,34 +145,37 @@ export default function SwarmBackground() {
       // Update communication graph
       communicationGraph.update(currentRobots);
       
-      // Render robots (subtle, semi-transparent for background)
+      // Render robots with theme-adaptive colors
+      const robotOpacity = theme === "dark" ? "CC" : "66"; // More visible in dark mode
+      const borderOpacity = theme === "dark" ? "FF" : "80";
+      
       for (const robot of currentRobots) {
         if (!robot.isOperational()) continue;
         
         const pos = robot.state.position;
         
-        // Draw robot body with reduced opacity
+        // Draw robot body with theme-adaptive opacity
         const color = robot.state.type.color;
-        ctx.fillStyle = color + '40'; // 25% opacity
+        ctx.fillStyle = color + robotOpacity;
         ctx.beginPath();
         ctx.arc(pos.x, pos.y, ROBOT_SIZE, 0, Math.PI * 2);
         ctx.fill();
         
-        // Subtle border
-        ctx.strokeStyle = color + '80'; // 50% opacity
-        ctx.lineWidth = 1;
+        // Subtle border - white in dark mode for better visibility
+        ctx.strokeStyle = theme === "dark" ? "#ffffff" : color + borderOpacity;
+        ctx.lineWidth = theme === "dark" ? 1.5 : 1;
         ctx.stroke();
       }
       
       // Render SLAM map (occupancy grid - very subtle)
       ctx.save();
-      ctx.globalAlpha = 0.08;
+      ctx.globalAlpha = theme === "dark" ? 0.15 : 0.08;
       slamSystem.render(ctx);
       ctx.restore();
       
       // Render graph theory visualization (Dijkstra's paths, connectivity)
       ctx.save();
-      ctx.globalAlpha = 0.3;
+      ctx.globalAlpha = theme === "dark" ? 0.4 : 0.3;
       
       // Find and highlight shortest path between random nodes if graph is connected
       if (graphTheory.isConnected()) {
@@ -195,14 +200,14 @@ export default function SwarmBackground() {
       
       // Render communication graph connections
       ctx.save();
-      ctx.globalAlpha = 0.2;
+      ctx.globalAlpha = theme === "dark" ? 0.3 : 0.2;
       communicationGraph.render(ctx);
       ctx.restore();
       
       // Render sensors only occasionally for performance
       if (Math.random() < 0.1) {
         ctx.save();
-        ctx.globalAlpha = 0.15;
+        ctx.globalAlpha = theme === "dark" ? 0.25 : 0.15;
         for (const robot of currentRobots) {
           SensorVisualization.render(ctx, robot, ROBOT_SIZE, currentTime);
         }
@@ -219,7 +224,7 @@ export default function SwarmBackground() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, []);
+  }, [theme]);
 
   // Pause when tab is not visible
   useEffect(() => {

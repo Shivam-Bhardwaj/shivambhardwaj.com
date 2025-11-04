@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SwarmBackground from "@/components/SwarmBackground";
+import { ThemeProvider } from "@/lib/ThemeProvider";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -77,24 +78,26 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${orbitron.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
-        {/* Background swarm simulation */}
-        <SwarmBackground />
-        
-        {/* Main layout */}
-        <div className="flex flex-col min-h-screen bg-background text-foreground relative z-10">
-          <Navbar />
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </div>
-        
-        {/* Skip to content link */}
-        <div id="skip-to-content" className="sr-only">
-          <a href="#main-content" className="focus-visible:not-sr-only focus-visible:absolute focus-visible:top-4 focus-visible:left-4 focus-visible:z-50 focus-visible:px-4 focus-visible:py-2 focus-visible:bg-brand-primary focus-visible:text-white focus-visible:rounded-md">
-            Skip to main content
-          </a>
-        </div>
+        <ThemeProvider>
+          {/* Background swarm simulation */}
+          <SwarmBackground />
+          
+          {/* Main layout */}
+          <div className="flex flex-col min-h-screen bg-background text-foreground relative z-10">
+            <Navbar />
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
+          
+          {/* Skip to content link */}
+          <div id="skip-to-content" className="sr-only">
+            <a href="#main-content" className="focus-visible:not-sr-only focus-visible:absolute focus-visible:top-4 focus-visible:left-4 focus-visible:z-50 focus-visible:px-4 focus-visible:py-2 focus-visible:bg-brand-primary focus-visible:text-white focus-visible:rounded-md">
+              Skip to main content
+            </a>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
