@@ -122,6 +122,19 @@ refactor: extract reusable hook for API calls
 
 ## Coding Standards
 
+This project follows TypeScript and React best practices. Please review our [CODE_STYLE.md](./CODE_STYLE.md) for detailed guidelines.
+
+### Key Rules
+
+- **No Emojis**: Emojis are not allowed in code, comments, documentation, or UI text
+- **No AI-Generated Content**: Avoid verbose AI-generated boilerplate or generic comments
+- **Concise Comments**: Write meaningful, concise comments that explain non-obvious logic
+- **TypeScript**: Use TypeScript for all new code with proper type definitions
+- **ESLint**: Follow ESLint rules and fix any linting errors before committing
+- **Formatting**: Use consistent formatting (handled by ESLint/Prettier)
+
+See [CODE_STYLE.md](./CODE_STYLE.md) for complete guidelines.
+
 ### TypeScript Guidelines
 
 - Use TypeScript for all new files
