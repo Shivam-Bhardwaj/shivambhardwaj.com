@@ -13,6 +13,8 @@ import { getRandomRobotTypes } from "@/lib/robotics/robotTypes";
 import { ObstacleAvoidance } from "@/lib/robotics/obstacleAvoidance";
 import { CommunicationGraph } from "@/lib/robotics/communication";
 import { SensorVisualization } from "@/lib/robotics/sensorVisualization";
+import { SLAMSystem } from "@/lib/robotics/slam";
+import { CommunicationGraph as GraphTheoryGraph } from "@/lib/robotics/graphTheory";
 
 const ROBOT_COUNT = 15; // Fewer robots for background performance
 const ROBOT_SIZE = 6; // Smaller robots for subtle background effect
@@ -24,6 +26,8 @@ export default function SwarmBackground() {
   const robotsRef = useRef<Robot[]>([]);
   const obstacleAvoidanceRef = useRef<ObstacleAvoidance | null>(null);
   const communicationGraphRef = useRef<CommunicationGraph | null>(null);
+  const slamSystemRef = useRef<SLAMSystem | null>(null);
+  const graphTheoryRef = useRef<GraphTheoryGraph | null>(null);
   const lastFrameTimeRef = useRef(0);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -44,6 +48,8 @@ export default function SwarmBackground() {
     // Initialize game systems
     obstacleAvoidanceRef.current = new ObstacleAvoidance();
     communicationGraphRef.current = new CommunicationGraph();
+    slamSystemRef.current = new SLAMSystem(window.innerWidth, window.innerHeight);
+    graphTheoryRef.current = new GraphTheoryGraph();
     
     // Initialize robots with random types
     const robotTypes = getRandomRobotTypes(ROBOT_COUNT);
@@ -72,8 +78,10 @@ export default function SwarmBackground() {
     
     const obstacleAvoidance = obstacleAvoidanceRef.current;
     const communicationGraph = communicationGraphRef.current;
+    const slamSystem = slamSystemRef.current;
+    const graphTheory = graphTheoryRef.current;
     
-    if (!obstacleAvoidance || !communicationGraph) return;
+    if (!obstacleAvoidance || !communicationGraph || !slamSystem || !graphTheory) return;
     
     if (robotsRef.current.length === 0) return;
 
@@ -120,6 +128,18 @@ export default function SwarmBackground() {
         robot.state.position.y = Math.max(ROBOT_SIZE, Math.min(canvas.height - ROBOT_SIZE, robot.state.position.y));
       }
       
+      // Update SLAM system
+      const obstacles = obstacleAvoidance.getObstacles();
+      for (const robot of currentRobots) {
+        if (robot.isOperational()) {
+          slamSystem.updateOccupancyGrid(robot, obstacles);
+        }
+      }
+      slamSystem.shareMapData(currentRobots);
+      
+      // Update graph theory graph
+      graphTheory.buildGraph(currentRobots);
+      
       // Update communication graph
       communicationGraph.update(currentRobots);
       
@@ -142,7 +162,38 @@ export default function SwarmBackground() {
         ctx.stroke();
       }
       
-      // Render communication graph (very subtle)
+      // Render SLAM map (occupancy grid - very subtle)
+      ctx.save();
+      ctx.globalAlpha = 0.08;
+      slamSystem.render(ctx);
+      ctx.restore();
+      
+      // Render graph theory visualization (Dijkstra's paths, connectivity)
+      ctx.save();
+      ctx.globalAlpha = 0.3;
+      
+      // Find and highlight shortest path between random nodes if graph is connected
+      if (graphTheory.isConnected()) {
+        const nodes = graphTheory.getNodes();
+        if (nodes.length >= 2) {
+          const startId = nodes[Math.floor(Math.random() * nodes.length)].id;
+          const endId = nodes[Math.floor(Math.random() * nodes.length)].id;
+          if (startId !== endId) {
+            const path = graphTheory.shortestPath(startId, endId);
+            if (path) {
+              graphTheory.render(ctx, path);
+            } else {
+              graphTheory.render(ctx);
+            }
+          }
+        }
+      } else {
+        graphTheory.render(ctx);
+      }
+      
+      ctx.restore();
+      
+      // Render communication graph connections
       ctx.save();
       ctx.globalAlpha = 0.2;
       communicationGraph.render(ctx);
