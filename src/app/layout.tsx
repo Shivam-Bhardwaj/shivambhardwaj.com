@@ -83,7 +83,7 @@ export default function RootLayout({
         {/* Main layout */}
         <div className="flex flex-col min-h-screen bg-background text-foreground">
           <Navbar />
-          <main className="flex-grow">
+          <main id="main-content" className="flex-grow">
             {children}
           </main>
           <Footer />
