@@ -89,7 +89,7 @@ export default function Home() {
           className="text-lg md:text-xl text-foreground-secondary font-medium"
           variants={itemVariants}
         >
-          <span className="text-robotics text-brand-primary">{siteConfig.role}</span> • {siteConfig.location}
+          <span className="text-robotics text-rose-600 dark:text-rose-400">{siteConfig.role}</span> • {siteConfig.location}
         </motion.p>
       </motion.div>
 
@@ -115,13 +115,13 @@ export default function Home() {
         variants={itemVariants}
       >
         As both a hands-on engineer and project manager, I turn complex concepts in self-driving and med-tech into reliable, deployed systems. I optimize, reduce costs, and ship products for companies like{" "}
-        <span className="font-semibold text-brand-primary">Meta</span>,{" "}
-        <span className="font-semibold text-brand-primary">Applied Materials</span>,{" "}
-        <span className="font-semibold text-brand-primary">Google</span>,{" "}
-        <span className="font-semibold text-brand-primary">GoPro</span>,{" "}
-        <span className="font-semibold text-brand-primary">Saildrone</span>,{" "}
-        <span className="font-semibold text-brand-primary">Velodyne Lidar</span>,{" "}
-        <span className="font-semibold text-brand-primary">Tesla</span>, and more than twenty startups and researchers.
+        <span className="font-semibold text-rose-600 dark:text-rose-400">Meta</span>,{" "}
+        <span className="font-semibold text-rose-600 dark:text-rose-400">Applied Materials</span>,{" "}
+        <span className="font-semibold text-rose-600 dark:text-rose-400">Google</span>,{" "}
+        <span className="font-semibold text-rose-600 dark:text-rose-400">GoPro</span>,{" "}
+        <span className="font-semibold text-rose-600 dark:text-rose-400">Saildrone</span>,{" "}
+        <span className="font-semibold text-rose-600 dark:text-rose-400">Velodyne Lidar</span>,{" "}
+        <span className="font-semibold text-rose-600 dark:text-rose-400">Tesla</span>, and more than twenty startups and researchers.
       </motion.p>
 
       {/* CTA Buttons */}
@@ -191,12 +191,12 @@ export default function Home() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" as const }}
-          className="w-6 h-10 border-2 border-brand-primary rounded-full flex justify-center"
+          className="w-6 h-10 border-2 border-rose-600 dark:border-rose-400 rounded-full flex justify-center"
         >
           <motion.div
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" as const }}
-            className="w-1 h-3 bg-brand-primary rounded-full mt-2"
+            className="w-1 h-3 bg-rose-600 dark:bg-rose-400 rounded-full mt-2"
           />
         </motion.div>
       </motion.div>

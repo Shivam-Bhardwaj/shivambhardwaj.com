@@ -23,9 +23,9 @@ const Navbar = () => {
   const navItemClass = (href: string) =>
     `relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-md
      ${pathname === href 
-       ? "text-brand-primary bg-brand-primary/10" 
-       : "text-gray-700 dark:text-gray-300 hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-gray-800"
-     } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2`;
+       ? "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20" 
+       : "text-gray-700 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+     } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2`;
 
   return (
     <motion.nav 
@@ -49,7 +49,7 @@ const Navbar = () => {
                     {item.label}
                     {pathname === item.href && (
                       <motion.div
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-primary rounded-full"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-600 dark:bg-rose-400 rounded-full"
                         layoutId="activeTab"
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
                       />
@@ -63,7 +63,7 @@ const Navbar = () => {
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="absolute right-0 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            className="absolute right-0 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
             aria-label="Toggle theme"
           >
             {theme === "light" ? (
@@ -79,7 +79,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
             aria-expanded={isMobileMenuOpen}

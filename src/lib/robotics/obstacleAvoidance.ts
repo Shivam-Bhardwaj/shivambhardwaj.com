@@ -123,8 +123,13 @@ export class ObstacleAvoidance {
     // Calculate repulsion force
     const repulsionForce = this.calculateRepulsionForce(robot);
     
-    // Combine target velocity with repulsion (stronger repulsion for background)
-    const avoidanceVelocity = targetVelocity.add(repulsionForce.multiply(0.3));
+    // Reduce repulsion strength to prevent robots from being pushed too far
+    // When target velocity is strong (mouse following), reduce obstacle avoidance
+    const targetStrength = targetVelocity.magnitude();
+    const avoidanceStrength = targetStrength > 0.5 ? 0.15 : 0.25; // Less avoidance when actively following mouse
+    
+    // Combine target velocity with repulsion
+    const avoidanceVelocity = targetVelocity.add(repulsionForce.multiply(avoidanceStrength));
     
     // Limit maximum speed
     const maxSpeed = robot.state.type.speed * 1.5;

@@ -108,6 +108,12 @@ export default function SwarmBackground() {
     if (robotsRef.current.length === 0) return;
 
     const animate = (currentTime: number) => {
+      // Pause animation if tab is not visible
+      if (!isVisible) {
+        animationRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      
       const deltaTime = lastFrameTimeRef.current === 0 
         ? 0.016 
         : Math.min((currentTime - lastFrameTimeRef.current) / 1000, 0.033);
@@ -179,7 +185,9 @@ export default function SwarmBackground() {
         
         // Combine mouse attraction with obstacle avoidance
         // Obstacle avoidance takes priority, but we blend with mouse following
-        const finalVelocity = avoidanceVelocity.add(targetDirection.multiply(0.4));
+        // Use a balanced approach - don't let obstacle avoidance completely override mouse following
+        const mouseInfluence = mousePos ? 0.5 : 0.3; // Stronger mouse influence when mouse is present
+        const finalVelocity = avoidanceVelocity.multiply(0.6).add(targetDirection.multiply(mouseInfluence));
         
         robot.setTargetVelocity(finalVelocity);
         robot.update(deltaTime);
@@ -283,7 +291,7 @@ export default function SwarmBackground() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [theme]);
+  }, [theme, isVisible]);
 
   // Pause when tab is not visible
   useEffect(() => {
@@ -297,7 +305,8 @@ export default function SwarmBackground() {
     };
   }, []);
 
-  if (!isVisible) return null;
+  // Don't return null - keep canvas mounted, just pause animation
+  // Returning null causes component to unmount and robots disappear
 
   return (
     <canvas
