@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { siteConfig } from "@/data/site";
 import { useState } from "react";
 
 const Navbar = () => {
@@ -20,7 +19,7 @@ const Navbar = () => {
   ];
 
   const navItemClass = (href: string) =>
-    `relative px-3 py-2 text-sm font-medium transition-all duration-300 rounded-md
+    `relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-md
      ${pathname === href 
        ? "text-brand-primary bg-brand-primary/10" 
        : "text-gray-700 hover:text-brand-primary hover:bg-gray-50"
@@ -35,22 +34,8 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex justify-center items-center h-16 relative">
-          {/* Logo */}
-          <motion.div
-            className="absolute left-0"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Link
-              href="/"
-              className="text-2xl font-bold text-robotics text-gradient-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 rounded-md"
-            >
-              {siteConfig.name}
-            </Link>
-          </motion.div>
-
           {/* Desktop Navigation - Centered */}
-          <ul className="hidden md:flex items-center space-x-1">
+          <ul className="hidden md:flex items-center justify-center space-x-2">
             {navItems.map((item, index) => (
               <li key={item.href}>
                 <motion.div
