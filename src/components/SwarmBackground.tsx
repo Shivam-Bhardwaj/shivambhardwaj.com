@@ -32,6 +32,26 @@ export default function SwarmBackground() {
   const lastFrameTimeRef = useRef(0);
   const [isVisible, setIsVisible] = useState(true);
   const { theme } = useTheme();
+  const mousePositionRef = useRef<Vector2 | null>(null);
+
+  // Track mouse position
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePositionRef.current = new Vector2(e.clientX, e.clientY);
+    };
+    
+    const handleMouseLeave = () => {
+      mousePositionRef.current = null;
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
 
   // Initialize robots
   useEffect(() => {
@@ -100,27 +120,66 @@ export default function SwarmBackground() {
       const currentRobots = robotsRef.current;
       
       // Update robots
+      const mousePos = mousePositionRef.current;
+      
       for (const robot of currentRobots) {
         if (!robot.isOperational()) continue;
         
-        // Gentle random exploration with stronger obstacle avoidance
-        const randomDirection = new Vector2(
-          (Math.random() - 0.5) * 0.5, // Reduced random movement
-          (Math.random() - 0.5) * 0.5
-        );
+        let targetDirection = new Vector2(0, 0);
+        
+        // Robots converge to mouse pointer with varying abilities
+        if (mousePos) {
+          const toMouse = mousePos.subtract(robot.state.position);
+          const distanceToMouse = toMouse.magnitude();
+          
+          // Some robots have better sensor capabilities (Lidar) and can follow mouse better
+          // Robots with Lidar sensors have stronger attraction to mouse
+          const hasLidar = robot.state.type.sensors.includes('Lidar');
+          const hasUltrasonic = robot.state.type.sensors.includes('Ultrasonic');
+          
+          // Calculate attraction strength based on sensor capabilities
+          let attractionStrength = 0.3; // Base attraction
+          if (hasLidar) {
+            attractionStrength = 0.7; // Strong attraction for Lidar robots
+          } else if (hasUltrasonic) {
+            attractionStrength = 0.5; // Moderate attraction for Ultrasonic robots
+          }
+          
+          // Reduce attraction if mouse is too far (based on sensor range)
+          const sensorRange = robot.getSensorRange(ROBOT_SIZE);
+          if (distanceToMouse > sensorRange * 3) {
+            // Robot can't sense mouse if too far
+            attractionStrength *= 0.3;
+          } else if (distanceToMouse > sensorRange * 1.5) {
+            // Weak signal if far
+            attractionStrength *= 0.6;
+          }
+          
+          // Normalize direction and apply attraction strength
+          if (distanceToMouse > 5) { // Don't move if already very close
+            const normalizedToMouse = toMouse.normalize();
+            targetDirection = normalizedToMouse.multiply(attractionStrength);
+          }
+        }
+        
+        // Add gentle random exploration when no mouse target
+        if (!mousePos || targetDirection.magnitude() < 0.1) {
+          const randomDirection = new Vector2(
+            (Math.random() - 0.5) * 0.3,
+            (Math.random() - 0.5) * 0.3
+          );
+          targetDirection = targetDirection.add(randomDirection);
+        }
         
         // Apply obstacle avoidance (primary force - navigates around content)
         const avoidanceVelocity = obstacleAvoidance.applyObstacleAvoidance(
           robot,
-          randomDirection
+          targetDirection
         );
         
-        // Add slight wander behavior
-        const wanderAngle = robot.state.angle + (Math.random() - 0.5) * 0.1;
-        const wanderDirection = new Vector2(Math.cos(wanderAngle), Math.sin(wanderAngle));
-        
-        // Combine avoidance with wander
-        const finalVelocity = avoidanceVelocity.add(wanderDirection.multiply(0.3));
+        // Combine mouse attraction with obstacle avoidance
+        // Obstacle avoidance takes priority, but we blend with mouse following
+        const finalVelocity = avoidanceVelocity.add(targetDirection.multiply(0.4));
         
         robot.setTargetVelocity(finalVelocity);
         robot.update(deltaTime);
