@@ -3,10 +3,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useTheme } from "@/lib/ThemeProvider";
 
 const Navbar = () => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -21,13 +23,13 @@ const Navbar = () => {
   const navItemClass = (href: string) =>
     `relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-md
      ${pathname === href 
-       ? "text-brand-primary bg-brand-primary/10" 
-       : "text-gray-700 hover:text-brand-primary hover:bg-gray-50"
-     } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2`;
+       ? "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20" 
+       : "text-gray-700 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+     } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2`;
 
   return (
     <motion.nav 
-      className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200/50 shadow-sm"
+      className="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -47,7 +49,7 @@ const Navbar = () => {
                     {item.label}
                     {pathname === item.href && (
                       <motion.div
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-primary rounded-full"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-600 dark:bg-rose-400 rounded-full"
                         layoutId="activeTab"
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
                       />
@@ -58,9 +60,26 @@ const Navbar = () => {
             ))}
           </ul>
 
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="absolute right-0 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            aria-label="Toggle theme"
+          >
+            {theme === "light" ? (
+              <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            )}
+          </button>
+
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-md hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
             aria-expanded={isMobileMenuOpen}
@@ -74,21 +93,21 @@ const Navbar = () => {
                   closed: { rotate: 0, y: 0 },
                   open: { rotate: 45, y: 6 }
                 }}
-                className="w-6 h-0.5 bg-gray-600 block transition-all duration-300 origin-center"
+                className="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 block transition-all duration-300 origin-center"
               />
               <motion.span
                 variants={{
                   closed: { opacity: 1 },
                   open: { opacity: 0 }
                 }}
-                className="w-6 h-0.5 bg-gray-600 block transition-all duration-300 mt-1"
+                className="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 block transition-all duration-300 mt-1"
               />
               <motion.span
                 variants={{
                   closed: { rotate: 0, y: 0 },
                   open: { rotate: -45, y: -6 }
                 }}
-                className="w-6 h-0.5 bg-gray-600 block transition-all duration-300 mt-1 origin-center"
+                className="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 block transition-all duration-300 mt-1 origin-center"
               />
             </motion.div>
           </button>

@@ -2,7 +2,7 @@ import { siteConfig } from "@/data/site";
 
 const Footer = () => {
   return (
-    <footer className="bg-white text-gray-700 p-4 mt-8 border-t">
+    <footer className="bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 p-4 mt-8 border-t border-gray-200 dark:border-gray-700">
       <div className="container mx-auto text-center">
         <p className="space-x-3">
           <span>
@@ -12,7 +12,7 @@ const Footer = () => {
             href={siteConfig.links.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline hover:text-blue-600"
+            className="underline hover:text-blue-600 dark:hover:text-blue-400"
           >
             LinkedIn
           </a>
@@ -20,7 +20,7 @@ const Footer = () => {
             href={siteConfig.links.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline hover:text-blue-600"
+            className="underline hover:text-blue-600 dark:hover:text-blue-400"
           >
             GitHub
           </a>

@@ -1,4 +1,4 @@
-import SwarmGameSimple from "@/components/SwarmGameSimple";
+import SwarmGameAdvanced from "@/components/SwarmGameAdvanced";
 
 export const metadata = { title: "Swarm" };
 
@@ -7,11 +7,11 @@ export default function SwarmPage() {
     <div className="container mx-auto py-10">
       <h1 className="text-4xl font-bold text-center mb-6">Swarm Robotics Playground</h1>
       <p className="text-center mb-8 text-gray-600">
-        Experiment with a simple swarm and try to gather all robots at the target as fast as possible.
+        Experience professional-grade swarm robotics with heterogeneous robots, fog of war exploration,
+        and research-backed algorithms. Guide the swarm to explore the map efficiently!
       </p>
-      <SwarmGameSimple />
+      <SwarmGameAdvanced />
     </div>
-
   );
 }
 

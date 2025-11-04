@@ -16,6 +16,18 @@ const config: Config = {
           secondary: '#0EA5E9', // sky-500 - tech blue
           accent: '#8B5CF6', // violet-500 - innovation purple
         },
+        // Map CSS variables for Tailwind usage
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        'foreground-secondary': 'var(--foreground-secondary)',
+        'foreground-muted': 'var(--foreground-muted)',
+        'background-secondary': 'var(--background-secondary)',
+        'background-tertiary': 'var(--background-tertiary)',
+        electric: 'var(--electric)',
+        neon: 'var(--neon)',
+        circuit: 'var(--circuit)',
+        plasma: 'var(--plasma)',
+        laser: 'var(--laser)',
         // Robotics color system
         robotics: {
           electric: '#06B6D4', // cyan-500

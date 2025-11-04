@@ -25,35 +25,40 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const baseClasses = [
       'inline-flex items-center justify-center gap-2 font-medium',
       'rounded-lg transition-all duration-300 ease-in-out',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2',
       'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none',
       'relative overflow-hidden'
     ];
 
     const variantClasses = {
       primary: [
-        'bg-gradient-to-r from-brand-primary to-brand-accent text-white',
-        'shadow-lg hover:shadow-xl hover:shadow-brand-accent/25',
+        'bg-gradient-to-r from-rose-600 to-violet-500 text-white',
+        'dark:from-rose-500 dark:to-violet-400',
+        'shadow-lg hover:shadow-xl hover:shadow-violet-500/25',
         'hover:-translate-y-0.5 active:translate-y-0'
       ],
       secondary: [
-        'bg-white text-foreground border-2 border-brand-primary',
-        'hover:bg-brand-primary hover:text-white hover:border-brand-primary',
+        'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
+        'border-2 border-rose-600 dark:border-rose-500',
+        'hover:bg-rose-600 dark:hover:bg-rose-500 hover:text-white hover:border-rose-600',
         'hover:-translate-y-0.5 active:translate-y-0'
       ],
       ghost: [
-        'bg-transparent text-foreground hover:bg-background-secondary',
-        'hover:text-brand-primary'
+        'bg-transparent text-gray-700 dark:text-gray-300',
+        'hover:bg-gray-100 dark:hover:bg-gray-800',
+        'hover:text-rose-600 dark:hover:text-rose-400'
       ],
       robotics: [
-        'bg-gradient-to-r from-electric to-neon text-white font-robotics',
-        'shadow-lg shadow-electric/30 hover:shadow-xl hover:shadow-electric/40',
+        'bg-gradient-to-r from-cyan-500 to-emerald-500 text-white',
+        'dark:from-cyan-400 dark:to-emerald-400',
+        'shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40',
         'hover:-translate-y-0.5 active:translate-y-0',
-        'border border-electric/20'
+        'border border-cyan-500/20'
       ],
       destructive: [
-        'bg-gradient-to-r from-error to-red-600 text-white',
-        'shadow-lg hover:shadow-xl hover:shadow-error/25',
+        'bg-gradient-to-r from-red-500 to-red-600 text-white',
+        'dark:from-red-400 dark:to-red-500',
+        'shadow-lg hover:shadow-xl hover:shadow-red-500/25',
         'hover:-translate-y-0.5 active:translate-y-0'
       ]
     };

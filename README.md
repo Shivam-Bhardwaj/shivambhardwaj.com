@@ -7,11 +7,11 @@
 
 > A modern, interactive portfolio showcasing robotics engineering expertise, project management experience, and technical skills in autonomous systems and hardware development.
 
-## 🤖 About
+## About
 
 This portfolio website represents the professional work of **Shivam Bhardwaj**, a Project Manager & Robotics Engineer based in San Jose, CA. The site features an interactive swarm robotics simulation, detailed project showcases, and comprehensive experience documentation from companies including Tesla, Meta, Applied Materials, Google, GoPro, Saildrone, and Velodyne Lidar.
 
-### ✨ Key Features
+### Key Features
 
 - **Interactive Swarm Robotics Game** - Guide a fleet of robots to explore maps efficiently
 - **Dynamic Project Showcase** - Detailed case studies of robotics and automation projects
@@ -20,7 +20,7 @@ This portfolio website represents the professional work of **Shivam Bhardwaj**, 
 - **Responsive Design** - Optimized for desktop, tablet, and mobile viewing
 - **Modern Animations** - Smooth transitions and micro-interactions using Framer Motion
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend Framework
 - **Next.js 15.4.5** - React framework with App Router
@@ -41,7 +41,7 @@ This portfolio website represents the professional work of **Shivam Bhardwaj**, 
 - **Firebase Hosting** - Static site hosting with CDN
 - **Vercel Platform** - Alternative deployment option
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -162,7 +162,7 @@ npm run export
 ```
 Deploy the `out/` directory to any static hosting service.
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions to improve the portfolio website! Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) file for detailed guidelines.
 
@@ -175,7 +175,7 @@ This project uses a streamlined workflow for issue tracking and deployment:
 3. **Create PR** → Vercel automatically deploys preview
 4. **Review & Deploy** → Approve changes or request modifications
 
-📖 See [WORKFLOW.md](./WORKFLOW.md) for detailed workflow documentation.
+See [WORKFLOW.md](./WORKFLOW.md) for detailed workflow documentation.
 
 ### Quick Start for Contributors
 1. Fork the repository
@@ -185,11 +185,11 @@ This project uses a streamlined workflow for issue tracking and deployment:
 5. Push to your branch: `git push origin feature/amazing-feature`
 6. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-## 📞 Contact
+## Contact
 
 **Shivam Bhardwaj**
 - Email: contact@shivambhardwaj.com
@@ -197,7 +197,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 - GitHub: [github.com/Shivam-Bhardwaj](https://github.com/Shivam-Bhardwaj)
 - Website: [shivambhardwaj.com](https://shivambhardwaj.com/)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built with [Next.js](https://nextjs.org/) and [React](https://reactjs.org/)
 - Styled with [Tailwind CSS](https://tailwindcss.com/)
@@ -206,4 +206,4 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ---
 
-**Made with ❤️ for the robotics and engineering community**
+**Made with care for the robotics and engineering community**

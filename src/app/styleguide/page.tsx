@@ -370,7 +370,7 @@ export default function StyleGuide() {
                   <Input
                     label="Right Icon"
                     placeholder="Search..."
-                    icon={<span>🔍</span>}
+                    icon={<span>Search</span>}
                     iconPosition="right"
                   />
                 </div>
