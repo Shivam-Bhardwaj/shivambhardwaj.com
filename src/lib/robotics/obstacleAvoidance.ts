@@ -21,11 +21,12 @@ export interface Obstacle {
 
 export class ObstacleAvoidance {
   private obstacles: Obstacle[] = [];
-  private readonly repulsionStrength = 50; // Strength of repulsion force
-  private readonly repulsionRadius = 30; // Radius of influence
+  private readonly repulsionStrength = 80; // Increased strength for better avoidance
+  private readonly repulsionRadius = 50; // Larger radius of influence
 
   /**
    * Detect UI elements as obstacles
+   * Called more frequently to detect dynamic content changes
    */
   detectObstacles(): void {
     this.obstacles = [];
@@ -34,8 +35,10 @@ export class ObstacleAvoidance {
     const selectors = [
       'nav', 'header', 'footer', 'button', 'a',
       'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      'p', 'div', 'section', 'article', 'aside',
       '.navbar', '.footer', '[role="navigation"]',
-      '[role="button"]', '.btn', '.button'
+      '[role="button"]', '[role="main"]', '[role="contentinfo"]',
+      '.btn', '.button', '.card', '.container'
     ];
     
     for (const selector of selectors) {
@@ -47,61 +50,36 @@ export class ObstacleAvoidance {
         
         const canvasRect = canvas.getBoundingClientRect();
         
-        // Check if element overlaps with canvas
+        // Check if element overlaps with viewport and is visible
         if (
-          rect.right >= canvasRect.left &&
-          rect.left <= canvasRect.right &&
-          rect.bottom >= canvasRect.top &&
-          rect.top <= canvasRect.bottom
+          rect.right >= 0 &&
+          rect.left <= window.innerWidth &&
+          rect.bottom >= 0 &&
+          rect.top <= window.innerHeight &&
+          rect.width > 30 && // Ignore tiny elements
+          rect.height > 20 &&
+          window.getComputedStyle(element).visibility !== 'hidden' &&
+          window.getComputedStyle(element).display !== 'none'
         ) {
           // Convert to canvas coordinates
           const obstacle: Obstacle = {
-            x: rect.left - canvasRect.left + rect.width / 2,
-            y: rect.top - canvasRect.top + rect.height / 2,
-            width: rect.width,
-            height: rect.height
-          };
-          
-          this.obstacles.push(obstacle);
-        }
-      });
-    }
-    
-    // Also check for text elements
-    const textElements = document.querySelectorAll('p, span, div, li');
-    textElements.forEach((element) => {
-      const rect = element.getBoundingClientRect();
-      const canvas = document.querySelector('canvas');
-      if (!canvas) return;
-      
-      const canvasRect = canvas.getBoundingClientRect();
-      
-      // Only consider large text elements
-      if (rect.width > 50 && rect.height > 20) {
-        if (
-          rect.right >= canvasRect.left &&
-          rect.left <= canvasRect.right &&
-          rect.bottom >= canvasRect.top &&
-          rect.top <= canvasRect.bottom
-        ) {
-          const obstacle: Obstacle = {
-            x: rect.left - canvasRect.left + rect.width / 2,
-            y: rect.top - canvasRect.top + rect.height / 2,
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
             width: rect.width,
             height: rect.height
           };
           
           // Avoid duplicates
           const exists = this.obstacles.some(
-            o => Math.abs(o.x - obstacle.x) < 10 && Math.abs(o.y - obstacle.y) < 10
+            o => Math.abs(o.x - obstacle.x) < 20 && Math.abs(o.y - obstacle.y) < 20
           );
           
           if (!exists) {
             this.obstacles.push(obstacle);
           }
         }
-      }
-    });
+      });
+    }
   }
 
   /**
@@ -137,19 +115,19 @@ export class ObstacleAvoidance {
    * Apply obstacle avoidance to robot's target velocity
    */
   applyObstacleAvoidance(robot: Robot, targetVelocity: Vector2): Vector2 {
-    // Detect obstacles periodically (every 30 frames ~ 0.5 seconds at 60fps)
-    if (Math.random() < 0.033) {
+    // Detect obstacles more frequently for dynamic content (every 10 frames ~ 0.16s at 60fps)
+    if (Math.random() < 0.1) {
       this.detectObstacles();
     }
     
     // Calculate repulsion force
     const repulsionForce = this.calculateRepulsionForce(robot);
     
-    // Combine target velocity with repulsion
-    const avoidanceVelocity = targetVelocity.add(repulsionForce.multiply(0.1));
+    // Combine target velocity with repulsion (stronger repulsion for background)
+    const avoidanceVelocity = targetVelocity.add(repulsionForce.multiply(0.3));
     
     // Limit maximum speed
-    const maxSpeed = robot.state.type.speed * 1.5; // Allow slight speed boost for avoidance
+    const maxSpeed = robot.state.type.speed * 1.5;
     if (avoidanceVelocity.magnitude() > maxSpeed) {
       return avoidanceVelocity.normalize().multiply(maxSpeed);
     }
