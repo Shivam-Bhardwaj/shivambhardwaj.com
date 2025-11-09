@@ -12,11 +12,12 @@ const Navbar = () => {
 
   const navItems = [
     { href: "/", label: "Home" },
-    { href: "/projects", label: "Projects" },
+    { href: "/projects", label: "Portfolio" },
+    { href: "/blog", label: "Blog" },
+    { href: "/experiments", label: "Experiments" },
+    { href: "/learning", label: "Learning" },
+    { href: "/work", label: "Work Arena" },
     { href: "/experience", label: "Experience" },
-    { href: "/skills", label: "Skills" },
-    { href: "/calculators", label: "Calculators" },
-    { href: "/swarm", label: "Swarm" },
     { href: "/contact", label: "Contact" }
   ];
 
