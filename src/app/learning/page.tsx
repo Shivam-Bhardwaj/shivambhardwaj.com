@@ -1,61 +1,15 @@
 import Link from "next/link";
 import { Metadata } from "next";
+import { getLearningResources } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Learning Hub | Shivam Bhardwaj",
   description: "Learn software engineering, Docker, GitHub Actions, and modern development practices",
 };
 
-interface LearningResource {
-  slug: string;
-  title: string;
-  description: string;
-  type: "tutorial" | "guide" | "course" | "article";
-  difficulty: "beginner" | "intermediate" | "advanced";
-  duration: string;
-  tags: string[];
-}
-
-const resources: LearningResource[] = [
-  {
-    slug: "docker-basics",
-    title: "Docker Basics: From Zero to Hero",
-    description: "Complete guide to containerization, Dockerfiles, and Docker Compose",
-    type: "course",
-    difficulty: "beginner",
-    duration: "2 hours",
-    tags: ["Docker", "Containers", "DevOps"],
-  },
-  {
-    slug: "git-worktrees-mastery",
-    title: "Git Worktrees: Master Parallel Development",
-    description: "Learn how to work on multiple branches simultaneously without context switching",
-    type: "tutorial",
-    difficulty: "intermediate",
-    duration: "30 min",
-    tags: ["Git", "Workflow", "Version Control"],
-  },
-  {
-    slug: "github-actions-ci-cd",
-    title: "Building CI/CD with GitHub Actions",
-    description: "Create professional CI/CD pipelines with automated testing and deployment",
-    type: "guide",
-    difficulty: "intermediate",
-    duration: "1 hour",
-    tags: ["GitHub Actions", "CI/CD", "Automation"],
-  },
-  {
-    slug: "visual-testing-playwright",
-    title: "Visual Regression Testing with Playwright",
-    description: "Set up visual testing in headless environments using Docker and Playwright",
-    type: "tutorial",
-    difficulty: "advanced",
-    duration: "45 min",
-    tags: ["Testing", "Playwright", "Docker"],
-  },
-];
-
 export default function LearningPage() {
+  const resources = getLearningResources();
+
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-6xl mx-auto">

@@ -1,41 +1,15 @@
 import Link from "next/link";
 import { Metadata } from "next";
+import { getBlogPosts } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Blog | Shivam Bhardwaj",
   description: "Thoughts on software engineering, robotics, and continuous learning",
 };
 
-interface BlogPost {
-  slug: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  tags: string[];
-  readTime: string;
-}
-
-// This will be replaced with actual content loading
-const posts: BlogPost[] = [
-  {
-    slug: "docker-first-development",
-    title: "Docker-First Development: My Philosophy",
-    excerpt: "Why I containerize everything and how it transformed my workflow",
-    date: "2025-11-09",
-    tags: ["Docker", "Development", "Philosophy"],
-    readTime: "5 min",
-  },
-  {
-    slug: "mastering-git-worktrees",
-    title: "Mastering Git Worktrees: A Game Changer",
-    excerpt: "How worktrees revolutionized my development workflow and why you should use them",
-    date: "2025-11-08",
-    tags: ["Git", "Workflow", "Tutorial"],
-    readTime: "8 min",
-  },
-];
-
 export default function BlogPage() {
+  const posts = getBlogPosts();
+
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-4xl mx-auto">

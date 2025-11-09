@@ -1,47 +1,15 @@
 import Link from "next/link";
 import { Metadata } from "next";
+import { getExperiments } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Experiments | Shivam Bhardwaj",
   description: "Experimental projects, prototypes, and proof-of-concepts",
 };
 
-interface Experiment {
-  slug: string;
-  title: string;
-  description: string;
-  status: "active" | "completed" | "archived";
-  tags: string[];
-  github?: string;
-  demo?: string;
-}
-
-const experiments: Experiment[] = [
-  {
-    slug: "docker-worktree-integration",
-    title: "Docker + Worktrees Integration",
-    description: "Automated Docker container management per Git worktree",
-    status: "active",
-    tags: ["Docker", "Git", "Automation"],
-    github: "https://github.com/Shivam-Bhardwaj/dev-setup",
-  },
-  {
-    slug: "visual-testing-headless",
-    title: "Headless Visual Testing Pipeline",
-    description: "Playwright-based visual regression testing in Docker containers",
-    status: "completed",
-    tags: ["Testing", "Docker", "Playwright"],
-  },
-  {
-    slug: "github-actions-library",
-    title: "Reusable GitHub Actions",
-    description: "Collection of reusable workflows for CI/CD, issue automation, and deployments",
-    status: "active",
-    tags: ["GitHub Actions", "CI/CD", "Automation"],
-  },
-];
-
 export default function ExperimentsPage() {
+  const experiments = getExperiments();
+
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-6xl mx-auto">
