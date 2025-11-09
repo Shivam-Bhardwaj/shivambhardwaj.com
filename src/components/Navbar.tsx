@@ -16,13 +16,13 @@ const Navbar = () => {
     { href: "/blog", label: "Blog" },
     { href: "/experiments", label: "Experiments" },
     { href: "/learning", label: "Learning" },
-    { href: "/work", label: "Work Arena" },
+    { href: "/work", label: "Work" },
     { href: "/experience", label: "Experience" },
     { href: "/contact", label: "Contact" }
   ];
 
   const navItemClass = (href: string) =>
-    `relative px-3 lg:px-4 py-2 text-sm font-medium transition-all duration-300 rounded-md
+    `relative px-2 lg:px-3 xl:px-4 py-2 text-xs lg:text-sm font-medium transition-all duration-300 rounded-md whitespace-nowrap
      ${pathname === href 
        ? "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20" 
        : "text-gray-700 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -38,7 +38,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-center items-center h-16 relative">
           {/* Desktop Navigation - Centered */}
-          <ul className="hidden md:flex items-center justify-center space-x-2 lg:space-x-4">
+          <ul className="hidden md:flex items-center justify-center flex-wrap gap-2 lg:gap-4 max-w-6xl mx-auto">
             {navItems.map((item, index) => (
               <li key={item.href}>
                 <motion.div
