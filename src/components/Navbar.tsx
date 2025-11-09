@@ -22,7 +22,7 @@ const Navbar = () => {
   ];
 
   const navItemClass = (href: string) =>
-    `relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-md
+    `relative px-3 lg:px-4 py-2 text-sm font-medium transition-all duration-300 rounded-md
      ${pathname === href 
        ? "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20" 
        : "text-gray-700 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -38,7 +38,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-center items-center h-16 relative">
           {/* Desktop Navigation - Centered */}
-          <ul className="hidden md:flex items-center justify-center space-x-6">
+          <ul className="hidden md:flex items-center justify-center space-x-2 lg:space-x-4">
             {navItems.map((item, index) => (
               <li key={item.href}>
                 <motion.div
