@@ -199,6 +199,9 @@ export default function SwarmGameAdvanced() {
       // Use robots from ref for rendering
       const currentRobots = robotsRef.current;
       
+      // Render fog of war FIRST (as background)
+      fogOfWar.render(ctx);
+      
       // Render energy sources
       for (const energySource of energySourcesRef.current) {
         ctx.fillStyle = '#fbbf24';
@@ -213,23 +216,50 @@ export default function SwarmGameAdvanced() {
         ctx.stroke();
       }
       
-      // Render robots first (before fog of war overlay)
-      for (const robot of currentRobots) {
-        if (!robot.isOperational()) continue;
-        
-        const pos = robot.state.position;
-        const role = robot.state.type.role;
-        
-        // Draw sensor range (semi-transparent)
-        if (showSensors) {
+      // Render sensors (field of view visualization) - before robots
+      if (showSensors) {
+        for (const robot of currentRobots) {
+          if (!robot.isOperational()) continue;
           const sensorRange = robot.getSensorRange(ROBOT_SIZE);
+          const pos = robot.state.position;
+          
+          // Draw sensor range circle (semi-transparent)
           ctx.globalAlpha = 0.1;
           ctx.fillStyle = robot.state.type.color;
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, sensorRange, 0, Math.PI * 2);
           ctx.fill();
           ctx.globalAlpha = 1.0;
+          
+          // Draw field of view cone
+          ctx.globalAlpha = 0.15;
+          ctx.fillStyle = robot.state.type.color;
+          ctx.beginPath();
+          ctx.moveTo(pos.x, pos.y);
+          const fovAngle = Math.PI / 3; // 60 degree field of view
+          ctx.arc(
+            pos.x, pos.y,
+            sensorRange,
+            robot.state.angle - fovAngle / 2,
+            robot.state.angle + fovAngle / 2
+          );
+          ctx.closePath();
+          ctx.fill();
+          ctx.globalAlpha = 1.0;
         }
+      }
+      
+      // Render communication graph
+      if (showCommunication) {
+        communicationGraph.render(ctx);
+      }
+      
+      // Render robots LAST (on top of everything)
+      for (const robot of currentRobots) {
+        if (!robot.isOperational()) continue;
+        
+        const pos = robot.state.position;
+        const role = robot.state.type.role;
         
         // Draw robot body with role-based size
         const size = role === 'predator' ? ROBOT_SIZE * 1.2 : ROBOT_SIZE;
@@ -269,39 +299,6 @@ export default function SwarmGameAdvanced() {
         const roleSymbol = role === 'prey' ? 'P' : role === 'predator' ? 'X' : 'S';
         ctx.fillText(roleSymbol, pos.x, pos.y);
       }
-      
-      // Render sensors (field of view visualization)
-      if (showSensors) {
-        for (const robot of currentRobots) {
-          if (!robot.isOperational()) continue;
-          const sensorRange = robot.getSensorRange(ROBOT_SIZE);
-          const pos = robot.state.position;
-          
-          // Draw field of view cone
-          ctx.globalAlpha = 0.15;
-          ctx.fillStyle = robot.state.type.color;
-          ctx.beginPath();
-          ctx.moveTo(pos.x, pos.y);
-          const fovAngle = Math.PI / 3; // 60 degree field of view
-          ctx.arc(
-            pos.x, pos.y,
-            sensorRange,
-            robot.state.angle - fovAngle / 2,
-            robot.state.angle + fovAngle / 2
-          );
-          ctx.closePath();
-          ctx.fill();
-          ctx.globalAlpha = 1.0;
-        }
-      }
-      
-      // Render communication graph
-      if (showCommunication) {
-        communicationGraph.render(ctx);
-      }
-      
-      // Render fog of war (as overlay - last so it's on top)
-      fogOfWar.render(ctx);
       
       // Update time
       if (isRunning) {
