@@ -21,14 +21,26 @@ export interface Obstacle {
 
 export class ObstacleAvoidance {
   private obstacles: Obstacle[] = [];
+  private obstacleCache: Obstacle[] = [];
+  private lastCacheUpdate: number = 0;
   private readonly repulsionStrength = 80; // Increased strength for better avoidance
   private readonly repulsionRadius = 50; // Larger radius of influence
+  private readonly cacheUpdateInterval = 200; // Update cache every 200ms
+  private readonly obstacleMargin = 10; // Safety margin around obstacles for pathfinding
 
   /**
    * Detect UI elements as obstacles
    * Called more frequently to detect dynamic content changes
    */
   detectObstacles(): void {
+    const now = Date.now();
+    
+    // Use cache if recent enough
+    if (now - this.lastCacheUpdate < this.cacheUpdateInterval && this.obstacleCache.length > 0) {
+      this.obstacles = [...this.obstacleCache];
+      return;
+    }
+    
     this.obstacles = [];
     
     // Get all potentially obstructing elements
@@ -61,12 +73,12 @@ export class ObstacleAvoidance {
           window.getComputedStyle(element).visibility !== 'hidden' &&
           window.getComputedStyle(element).display !== 'none'
         ) {
-          // Convert to canvas coordinates
+          // Convert to canvas coordinates with safety margin
           const obstacle: Obstacle = {
             x: rect.left + rect.width / 2,
             y: rect.top + rect.height / 2,
-            width: rect.width,
-            height: rect.height
+            width: rect.width + this.obstacleMargin * 2, // Add margin for safer navigation
+            height: rect.height + this.obstacleMargin * 2
           };
           
           // Avoid duplicates
@@ -80,6 +92,10 @@ export class ObstacleAvoidance {
         }
       });
     }
+    
+    // Update cache
+    this.obstacleCache = [...this.obstacles];
+    this.lastCacheUpdate = now;
   }
 
   /**
@@ -113,20 +129,19 @@ export class ObstacleAvoidance {
 
   /**
    * Apply obstacle avoidance to robot's target velocity
+   * Now optimized to work with pathfinding - provides local avoidance only
    */
   applyObstacleAvoidance(robot: Robot, targetVelocity: Vector2): Vector2 {
-    // Detect obstacles more frequently for dynamic content (every 10 frames ~ 0.16s at 60fps)
-    if (Math.random() < 0.1) {
-      this.detectObstacles();
-    }
+    // Always detect obstacles (caching handles performance)
+    this.detectObstacles();
     
     // Calculate repulsion force
     const repulsionForce = this.calculateRepulsionForce(robot);
     
-    // Reduce repulsion strength to prevent robots from being pushed too far
-    // When target velocity is strong (mouse following), reduce obstacle avoidance
+    // When using pathfinding, use lighter avoidance for local corrections
+    // Pathfinding handles the main navigation, this handles dynamic obstacles
     const targetStrength = targetVelocity.magnitude();
-    const avoidanceStrength = targetStrength > 0.5 ? 0.15 : 0.25; // Less avoidance when actively following mouse
+    const avoidanceStrength = targetStrength > 0.5 ? 0.1 : 0.2; // Lighter avoidance when pathfinding
     
     // Combine target velocity with repulsion
     const avoidanceVelocity = targetVelocity.add(repulsionForce.multiply(avoidanceStrength));
@@ -160,7 +175,19 @@ export class ObstacleAvoidance {
    * Get all detected obstacles
    */
   getObstacles(): Obstacle[] {
+    // Ensure obstacles are detected
+    if (this.obstacles.length === 0) {
+      this.detectObstacles();
+    }
     return this.obstacles;
+  }
+
+  /**
+   * Force refresh obstacle cache (useful when content changes significantly)
+   */
+  refreshObstacles(): void {
+    this.lastCacheUpdate = 0;
+    this.detectObstacles();
   }
 
   /**
