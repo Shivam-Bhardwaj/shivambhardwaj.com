@@ -170,7 +170,7 @@ We welcome contributions to improve the portfolio website! Please see our [CONTR
 
 This project uses a streamlined workflow for issue tracking and deployment:
 
-1. **Report Issue** → Create an issue (or paste problem description)
+1. **Create Issue** → Create an issue on GitHub and paste the link here
 2. **Implement Solution** → Code changes with automatic CI checks
 3. **Create PR** → Vercel automatically deploys preview
 4. **Review & Deploy** → Approve changes or request modifications

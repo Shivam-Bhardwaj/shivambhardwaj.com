@@ -131,18 +131,19 @@ export default function SwarmBackground() {
       for (const robot of currentRobots) {
         if (!robot.isOperational()) continue;
         
-        let targetDirection = new Vector2(0, 0);
-        
+        // Start with persistent random exploration as base behavior
+        let targetDirection = robot.state.randomDirection.multiply(0.3);
+
         // Robots converge to mouse pointer with varying abilities
         if (mousePos) {
           const toMouse = mousePos.subtract(robot.state.position);
           const distanceToMouse = toMouse.magnitude();
-          
+
           // Some robots have better sensor capabilities (Lidar) and can follow mouse better
           // Robots with Lidar sensors have stronger attraction to mouse
           const hasLidar = robot.state.type.sensors.includes('Lidar');
           const hasUltrasonic = robot.state.type.sensors.includes('Ultrasonic');
-          
+
           // Calculate attraction strength based on sensor capabilities
           let attractionStrength = 0.3; // Base attraction
           if (hasLidar) {
@@ -150,7 +151,7 @@ export default function SwarmBackground() {
           } else if (hasUltrasonic) {
             attractionStrength = 0.5; // Moderate attraction for Ultrasonic robots
           }
-          
+
           // Reduce attraction if mouse is too far (based on sensor range)
           const sensorRange = robot.getSensorRange(ROBOT_SIZE);
           if (distanceToMouse > sensorRange * 3) {
@@ -160,21 +161,13 @@ export default function SwarmBackground() {
             // Weak signal if far
             attractionStrength *= 0.6;
           }
-          
+
           // Normalize direction and apply attraction strength
           if (distanceToMouse > 5) { // Don't move if already very close
             const normalizedToMouse = toMouse.normalize();
-            targetDirection = normalizedToMouse.multiply(attractionStrength);
+            const mouseAttraction = normalizedToMouse.multiply(attractionStrength);
+            targetDirection = targetDirection.add(mouseAttraction);
           }
-        }
-        
-        // Add gentle random exploration when no mouse target
-        if (!mousePos || targetDirection.magnitude() < 0.1) {
-          const randomDirection = new Vector2(
-            (Math.random() - 0.5) * 0.3,
-            (Math.random() - 0.5) * 0.3
-          );
-          targetDirection = targetDirection.add(randomDirection);
         }
         
         // Apply obstacle avoidance (primary force - navigates around content)

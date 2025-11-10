@@ -5,33 +5,31 @@ This document describes the standard workflow for contributing to the shivambhar
 ## Overview
 
 The workflow follows this pattern:
-1. **Problem Description** → Issue created
+1. **Issue Creation** → You create issue on GitHub and paste link here
 2. **Issue Resolution** → Code changes implemented
 3. **Pull Request** → Code review & Vercel preview deployment
 4. **Review & Approval** → Changes requested or production deployment
 
 ## Step-by-Step Process
 
-### 1. Problem Description → Issue Creation
+### 1. Issue Creation → Paste Link Here
 
 When you have a problem, feature request, or bug to address:
 
-**Option A: Using GitHub Web Interface**
-- Go to https://github.com/Shivam-Bhardwaj/shivambhardwaj.com/issues
-- Click "New Issue"
-- Select the appropriate template (Bug Report, Feature Request, etc.)
-- Fill in the details and submit
+1. **Create Issue on GitHub**
+   - Go to https://github.com/Shivam-Bhardwaj/shivambhardwaj.com/issues
+   - Click "New Issue"
+   - Select the appropriate template (Bug Report, Feature Request, etc.)
+   - Fill in the details and submit
 
-**Option B: Paste Problem Here**
-- Simply paste your problem description in the chat
-- I'll create a GitHub issue automatically with:
-  - Proper title and description
-  - Relevant labels
-  - Acceptance criteria (if applicable)
+2. **Paste Issue Link Here**
+   - Copy the GitHub issue URL
+   - Paste it in the chat
+   - I'll read the issue and start working on it
 
 ### 2. Issue Resolution
 
-Once an issue is created:
+Once you paste the issue link:
 - I'll analyze the problem
 - Implement the solution
 - Create a feature branch: `feature/issue-{number}-{description}` or `fix/issue-{number}-{description}`
@@ -113,21 +111,21 @@ All checks must pass before merging.
 ## Example Workflow
 
 ```
-1. You: "The contact form isn't working on mobile"
+1. You: Create Issue #45 on GitHub - "Contact form isn't working on mobile"
    ↓
-2. I create: Issue #45 - Contact form mobile bug
+2. You: Paste issue link here → https://github.com/Shivam-Bhardwaj/shivambhardwaj.com/issues/45
    ↓
-3. I implement: Fix form validation on mobile
+3. I: Read the issue and implement fix for form validation on mobile
    ↓
-4. I create: PR #46 - Fix contact form mobile issue
+4. I: Create PR #46 - Fix contact form mobile issue
    ↓
 5. Vercel: Deploys preview → https://shivambhardwaj.com-git-fix-45-contact-form-...
    ↓
-6. You review preview and PR
+6. You: Review preview and PR
    ↓
 7. You: "Looks good, merge it"
    ↓
-8. I merge PR → Vercel auto-deploys to production
+8. I: Merge PR → Vercel auto-deploys to production
 ```
 
 ## Quick Commands
@@ -169,5 +167,5 @@ Issues are automatically labeled:
 
 ---
 
-**Ready to start?** Just paste your problem or feature request, and I'll handle the rest! 🚀
+**Ready to start?** Create an issue on GitHub and paste the link here! 🚀
 
