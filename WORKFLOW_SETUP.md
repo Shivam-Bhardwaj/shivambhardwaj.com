@@ -51,7 +51,8 @@ The repository is now configured for the development workflow:
    ```
 
 2. **Test the workflow**:
-   - Create a test issue
+   - Create a test issue on GitHub
+   - Paste the issue link here
    - I'll implement a fix
    - Create a PR (Vercel will auto-deploy preview)
    - Review and merge
@@ -60,30 +61,31 @@ The repository is now configured for the development workflow:
 
 ### To Start Working on a Problem:
 
-**Just paste your problem here**, and I'll:
-1. Create a GitHub issue
+**Create an issue on GitHub and paste the link here**, and I'll:
+1. Read the issue
 2. Implement the solution
 3. Create a PR with Vercel preview
 4. Wait for your review
 
 **Example:**
 ```
-You: "The navbar isn't responsive on mobile devices"
+You: Create Issue #123 on GitHub - "Navbar isn't responsive on mobile devices"
 ↓
-I create: Issue #123
+You: Paste link → https://github.com/Shivam-Bhardwaj/shivambhardwaj.com/issues/123
 ↓
-I implement: Fix navbar responsiveness
+I: Read issue and implement fix for navbar responsiveness
 ↓
-I create: PR #124 with preview URL
+I: Create PR #124 with preview URL
 ↓
-You review and approve
+You: Review and approve
 ```
 
-### Manual Issue Creation
+### Creating Issues
 
-You can also create issues manually:
+To create an issue:
 - Visit: https://github.com/Shivam-Bhardwaj/shivambhardwaj.com/issues/new
 - Use the templates for bug reports or feature requests
+- Copy the issue URL and paste it here to start working on it
 
 ## Verification
 
@@ -121,5 +123,5 @@ npm run build
 
 ---
 
-**Ready to go!** Just paste your next problem or feature request. 🚀
+**Ready to go!** Create an issue on GitHub and paste the link here. 🚀
 

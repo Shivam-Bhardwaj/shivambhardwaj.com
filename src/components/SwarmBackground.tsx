@@ -131,11 +131,8 @@ export default function SwarmBackground() {
       for (const robot of currentRobots) {
         if (!robot.isOperational()) continue;
         
-        // Start with gentle random exploration as base behavior
-        let targetDirection = new Vector2(
-          (Math.random() - 0.5) * 0.3,
-          (Math.random() - 0.5) * 0.3
-        );
+        // Start with persistent random exploration as base behavior
+        let targetDirection = robot.state.randomDirection.multiply(0.3);
 
         // Robots converge to mouse pointer with varying abilities
         if (mousePos) {

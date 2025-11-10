@@ -19,6 +19,8 @@ export interface RobotState {
   exploredArea: Set<string>; // Grid cells this robot has explored
   neighbors: Set<number>; // IDs of robots in communication range
   lastCommunication: Map<number, number>; // Robot ID -> timestamp of last communication
+  randomDirection: Vector2; // Persistent random direction for smooth wandering
+  lastDirectionChange: number; // Timestamp of last direction change
 }
 
 export class Robot {
@@ -27,17 +29,23 @@ export class Robot {
   private maxSpeed: number;
 
   constructor(id: number, type: RobotType, initialPosition: Vector2) {
+    // Initialize random direction
+    const randomAngle = Math.random() * Math.PI * 2;
+    const randomDirection = new Vector2(Math.cos(randomAngle), Math.sin(randomAngle));
+
     this.state = {
       id,
       type,
       position: initialPosition,
       velocity: Vector2.zero(),
-      angle: Math.random() * Math.PI * 2,
+      angle: randomAngle,
       battery: type.batteryCapacity,
       signalStrength: 100,
       exploredArea: new Set(),
       neighbors: new Set(),
-      lastCommunication: new Map()
+      lastCommunication: new Map(),
+      randomDirection,
+      lastDirectionChange: Date.now()
     };
     this.maxSpeed = type.speed;
   }
@@ -46,20 +54,38 @@ export class Robot {
    * Update robot state each frame
    */
   update(deltaTime: number): void {
+    // Update random direction periodically for smooth wandering
+    this.updateRandomDirection();
+
     // Drain battery
     this.state.battery = Math.max(0, this.state.battery - this.batteryDrainRate * deltaTime);
-    
+
     // Update position based on velocity
     const movement = this.state.velocity.multiply(deltaTime * 60); // Scale for 60fps
     this.state.position = this.state.position.add(movement);
-    
+
     // Update angle based on velocity direction
     if (this.state.velocity.magnitude() > 0.1) {
       this.state.angle = this.state.velocity.angle();
     }
-    
+
     // Update signal strength based on battery
     this.state.signalStrength = (this.state.battery / this.state.type.batteryCapacity) * 100;
+  }
+
+  /**
+   * Update random direction periodically for smooth wandering behavior
+   */
+  private updateRandomDirection(): void {
+    const currentTime = Date.now();
+    const timeSinceLastChange = currentTime - this.state.lastDirectionChange;
+
+    // Change direction every 2-5 seconds randomly
+    if (timeSinceLastChange > 2000 + Math.random() * 3000) {
+      const randomAngle = Math.random() * Math.PI * 2;
+      this.state.randomDirection = new Vector2(Math.cos(randomAngle), Math.sin(randomAngle));
+      this.state.lastDirectionChange = currentTime;
+    }
   }
 
   /**
