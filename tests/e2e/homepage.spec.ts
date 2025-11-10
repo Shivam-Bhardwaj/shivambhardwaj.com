@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test'
+import { captureVisualSnapshot, VIEWPORTS } from './utils/visual-testing'
 
 test.describe('Homepage', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
+    await page.waitForLoadState('networkidle')
   })
 
   test('should display the main heading and navigation', async ({ page }) => {
@@ -16,6 +18,9 @@ test.describe('Homepage', () => {
     await expect(page.getByRole('link', { name: 'Skills' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Swarm' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Contact' })).toBeVisible()
+    
+    // Capture visual snapshot
+    await captureVisualSnapshot(page, 'homepage-navigation', VIEWPORTS.desktop)
   })
 
   test('should navigate to projects page', async ({ page }) => {
@@ -53,12 +58,16 @@ test.describe('Homepage', () => {
 
   test('should be responsive on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 })
+    await page.waitForLoadState('networkidle')
     
     // Main heading should still be visible
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     
     // Navigation should work on mobile
     await expect(page.getByRole('link', { name: 'View Projects' })).toBeVisible()
+    
+    // Capture mobile visual snapshot
+    await captureVisualSnapshot(page, 'homepage-mobile-responsive', { width: 375, height: 667 })
   })
 
   test('should have proper meta tags', async ({ page }) => {

@@ -11,10 +11,12 @@
 
 export type SensorType = 'lidar' | 'ultrasonic' | 'camera';
 export type CommunicationRange = 'short' | 'medium' | 'long';
+export type RobotRole = 'prey' | 'predator' | 'scavenger';
 
 export interface RobotType {
   id: string;
   name: string;
+  role: RobotRole;
   sensorType: SensorType;
   sensorRange: number; // Multiplier of robot size (e.g., 10x for lidar)
   commRange: number; // Pixels
@@ -25,75 +27,110 @@ export interface RobotType {
 }
 
 export const ROBOT_TYPES: Record<string, RobotType> = {
-  lidar_long: {
-    id: 'lidar_long',
-    name: 'Lidar Scout',
+  // Prey robots - fast, good sensors, flee from predators
+  prey_fast: {
+    id: 'prey_fast',
+    name: 'Fast Prey',
+    role: 'prey',
     sensorType: 'lidar',
-    sensorRange: 10, // 10x robot size (radar-like detection)
-    commRange: 150, // Long-range communication
-    batteryCapacity: 100,
-    speed: 2.5,
-    color: '#06b6d4', // Cyan - electric blue
-    description: 'Advanced lidar sensor with long-range detection and communication'
-  },
-  lidar_medium: {
-    id: 'lidar_medium',
-    name: 'Lidar Explorer',
-    sensorType: 'lidar',
-    sensorRange: 8, // 8x robot size
-    commRange: 100, // Medium-range communication
+    sensorRange: 12, // Good detection range
+    commRange: 100,
     batteryCapacity: 80,
-    speed: 2.0,
-    color: '#0ea5e9', // Sky blue
-    description: 'Lidar-equipped robot with medium-range capabilities'
+    speed: 3.5, // Fast
+    color: '#10b981', // Green
+    description: 'Fast prey robot with excellent sensors for detecting predators'
   },
-  ultrasonic_short: {
-    id: 'ultrasonic_short',
-    name: 'Ultrasonic Worker',
+  prey_medium: {
+    id: 'prey_medium',
+    name: 'Medium Prey',
+    role: 'prey',
     sensorType: 'ultrasonic',
-    sensorRange: 3, // 3x robot size (fuzzy detection cloud)
-    commRange: 50, // Short-range communication
-    batteryCapacity: 60,
-    speed: 1.5,
-    color: '#f59e0b', // Amber/yellow
-    description: 'Short-range ultrasonic sensor with limited communication'
-  },
-  ultrasonic_medium: {
-    id: 'ultrasonic_medium',
-    name: 'Ultrasonic Scout',
-    sensorType: 'ultrasonic',
-    sensorRange: 4, // 4x robot size
-    commRange: 75, // Medium-range communication
+    sensorRange: 8,
+    commRange: 80,
     batteryCapacity: 70,
-    speed: 1.8,
-    color: '#fbbf24', // Yellow
-    description: 'Medium-range ultrasonic sensor'
+    speed: 2.8,
+    color: '#34d399', // Light green
+    description: 'Medium-speed prey robot'
   },
-  camera_short: {
-    id: 'camera_short',
-    name: 'Visual Observer',
+  prey_slow: {
+    id: 'prey_slow',
+    name: 'Slow Prey',
+    role: 'prey',
     sensorType: 'camera',
-    sensorRange: 2, // 2x robot size (visual detection)
-    commRange: 40, // Very short-range communication
-    batteryCapacity: 50,
-    speed: 1.2,
-    color: '#ec4899', // Pink/magenta
-    description: 'Camera-based detection with minimal communication range'
+    sensorRange: 6,
+    commRange: 60,
+    batteryCapacity: 60,
+    speed: 2.0,
+    color: '#6ee7b7', // Pale green
+    description: 'Slower prey robot with basic sensors'
+  },
+  
+  // Predator robots - slower but hunt prey
+  predator_aggressive: {
+    id: 'predator_aggressive',
+    name: 'Aggressive Predator',
+    role: 'predator',
+    sensorType: 'lidar',
+    sensorRange: 10,
+    commRange: 120,
+    batteryCapacity: 120, // Higher capacity
+    speed: 2.5, // Slower than prey
+    color: '#ef4444', // Red
+    description: 'Aggressive predator that hunts prey for energy'
+  },
+  predator_patrol: {
+    id: 'predator_patrol',
+    name: 'Patrol Predator',
+    role: 'predator',
+    sensorType: 'ultrasonic',
+    sensorRange: 8,
+    commRange: 100,
+    batteryCapacity: 100,
+    speed: 2.2,
+    color: '#f87171', // Light red
+    description: 'Patrolling predator with medium-range sensors'
+  },
+  
+  // Scavenger robots - collect energy, avoid predators
+  scavenger_efficient: {
+    id: 'scavenger_efficient',
+    name: 'Efficient Scavenger',
+    role: 'scavenger',
+    sensorType: 'ultrasonic',
+    sensorRange: 9,
+    commRange: 90,
+    batteryCapacity: 90,
+    speed: 2.3,
+    color: '#fbbf24', // Yellow/amber
+    description: 'Efficient scavenger that collects energy from environment'
+  },
+  scavenger_basic: {
+    id: 'scavenger_basic',
+    name: 'Basic Scavenger',
+    role: 'scavenger',
+    sensorType: 'camera',
+    sensorRange: 5,
+    commRange: 70,
+    batteryCapacity: 75,
+    speed: 2.0,
+    color: '#fcd34d', // Light yellow
+    description: 'Basic scavenger robot'
   }
 };
 
 /**
- * Get random robot type distribution
- * Returns a mix of robot types for realistic swarm behavior
+ * Get random robot type distribution for prey-predator ecosystem
  */
 export function getRandomRobotTypes(count: number): RobotType[] {
   const types = Object.values(ROBOT_TYPES);
   const distribution = [
-    { type: types[0], weight: 0.2 }, // 20% lidar_long
-    { type: types[1], weight: 0.25 }, // 25% lidar_medium
-    { type: types[2], weight: 0.3 }, // 30% ultrasonic_short
-    { type: types[3], weight: 0.15 }, // 15% ultrasonic_medium
-    { type: types[4], weight: 0.1 }  // 10% camera_short
+    { type: types[0], weight: 0.25 }, // 25% prey_fast
+    { type: types[1], weight: 0.20 }, // 20% prey_medium
+    { type: types[2], weight: 0.15 }, // 15% prey_slow
+    { type: types[3], weight: 0.15 }, // 15% predator_aggressive
+    { type: types[4], weight: 0.10 }, // 10% predator_patrol
+    { type: types[5], weight: 0.10 }, // 10% scavenger_efficient
+    { type: types[6], weight: 0.05 }  // 5% scavenger_basic
   ];
 
   const robots: RobotType[] = [];
