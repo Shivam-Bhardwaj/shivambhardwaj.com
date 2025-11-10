@@ -17,8 +17,7 @@ import { getRandomRobotTypes } from "@/lib/robotics/robotTypes";
 import { FogOfWar } from "@/lib/robotics/fogOfWar";
 import { ObstacleAvoidance } from "@/lib/robotics/obstacleAvoidance";
 import { CommunicationGraph } from "@/lib/robotics/communication";
-import { SensorVisualization } from "@/lib/robotics/sensorVisualization";
-import { DistributedExploration } from "@/lib/robotics/exploration";
+import { PredatorPreyBehaviors } from "@/lib/robotics/predatorPreyBehaviors";
 import SwarmTelemetry from "@/components/SwarmTelemetry";
 
 const ROBOT_COUNT = 25;
@@ -42,7 +41,7 @@ export default function SwarmGameAdvanced() {
   const fogOfWarRef = useRef<FogOfWar | null>(null);
   const obstacleAvoidanceRef = useRef<ObstacleAvoidance | null>(null);
   const communicationGraphRef = useRef<CommunicationGraph | null>(null);
-  const mouseTargetRef = useRef<Vector2 | null>(null);
+  const energySourcesRef = useRef<Vector2[]>([]);
   const startTimeRef = useRef(0);
   const lastFrameTimeRef = useRef(0);
 
@@ -68,6 +67,16 @@ export default function SwarmGameAdvanced() {
     
     setRobots(newRobots);
     robotsRef.current = newRobots;
+    
+    // Initialize energy sources
+    const energySources: Vector2[] = [];
+    for (let i = 0; i < 8; i++) {
+      energySources.push(new Vector2(
+        Math.random() * CANVAS_WIDTH,
+        Math.random() * CANVAS_HEIGHT
+      ));
+    }
+    energySourcesRef.current = energySources;
   }, []);
 
   // Main game loop
@@ -102,19 +111,63 @@ export default function SwarmGameAdvanced() {
       setRobots(currentRobots => {
         const updatedRobots = [...currentRobots];
         
+        // Handle predator-prey interactions (energy transfer)
+        for (let i = 0; i < updatedRobots.length; i++) {
+          const predator = updatedRobots[i];
+          if (!predator.isOperational() || predator.state.type.role !== 'predator') continue;
+          
+          for (let j = 0; j < updatedRobots.length; j++) {
+            const prey = updatedRobots[j];
+            if (!prey.isOperational() || prey.state.type.role !== 'prey') continue;
+            
+            if (PredatorPreyBehaviors.checkPredatorCatch(predator, prey)) {
+              // Predator gains energy, prey loses energy
+              predator.state.battery = Math.min(
+                predator.state.type.batteryCapacity,
+                predator.state.battery + 20
+              );
+              prey.state.battery = Math.max(0, prey.state.battery - 30);
+              
+              // If prey is caught, reset it to a random position
+              if (prey.state.battery <= 0) {
+                prey.state.position = new Vector2(
+                  Math.random() * CANVAS_WIDTH,
+                  Math.random() * CANVAS_HEIGHT
+                );
+                prey.state.battery = prey.state.type.batteryCapacity;
+              }
+            }
+          }
+        }
+        
+        // Handle scavenger energy collection
+        for (const robot of updatedRobots) {
+          if (!robot.isOperational() || robot.state.type.role !== 'scavenger') continue;
+          
+          for (const energySource of energySourcesRef.current) {
+            const distance = robot.state.position.distanceTo(energySource);
+            if (distance < 15) {
+              robot.state.battery = Math.min(
+                robot.state.type.batteryCapacity,
+                robot.state.battery + 0.5 * deltaTime
+              );
+            }
+          }
+        }
+        
+        // Update robot behaviors
         for (const robot of updatedRobots) {
           if (!robot.isOperational()) continue;
           
-          // Calculate target velocity toward mouse or exploration target
-          const mouseTarget = mouseTargetRef.current;
-          const explorationTarget = DistributedExploration.calculateExplorationTarget(
+          // Calculate autonomous behavior target
+          const behaviorTarget = PredatorPreyBehaviors.calculateBehaviorTarget(
             robot,
             updatedRobots,
-            fogOfWar,
-            mouseTarget
+            energySourcesRef.current,
+            deltaTime
           );
           
-          const targetVelocity = explorationTarget.subtract(robot.state.position);
+          const targetVelocity = behaviorTarget.subtract(robot.state.position);
           
           // Apply obstacle avoidance
           const avoidanceVelocity = obstacleAvoidance.applyObstacleAvoidance(
@@ -137,9 +190,6 @@ export default function SwarmGameAdvanced() {
         fogOfWar.update(updatedRobots, ROBOT_SIZE);
         fogOfWar.shareExplorationData(updatedRobots);
         
-        // Apply consensus algorithm
-        DistributedExploration.applyConsensus(updatedRobots);
-        
         // Store robots for rendering
         robotsRef.current = updatedRobots;
         
@@ -149,16 +199,43 @@ export default function SwarmGameAdvanced() {
       // Use robots from ref for rendering
       const currentRobots = robotsRef.current;
       
+      // Render energy sources
+      for (const energySource of energySourcesRef.current) {
+        ctx.fillStyle = '#fbbf24';
+        ctx.globalAlpha = 0.6;
+        ctx.beginPath();
+        ctx.arc(energySource.x, energySource.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+        
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      
       // Render robots first (before fog of war overlay)
       for (const robot of currentRobots) {
         if (!robot.isOperational()) continue;
         
         const pos = robot.state.position;
+        const role = robot.state.type.role;
         
-        // Draw robot body
+        // Draw sensor range (semi-transparent)
+        if (showSensors) {
+          const sensorRange = robot.getSensorRange(ROBOT_SIZE);
+          ctx.globalAlpha = 0.1;
+          ctx.fillStyle = robot.state.type.color;
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, sensorRange, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1.0;
+        }
+        
+        // Draw robot body with role-based size
+        const size = role === 'predator' ? ROBOT_SIZE * 1.2 : ROBOT_SIZE;
         ctx.fillStyle = robot.state.type.color;
         ctx.beginPath();
-        ctx.arc(pos.x, pos.y, ROBOT_SIZE, 0, Math.PI * 2);
+        ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
         ctx.fill();
         
         // Draw robot border
@@ -172,8 +249,8 @@ export default function SwarmGameAdvanced() {
         ctx.beginPath();
         ctx.moveTo(pos.x, pos.y);
         ctx.lineTo(
-          pos.x + Math.cos(robot.state.angle) * ROBOT_SIZE * 1.5,
-          pos.y + Math.sin(robot.state.angle) * ROBOT_SIZE * 1.5
+          pos.x + Math.cos(robot.state.angle) * size * 1.5,
+          pos.y + Math.sin(robot.state.angle) * size * 1.5
         );
         ctx.stroke();
         
@@ -181,14 +258,40 @@ export default function SwarmGameAdvanced() {
         const batteryPercent = robot.getBatteryPercentage();
         ctx.fillStyle = batteryPercent > 50 ? '#10b981' : batteryPercent > 20 ? '#f59e0b' : '#ef4444';
         ctx.beginPath();
-        ctx.arc(pos.x, pos.y - ROBOT_SIZE - 3, 2, 0, Math.PI * 2);
+        ctx.arc(pos.x, pos.y - size - 3, 2, 0, Math.PI * 2);
         ctx.fill();
+        
+        // Draw role indicator
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "10px monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const roleSymbol = role === 'prey' ? 'P' : role === 'predator' ? 'X' : 'S';
+        ctx.fillText(roleSymbol, pos.x, pos.y);
       }
       
-      // Render sensors
+      // Render sensors (field of view visualization)
       if (showSensors) {
         for (const robot of currentRobots) {
-          SensorVisualization.render(ctx, robot, ROBOT_SIZE, currentTime);
+          if (!robot.isOperational()) continue;
+          const sensorRange = robot.getSensorRange(ROBOT_SIZE);
+          const pos = robot.state.position;
+          
+          // Draw field of view cone
+          ctx.globalAlpha = 0.15;
+          ctx.fillStyle = robot.state.type.color;
+          ctx.beginPath();
+          ctx.moveTo(pos.x, pos.y);
+          const fovAngle = Math.PI / 3; // 60 degree field of view
+          ctx.arc(
+            pos.x, pos.y,
+            sensorRange,
+            robot.state.angle - fovAngle / 2,
+            robot.state.angle + fovAngle / 2
+          );
+          ctx.closePath();
+          ctx.fill();
+          ctx.globalAlpha = 1.0;
         }
       }
       
@@ -199,23 +302,6 @@ export default function SwarmGameAdvanced() {
       
       // Render fog of war (as overlay - last so it's on top)
       fogOfWar.render(ctx);
-      
-      // Draw mouse target indicator
-      if (mouseTargetRef.current) {
-        const target = mouseTargetRef.current;
-        ctx.strokeStyle = "#e11d48";
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
-        ctx.beginPath();
-        ctx.arc(target.x, target.y, 15, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        
-        ctx.fillStyle = "#e11d48";
-        ctx.beginPath();
-        ctx.arc(target.x, target.y, 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
       
       // Update time
       if (isRunning) {
@@ -244,22 +330,6 @@ export default function SwarmGameAdvanced() {
     };
   }, [isRunning, bestTime, showSensors, showCommunication]);
 
-  // Handle mouse movement
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const rect = canvas.getBoundingClientRect();
-    mouseTargetRef.current = new Vector2(
-      e.clientX - rect.left,
-      e.clientY - rect.top
-    );
-  };
-
-  // Handle mouse leave
-  const handleMouseLeave = () => {
-    mouseTargetRef.current = null;
-  };
 
   // Start game
   const handleStart = () => {
@@ -288,11 +358,20 @@ export default function SwarmGameAdvanced() {
   const handleReset = () => {
     setIsRunning(false);
     setTime(0);
-    mouseTargetRef.current = null;
     
     if (fogOfWarRef.current) {
       fogOfWarRef.current.reset();
     }
+    
+    // Reset energy sources
+    const energySources: Vector2[] = [];
+    for (let i = 0; i < 8; i++) {
+      energySources.push(new Vector2(
+        Math.random() * CANVAS_WIDTH,
+        Math.random() * CANVAS_HEIGHT
+      ));
+    }
+    energySourcesRef.current = energySources;
     
     setRobots(currentRobots => {
       return currentRobots.map(robot => {
@@ -300,7 +379,9 @@ export default function SwarmGameAdvanced() {
           Math.random() * CANVAS_WIDTH,
           Math.random() * CANVAS_HEIGHT
         );
-        return new Robot(robot.state.id, robot.state.type, pos);
+        const newRobot = new Robot(robot.state.id, robot.state.type, pos);
+        newRobot.state.battery = robot.state.type.batteryCapacity;
+        return newRobot;
       });
     });
   };
@@ -350,9 +431,7 @@ export default function SwarmGameAdvanced() {
         ref={canvasRef}
         width={CANVAS_WIDTH}
         height={CANVAS_HEIGHT}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="border border-gray-300 shadow-lg cursor-crosshair"
+        className="border border-gray-300 shadow-lg"
       />
 
       {/* Telemetry */}
@@ -387,12 +466,16 @@ export default function SwarmGameAdvanced() {
       {/* Instructions */}
       <div className="text-sm text-gray-600 max-w-2xl text-center">
         <p className="mb-2">
-          <strong>How to Play:</strong> Move your mouse to guide the swarm. Robots with different sensor types
-          (Lidar, Ultrasonic, Camera) explore the map and reveal hidden city names. Coordinate exploration
-          by maintaining communication links between robots.
+          <strong>Autonomous Swarm Ecosystem:</strong> Watch autonomous robots with different behaviors interact!
+          <br />
+          <span className="text-green-600">Green (P)</span> = Prey robots - fast, flee from predators, flock together
+          <br />
+          <span className="text-red-600">Red (X)</span> = Predator robots - hunt prey for energy
+          <br />
+          <span className="text-yellow-600">Yellow (S)</span> = Scavenger robots - collect energy from sources
         </p>
         <p>
-          Goal: Explore 95% of the map as quickly as possible!
+          Robots use sensors to detect each other and make autonomous decisions. No mouse control needed!
         </p>
       </div>
     </div>
