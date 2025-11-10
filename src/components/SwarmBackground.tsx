@@ -15,6 +15,7 @@ import { CommunicationGraph } from "@/lib/robotics/communication";
 import { SensorVisualization } from "@/lib/robotics/sensorVisualization";
 import { SLAMSystem } from "@/lib/robotics/slam";
 import { CommunicationGraph as GraphTheoryGraph } from "@/lib/robotics/graphTheory";
+import { NavigationSystem } from "@/lib/robotics/navigation";
 import { useTheme } from "@/lib/ThemeProvider";
 
 const ROBOT_COUNT = 15; // Fewer robots for background performance
@@ -26,6 +27,7 @@ export default function SwarmBackground() {
   
   const robotsRef = useRef<Robot[]>([]);
   const obstacleAvoidanceRef = useRef<ObstacleAvoidance | null>(null);
+  const navigationSystemRef = useRef<NavigationSystem | null>(null);
   const communicationGraphRef = useRef<CommunicationGraph | null>(null);
   const slamSystemRef = useRef<SLAMSystem | null>(null);
   const graphTheoryRef = useRef<GraphTheoryGraph | null>(null);
@@ -65,10 +67,24 @@ export default function SwarmBackground() {
     };
     
     updateCanvasSize();
-    window.addEventListener('resize', updateCanvasSize);
+    window.addEventListener('resize', () => {
+      updateCanvasSize();
+      // Update navigation system dimensions
+      if (navigationSystemRef.current) {
+        navigationSystemRef.current.updateDimensions(window.innerWidth, window.innerHeight);
+      }
+      if (slamSystemRef.current) {
+        slamSystemRef.current = new SLAMSystem(window.innerWidth, window.innerHeight);
+      }
+    });
     
     // Initialize game systems
     obstacleAvoidanceRef.current = new ObstacleAvoidance();
+    navigationSystemRef.current = new NavigationSystem(
+      window.innerWidth,
+      window.innerHeight,
+      obstacleAvoidanceRef.current
+    );
     communicationGraphRef.current = new CommunicationGraph();
     slamSystemRef.current = new SLAMSystem(window.innerWidth, window.innerHeight);
     graphTheoryRef.current = new GraphTheoryGraph();
@@ -99,11 +115,12 @@ export default function SwarmBackground() {
     if (!ctx) return;
     
     const obstacleAvoidance = obstacleAvoidanceRef.current;
+    const navigationSystem = navigationSystemRef.current;
     const communicationGraph = communicationGraphRef.current;
     const slamSystem = slamSystemRef.current;
     const graphTheory = graphTheoryRef.current;
     
-    if (!obstacleAvoidance || !communicationGraph || !slamSystem || !graphTheory) return;
+    if (!obstacleAvoidance || !navigationSystem || !communicationGraph || !slamSystem || !graphTheory) return;
     
     if (robotsRef.current.length === 0) return;
 
@@ -124,63 +141,71 @@ export default function SwarmBackground() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       const currentRobots = robotsRef.current;
+      const currentTimeMs = Date.now(); // Use absolute time for navigation system
       
-      // Update robots
+      // Update robots with pathfinding-based navigation
       const mousePos = mousePositionRef.current;
       
       for (const robot of currentRobots) {
         if (!robot.isOperational()) continue;
         
-        // Start with persistent random exploration as base behavior
-        let targetDirection = robot.state.randomDirection.multiply(0.3);
-
-        // Robots converge to mouse pointer with varying abilities
-        if (mousePos) {
-          const toMouse = mousePos.subtract(robot.state.position);
-          const distanceToMouse = toMouse.magnitude();
-
-          // Some robots have better sensor capabilities (Lidar) and can follow mouse better
-          // Robots with Lidar sensors have stronger attraction to mouse
-          const hasLidar = robot.state.type.sensors.includes('Lidar');
-          const hasUltrasonic = robot.state.type.sensors.includes('Ultrasonic');
-
-          // Calculate attraction strength based on sensor capabilities
-          let attractionStrength = 0.3; // Base attraction
-          if (hasLidar) {
-            attractionStrength = 0.7; // Strong attraction for Lidar robots
-          } else if (hasUltrasonic) {
-            attractionStrength = 0.5; // Moderate attraction for Ultrasonic robots
+        // Check if robot is stuck
+        const isStuck = navigationSystem.checkStuckState(robot, currentTimeMs);
+        
+        let targetVelocity: Vector2;
+        
+        if (isStuck) {
+          // Recovery behavior - move away from obstacles
+          const recoveryDirection = navigationSystem.getRecoveryDirection(robot);
+          targetVelocity = recoveryDirection.multiply(0.5);
+        } else if (mousePos) {
+          // Use pathfinding to navigate to mouse
+          const navigationTarget = navigationSystem.getNavigationTarget(robot, mousePos, currentTimeMs);
+          
+          if (navigationTarget) {
+            // Move toward navigation target (waypoint or final target)
+            const toTarget = navigationTarget.subtract(robot.state.position);
+            const distanceToTarget = toTarget.magnitude();
+            
+            if (distanceToTarget > 2) {
+              const normalizedDirection = toTarget.normalize();
+              
+              // Calculate speed based on sensor capabilities
+              const hasLidar = robot.state.type.sensors.includes('Lidar');
+              const hasUltrasonic = robot.state.type.sensors.includes('Ultrasonic');
+              let speedMultiplier = 0.4; // Base speed
+              
+              if (hasLidar) {
+                speedMultiplier = 0.7; // Faster for Lidar robots
+              } else if (hasUltrasonic) {
+                speedMultiplier = 0.55; // Moderate speed for Ultrasonic robots
+              }
+              
+              // Reduce speed if mouse is too far (sensor range limitation)
+              const sensorRange = robot.getSensorRange(ROBOT_SIZE);
+              const distanceToMouse = robot.state.position.distanceTo(mousePos);
+              if (distanceToMouse > sensorRange * 3) {
+                speedMultiplier *= 0.3;
+              } else if (distanceToMouse > sensorRange * 1.5) {
+                speedMultiplier *= 0.6;
+              }
+              
+              targetVelocity = normalizedDirection.multiply(speedMultiplier);
+            } else {
+              // Very close to target - slow down
+              targetVelocity = Vector2.zero();
+            }
+          } else {
+            // Path not found or no target - use random wandering
+            targetVelocity = robot.state.randomDirection.multiply(0.3);
           }
-
-          // Reduce attraction if mouse is too far (based on sensor range)
-          const sensorRange = robot.getSensorRange(ROBOT_SIZE);
-          if (distanceToMouse > sensorRange * 3) {
-            // Robot can't sense mouse if too far
-            attractionStrength *= 0.3;
-          } else if (distanceToMouse > sensorRange * 1.5) {
-            // Weak signal if far
-            attractionStrength *= 0.6;
-          }
-
-          // Normalize direction and apply attraction strength
-          if (distanceToMouse > 5) { // Don't move if already very close
-            const normalizedToMouse = toMouse.normalize();
-            const mouseAttraction = normalizedToMouse.multiply(attractionStrength);
-            targetDirection = targetDirection.add(mouseAttraction);
-          }
+        } else {
+          // No mouse - random wandering
+          targetVelocity = robot.state.randomDirection.multiply(0.3);
         }
         
-        // Apply obstacle avoidance (primary force - navigates around content)
-        const avoidanceVelocity = obstacleAvoidance.applyObstacleAvoidance(
-          robot,
-          targetDirection
-        );
-        
-        // Combine mouse attraction with obstacle avoidance
-        // Obstacle avoidance takes priority, but we blend with mouse following
-        // Use a balanced approach - don't let obstacle avoidance completely override mouse following
-        const mouseInfluence = mousePos ? 0.5 : 0.3; // Stronger mouse influence when mouse is present
-        const finalVelocity = avoidanceVelocity.multiply(0.6).add(targetDirection.multiply(mouseInfluence));
+        // Apply local obstacle avoidance for dynamic obstacles
+        const finalVelocity = obstacleAvoidance.applyObstacleAvoidance(robot, targetVelocity);
         
         robot.setTargetVelocity(finalVelocity);
         robot.update(deltaTime);
