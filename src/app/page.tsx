@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { siteConfig } from "@/data/site";
-import Typewriter from "@/components/Typewriter";
 import { Button } from "@/components/ui";
 
 export default function Home() {
@@ -93,19 +92,13 @@ export default function Home() {
         </motion.p>
       </motion.div>
 
-      {/* Typewriter Section */}
-      <motion.div 
+      {/* Description Section */}
+      <motion.div
         className="max-w-3xl"
         variants={itemVariants}
       >
         <div className="text-xl md:text-2xl text-foreground-secondary font-medium leading-relaxed">
-          <Typewriter
-            phrases={[
-              "The gap between prototype and product? I live there.",
-              "From self-driving to med-tech, I ship reliable systems.",
-              "I optimize, reduce costs, and deliver hardware at scale.",
-            ]}
-          />
+          From prototype to production, I turn complex robotics concepts into reliable deployed systems.
         </div>
       </motion.div>
 
