@@ -1,0 +1,8 @@
+tunnel: shivambhardwaj-tunnel
+credentials-file: /root/.cloudflared/bf19909d-fa18-4c94-8524-87c2b3c0f538.json
+origincert: /root/.cloudflared/cert.pem
+
+ingress:
+  - hostname: shivambhardwaj.com
+    service: http://localhost:3000
+  - service: http_status:404

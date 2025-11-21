@@ -1,0 +1,21 @@
+{
+  "name": "antimony-labs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-css": "postcss style.css -o app/style.css",
+    "build-css:watch": "postcss style.css -o app/style.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.17"
+  }
+}

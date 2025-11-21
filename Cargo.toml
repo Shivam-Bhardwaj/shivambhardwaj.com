@@ -1,0 +1,41 @@
+[workspace]
+members = ["app", "server", "frontend", "robotics_lib"]
+resolver = "2"
+
+[[workspace.metadata.leptos]]
+name = "antimony-labs"
+bin-package = "server"
+lib-package = "app"
+bin = "server"
+site-root = "target/site"
+site-pkg-dir = "pkg"
+env = "PROD"
+site-addr = "0.0.0.0:3000"
+reload-port = 3001
+style-file = "style.css"
+
+[workspace.dependencies]
+# Use stable versions where possible
+leptos = { version = "0.6.15", features = ["nightly"] }
+leptos_meta = { version = "0.6.15", features = ["nightly"] }
+leptos_router = { version = "0.6.15", features = ["nightly"] }
+leptos_axum = { version = "0.6.15" }
+axum = { version = "0.7", features = ["macros", "ws"] } # Added "ws" feature
+tokio = { version = "1", features = ["full"] }
+tower = { version = "0.4", features = ["util"] }
+tower-http = { version = "0.5", features = ["fs", "trace", "compression-gzip"] }
+wasm-bindgen = "0.2"
+console_error_panic_hook = "0.1"
+tracing = "0.1"
+simple_logger = "4.0"
+log = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+gray_matter = "0.2"
+pulldown-cmark = "0.9"
+cfg-if = "1"
+thiserror = "1"
+http = "1"
+web-sys = { version = "0.3", features = ["CanvasRenderingContext2d", "Document", "Element", "HtmlCanvasElement", "Window", "Performance", "AnimationEvent"] }
+libm = "0.2"
+futures = "0.3"

@@ -1,0 +1,11 @@
+[package]
+name = "frontend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+app = { path = "../app", features = ["hydrate"] }
+leptos = { workspace = true, features = ["hydrate"] }
+console_error_panic_hook = { workspace = true }
+wasm-bindgen = { workspace = true }
+
