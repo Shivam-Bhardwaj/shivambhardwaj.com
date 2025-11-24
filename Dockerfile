@@ -1,5 +1,5 @@
 # Use the official Rust image as a builder
-FROM rustlang/rust:nightly as builder
+FROM rustlang/rust:nightly-2024-10-01 as builder
 
 # Install cargo-binstall for easy tool installation
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
