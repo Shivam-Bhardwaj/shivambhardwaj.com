@@ -121,13 +121,13 @@ mod tests {
     #[test]
     fn test_particle_motion_over_time() {
         let mut p = Particle::new(0.0, 0.0);
-        
+
         // Apply constant force for 10 frames
         for _ in 0..10 {
             p.apply_force(Vec2::new(0.1, 0.0));
             p.update();
         }
-        
+
         // Should have moved right
         assert!(p.position.x > 0.0);
         assert!(p.velocity.x > 0.0);
@@ -137,7 +137,7 @@ mod tests {
     fn test_particle_comes_to_rest_without_force() {
         let mut p = Particle::new(0.0, 0.0);
         p.velocity = Vec2::new(2.0, 0.0);
-        
+
         // Update without force - velocity stays constant (no friction)
         p.update();
         assert!((p.velocity.x - 2.0).abs() < 1e-6);
@@ -147,11 +147,11 @@ mod tests {
     fn test_particle_position_accumulates() {
         let mut p = Particle::new(100.0, 100.0);
         p.velocity = Vec2::new(1.0, 1.0);
-        
+
         for _ in 0..5 {
             p.update();
         }
-        
+
         assert!((p.position.x - 105.0).abs() < 1e-6);
         assert!((p.position.y - 105.0).abs() < 1e-6);
     }
@@ -183,4 +183,3 @@ mod tests {
         assert_eq!(p.position.y, original_pos.y);
     }
 }
-

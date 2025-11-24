@@ -70,7 +70,13 @@ fn render(ctx: &CanvasRenderingContext2d, flock: &[Boid], w: f64, h: f64) {
 
         // EKF marker
         ctx.begin_path();
-        let _ = ctx.arc(boid.ekf.state.x as f64, boid.ekf.state.y as f64, 2.0, 0.0, 6.283);
+        let _ = ctx.arc(
+            boid.ekf.state.x as f64,
+            boid.ekf.state.y as f64,
+            2.0,
+            0.0,
+            6.283,
+        );
         ctx.set_fill_style_str("rgba(0,255,100,0.4)");
         ctx.fill();
     }
@@ -78,15 +84,24 @@ fn render(ctx: &CanvasRenderingContext2d, flock: &[Boid], w: f64, h: f64) {
     // Connections
     ctx.set_line_width(0.3);
     for i in 0..flock.len() {
-        for j in (i+1)..flock.len() {
+        for j in (i + 1)..flock.len() {
             let dx = flock[i].particle.position.x - flock[j].particle.position.x;
             let dy = flock[i].particle.position.y - flock[j].particle.position.y;
-            let d2 = dx*dx + dy*dy;
+            let d2 = dx * dx + dy * dy;
             if d2 < 3600.0 {
-                ctx.set_stroke_style_str(&format!("rgba(0,255,100,{})", (1.0 - d2/3600.0) * 0.15));
+                ctx.set_stroke_style_str(&format!(
+                    "rgba(0,255,100,{})",
+                    (1.0 - d2 / 3600.0) * 0.15
+                ));
                 ctx.begin_path();
-                ctx.move_to(flock[i].particle.position.x as f64, flock[i].particle.position.y as f64);
-                ctx.line_to(flock[j].particle.position.x as f64, flock[j].particle.position.y as f64);
+                ctx.move_to(
+                    flock[i].particle.position.x as f64,
+                    flock[i].particle.position.y as f64,
+                );
+                ctx.line_to(
+                    flock[j].particle.position.x as f64,
+                    flock[j].particle.position.y as f64,
+                );
                 ctx.stroke();
             }
         }
@@ -112,8 +127,16 @@ pub fn init_simulation(canvas_id: &str) -> bool {
         Err(_) => return false,
     };
 
-    let width = win.inner_width().ok().and_then(|v| v.as_f64()).unwrap_or(800.0) as f32;
-    let height = win.inner_height().ok().and_then(|v| v.as_f64()).unwrap_or(600.0) as f32;
+    let width = win
+        .inner_width()
+        .ok()
+        .and_then(|v| v.as_f64())
+        .unwrap_or(800.0) as f32;
+    let height = win
+        .inner_height()
+        .ok()
+        .and_then(|v| v.as_f64())
+        .unwrap_or(600.0) as f32;
 
     canvas.set_width(width as u32);
     canvas.set_height(height as u32);
@@ -139,10 +162,23 @@ pub fn init_simulation(canvas_id: &str) -> bool {
         })
         .collect();
 
-    web_sys::console::log_1(&format!("✅ Initialized {} boids on {}x{}", flock.len(), width, height).into());
+    web_sys::console::log_1(
+        &format!(
+            "✅ Initialized {} boids on {}x{}",
+            flock.len(),
+            width,
+            height
+        )
+        .into(),
+    );
 
     STATE.with(|s| {
-        *s.borrow_mut() = Some(SimState { flock, ctx, width, height });
+        *s.borrow_mut() = Some(SimState {
+            flock,
+            ctx,
+            width,
+            height,
+        });
     });
 
     true

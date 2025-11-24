@@ -186,9 +186,9 @@ mod tests {
     fn test_ekf_prediction_increases_uncertainty() {
         let mut ekf = EKF::new(Vec2::zero());
         let initial_cov = ekf.covariance.m11;
-        
+
         ekf.predict(Vec2::new(1.0, 0.0), 1.0);
-        
+
         // Covariance should increase due to process noise
         assert!(ekf.covariance.m11 > initial_cov);
     }
@@ -197,7 +197,7 @@ mod tests {
     fn test_ekf_prediction_zero_velocity() {
         let mut ekf = EKF::new(Vec2::new(5.0, 5.0));
         ekf.predict(Vec2::zero(), 1.0);
-        
+
         // State should not change with zero velocity
         assert!((ekf.state.x - 5.0).abs() < 1e-6);
         assert!((ekf.state.y - 5.0).abs() < 1e-6);
@@ -208,7 +208,7 @@ mod tests {
         let mut ekf = EKF::new(Vec2::zero());
         let vel = Vec2::new(1.0, 1.0);
         ekf.predict(vel, 1.0);
-        
+
         assert!((ekf.state.x - 1.0).abs() < 1e-6);
         assert!((ekf.state.y - 1.0).abs() < 1e-6);
     }
@@ -232,17 +232,17 @@ mod tests {
     #[test]
     fn test_ekf_update_reduces_uncertainty() {
         let mut ekf = EKF::new(Vec2::zero());
-        
+
         // Predict to increase uncertainty
         for _ in 0..10 {
             ekf.predict(Vec2::new(0.1, 0.1), 0.1);
         }
-        
+
         let cov_before = ekf.covariance.m11;
-        
+
         // Update with measurement
         ekf.update(ekf.state); // Measurement matches prediction
-        
+
         // Uncertainty should decrease
         assert!(ekf.covariance.m11 < cov_before);
     }
@@ -251,9 +251,9 @@ mod tests {
     fn test_ekf_update_moves_toward_measurement() {
         let mut ekf = EKF::new(Vec2::new(0.0, 0.0));
         let measurement = Vec2::new(100.0, 100.0);
-        
+
         ekf.update(measurement);
-        
+
         // State should move toward measurement
         assert!(ekf.state.x > 0.0);
         assert!(ekf.state.y > 0.0);
@@ -265,16 +265,16 @@ mod tests {
     fn test_ekf_tracking_moving_target() {
         let mut ekf = EKF::new(Vec2::zero());
         let dt = 1.0 / 60.0;
-        
+
         // Simulate tracking a target moving at constant velocity
         for i in 0..120 {
             let true_pos = Vec2::new(i as f32 * 0.5, 0.0);
             let vel = Vec2::new(0.5 / dt, 0.0);
-            
+
             ekf.predict(vel, dt);
             ekf.update(true_pos);
         }
-        
+
         // Should be tracking near the final position
         let final_true_pos = 119.0 * 0.5;
         assert!((ekf.state.x - final_true_pos).abs() < 2.0);
@@ -284,16 +284,16 @@ mod tests {
     fn test_ekf_handles_noisy_measurements() {
         let mut ekf = EKF::new(Vec2::zero());
         let true_pos = Vec2::new(50.0, 50.0);
-        
+
         // Simulate noisy measurements
         let noise_pattern = [1.0, -1.0, 0.5, -0.5, 2.0, -2.0, 0.0, 1.5, -1.5, 0.3];
-        
+
         for &noise in noise_pattern.iter().cycle().take(100) {
             let noisy_measurement = Vec2::new(true_pos.x + noise, true_pos.y - noise);
             ekf.predict(Vec2::zero(), 0.1);
             ekf.update(noisy_measurement);
         }
-        
+
         // Should converge despite noise
         assert!((ekf.state.x - 50.0).abs() < 3.0);
         assert!((ekf.state.y - 50.0).abs() < 3.0);
@@ -305,7 +305,7 @@ mod tests {
     fn test_ekf_very_large_dt() {
         let mut ekf = EKF::new(Vec2::zero());
         ekf.predict(Vec2::new(1.0, 1.0), 1000.0);
-        
+
         assert!(!ekf.state.x.is_nan());
         assert!(!ekf.state.y.is_nan());
     }
@@ -314,7 +314,7 @@ mod tests {
     fn test_ekf_very_small_dt() {
         let mut ekf = EKF::new(Vec2::zero());
         ekf.predict(Vec2::new(1.0, 1.0), 0.0001);
-        
+
         assert!(!ekf.state.x.is_nan());
         assert!(!ekf.state.y.is_nan());
     }
@@ -323,7 +323,7 @@ mod tests {
     fn test_ekf_zero_dt() {
         let mut ekf = EKF::new(Vec2::zero());
         ekf.predict(Vec2::new(1.0, 1.0), 0.0);
-        
+
         // Should not change state
         assert_eq!(ekf.state.x, 0.0);
         assert_eq!(ekf.state.y, 0.0);
@@ -332,12 +332,12 @@ mod tests {
     #[test]
     fn test_ekf_negative_position() {
         let mut ekf = EKF::new(Vec2::new(-100.0, -200.0));
-        
+
         assert_eq!(ekf.state.x, -100.0);
         assert_eq!(ekf.state.y, -200.0);
-        
+
         ekf.predict(Vec2::new(-1.0, -1.0), 1.0);
-        
+
         assert!((ekf.state.x - -101.0).abs() < 1e-6);
         assert!((ekf.state.y - -201.0).abs() < 1e-6);
     }
@@ -346,7 +346,7 @@ mod tests {
     fn test_ekf_clone() {
         let ekf1 = EKF::new(Vec2::new(10.0, 20.0));
         let ekf2 = ekf1.clone();
-        
+
         assert_eq!(ekf1.state.x, ekf2.state.x);
         assert_eq!(ekf1.state.y, ekf2.state.y);
     }
@@ -356,13 +356,13 @@ mod tests {
     #[test]
     fn test_ekf_long_running_stability() {
         let mut ekf = EKF::new(Vec2::zero());
-        
+
         // Run for many iterations
         for _ in 0..10000 {
             ekf.predict(Vec2::new(0.1, -0.1), 0.016);
             ekf.update(Vec2::new(0.0, 0.0));
         }
-        
+
         // Should not have exploded or become NaN
         assert!(!ekf.state.x.is_nan());
         assert!(!ekf.state.y.is_nan());

@@ -138,15 +138,14 @@ mod tests {
         let mut boid = Boid::new(0, 400.0, 300.0);
         let other = Boid::new(1, 410.0, 300.0); // Nearby
         let flock = vec![boid.clone(), other];
-        
+
         let accel_before = boid.particle.acceleration;
         boid.flock(&flock);
-        
+
         // Flocking should have added some force
         // (acceleration changes)
         let accel_after = boid.particle.acceleration;
-        assert!(accel_before != accel_after || 
-                (accel_before.x == 0.0 && accel_before.y == 0.0));
+        assert!(accel_before != accel_after || (accel_before.x == 0.0 && accel_before.y == 0.0));
     }
 
     // ==================== SEPARATION ====================
@@ -155,11 +154,11 @@ mod tests {
     fn test_separation_pushes_apart() {
         let mut boid1 = Boid::new(0, 100.0, 100.0);
         let boid2 = Boid::new(1, 105.0, 100.0); // Very close on right
-        
+
         let flock = vec![boid1.clone(), boid2];
         boid1.flock(&flock);
         boid1.particle.update();
-        
+
         // Should move away from boid2 (to the left)
         // Acceleration should have pushed it
     }
@@ -171,9 +170,9 @@ mod tests {
         let mut boid = Boid::new(0, 100.0, 100.0);
         boid.particle.velocity = Vec2::new(10.0, 0.0);
         boid.particle.position = Vec2::new(110.0, 100.0);
-        
+
         boid.update_ekf(1.0 / 60.0);
-        
+
         // EKF should have updated its estimate
         // State should move toward actual position
     }
@@ -181,13 +180,13 @@ mod tests {
     #[test]
     fn test_ekf_tracks_position() {
         let mut boid = Boid::new(0, 0.0, 0.0);
-        
+
         // Simulate movement
         for i in 0..60 {
             boid.particle.position = Vec2::new(i as f32, 0.0);
             boid.update_ekf(1.0 / 60.0);
         }
-        
+
         // EKF should be tracking near actual position
         assert!((boid.ekf.state.x - 59.0).abs() < 5.0);
     }
@@ -199,7 +198,7 @@ mod tests {
         let mut flock: Vec<Boid> = (0..100)
             .map(|i| Boid::new(i, (i % 10) as f32 * 80.0, (i / 10) as f32 * 60.0))
             .collect();
-        
+
         // Simulate 60 frames (1 second at 60fps)
         for _ in 0..60 {
             let snapshot = flock.clone();
@@ -209,10 +208,10 @@ mod tests {
                 boid.edges(800.0, 600.0);
             }
         }
-        
+
         // All boids should still exist
         assert_eq!(flock.len(), 100);
-        
+
         // No boid should have NaN values
         for boid in &flock {
             assert!(!boid.particle.position.x.is_nan());
@@ -224,9 +223,7 @@ mod tests {
 
     #[test]
     fn test_boid_flocking_stress() {
-        let mut flock: Vec<Boid> = (0..500)
-            .map(|i| Boid::new(i, 0.0, 0.0))
-            .collect();
+        let mut flock: Vec<Boid> = (0..500).map(|i| Boid::new(i, 0.0, 0.0)).collect();
 
         for _ in 0..100 {
             let current_state = flock.clone();
@@ -275,7 +272,7 @@ mod tests {
     fn test_boid_clone() {
         let boid1 = Boid::new(5, 100.0, 200.0);
         let boid2 = boid1.clone();
-        
+
         assert_eq!(boid1.id, boid2.id);
         assert_eq!(boid1.particle.position.x, boid2.particle.position.x);
         assert_eq!(boid1.particle.position.y, boid2.particle.position.y);

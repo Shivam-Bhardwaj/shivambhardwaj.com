@@ -3,7 +3,7 @@ mod tests {
     use crate::math::Vec2;
 
     // ==================== CONSTRUCTION ====================
-    
+
     #[test]
     fn test_vec2_new() {
         let v = Vec2::new(3.5, -2.1);

@@ -199,4 +199,3 @@ mod tests {
         assert!(!r.contains(Vec2::new(100.1, 100.0)));
     }
 }
-

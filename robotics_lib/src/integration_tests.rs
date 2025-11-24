@@ -21,13 +21,13 @@ mod tests {
         for boid in flock.iter_mut() {
             // Flocking behavior
             boid.flock(&current_state);
-            
+
             // Physics update
             boid.particle.update();
-            
+
             // EKF update
             boid.update_ekf(dt);
-            
+
             // Boundary wrapping
             boid.edges(width, height);
         }
@@ -52,10 +52,22 @@ mod tests {
 
         // Verify no NaN or Inf values
         for boid in &flock {
-            assert!(boid.particle.position.x.is_finite(), "Position X became infinite");
-            assert!(boid.particle.position.y.is_finite(), "Position Y became infinite");
-            assert!(boid.particle.velocity.x.is_finite(), "Velocity X became infinite");
-            assert!(boid.particle.velocity.y.is_finite(), "Velocity Y became infinite");
+            assert!(
+                boid.particle.position.x.is_finite(),
+                "Position X became infinite"
+            );
+            assert!(
+                boid.particle.position.y.is_finite(),
+                "Position Y became infinite"
+            );
+            assert!(
+                boid.particle.velocity.x.is_finite(),
+                "Velocity X became infinite"
+            );
+            assert!(
+                boid.particle.velocity.y.is_finite(),
+                "Velocity Y became infinite"
+            );
             assert!(boid.ekf.state.x.is_finite(), "EKF state X became infinite");
             assert!(boid.ekf.state.y.is_finite(), "EKF state Y became infinite");
         }
@@ -78,10 +90,18 @@ mod tests {
         // All boids should be within bounds (or just past due to wrapping timing)
         for boid in &flock {
             let margin = 50.0; // Allow small margin for wrapping edge cases
-            assert!(boid.particle.position.x >= -margin && boid.particle.position.x <= width + margin,
-                "Boid {} x={} out of bounds", boid.id, boid.particle.position.x);
-            assert!(boid.particle.position.y >= -margin && boid.particle.position.y <= height + margin,
-                "Boid {} y={} out of bounds", boid.id, boid.particle.position.y);
+            assert!(
+                boid.particle.position.x >= -margin && boid.particle.position.x <= width + margin,
+                "Boid {} x={} out of bounds",
+                boid.id,
+                boid.particle.position.x
+            );
+            assert!(
+                boid.particle.position.y >= -margin && boid.particle.position.y <= height + margin,
+                "Boid {} y={} out of bounds",
+                boid.id,
+                boid.particle.position.y
+            );
         }
     }
 
@@ -105,17 +125,21 @@ mod tests {
         let center_x = width / 2.0;
         let center_y = height / 2.0;
         let mut total_dist_sq = 0.0;
-        
+
         for boid in &flock {
             let dx = boid.particle.position.x - center_x;
             let dy = boid.particle.position.y - center_y;
             total_dist_sq += dx * dx + dy * dy;
         }
-        
+
         let avg_dist = (total_dist_sq / flock.len() as f32).sqrt();
-        
+
         // Boids should have spread out significantly from center
-        assert!(avg_dist > 50.0, "Boids didn't spread from center: avg_dist={}", avg_dist);
+        assert!(
+            avg_dist > 50.0,
+            "Boids didn't spread from center: avg_dist={}",
+            avg_dist
+        );
     }
 
     #[test]
@@ -137,12 +161,20 @@ mod tests {
         for boid in &flock {
             let error_x = (boid.ekf.state.x - boid.particle.position.x).abs();
             let error_y = (boid.ekf.state.y - boid.particle.position.y).abs();
-            
+
             // EKF should be within 50 pixels of actual position
-            assert!(error_x < 50.0, 
-                "EKF X error too large: {} vs {}", boid.ekf.state.x, boid.particle.position.x);
-            assert!(error_y < 50.0,
-                "EKF Y error too large: {} vs {}", boid.ekf.state.y, boid.particle.position.y);
+            assert!(
+                error_x < 50.0,
+                "EKF X error too large: {} vs {}",
+                boid.ekf.state.x,
+                boid.particle.position.x
+            );
+            assert!(
+                error_y < 50.0,
+                "EKF Y error too large: {} vs {}",
+                boid.ekf.state.y,
+                boid.particle.position.y
+            );
         }
     }
 
@@ -162,12 +194,17 @@ mod tests {
 
         for _ in 0..500 {
             simulate_frame(&mut flock, width, height, dt);
-            
+
             // Check every frame
             for boid in &flock {
                 let speed = boid.particle.velocity.mag();
-                assert!(speed <= max_speed + 0.01, 
-                    "Boid {} exceeded max speed: {} > {}", boid.id, speed, max_speed);
+                assert!(
+                    speed <= max_speed + 0.01,
+                    "Boid {} exceeded max speed: {} > {}",
+                    boid.id,
+                    speed,
+                    max_speed
+                );
             }
         }
     }
@@ -178,11 +215,11 @@ mod tests {
     fn test_particle_constant_velocity() {
         let mut p = Particle::new(0.0, 0.0);
         p.velocity = Vec2::new(1.0, 0.0);
-        
+
         for _ in 0..100 {
             p.update();
         }
-        
+
         // Should have moved 100 units in x
         assert!((p.position.x - 100.0).abs() < 1e-3);
         assert!(p.position.y.abs() < 1e-3);
@@ -191,13 +228,13 @@ mod tests {
     #[test]
     fn test_particle_acceleration() {
         let mut p = Particle::new(0.0, 0.0);
-        
+
         // Apply constant force
         for _ in 0..10 {
             p.apply_force(Vec2::new(0.01, 0.0));
             p.update();
         }
-        
+
         // Should be moving and have moved
         assert!(p.velocity.x > 0.0);
         assert!(p.position.x > 0.0);
@@ -209,20 +246,28 @@ mod tests {
     fn test_ekf_converges_from_wrong_initial() {
         let true_pos = Vec2::new(100.0, 100.0);
         let mut ekf = EKF::new(Vec2::zero()); // Wrong initial
-        
+
         // Stationary target, feed it correct measurements
         for _ in 0..100 {
-            ekf.predict(Vec2::zero(), 1.0/60.0);
+            ekf.predict(Vec2::zero(), 1.0 / 60.0);
             ekf.update(true_pos);
         }
-        
+
         // Should converge
-        assert!((ekf.state.x - 100.0).abs() < 5.0, "EKF didn't converge: x={}", ekf.state.x);
-        assert!((ekf.state.y - 100.0).abs() < 5.0, "EKF didn't converge: y={}", ekf.state.y);
+        assert!(
+            (ekf.state.x - 100.0).abs() < 5.0,
+            "EKF didn't converge: x={}",
+            ekf.state.x
+        );
+        assert!(
+            (ekf.state.y - 100.0).abs() < 5.0,
+            "EKF didn't converge: y={}",
+            ekf.state.y
+        );
     }
 
     // ==================== RENDERING COMPATIBILITY ====================
-    
+
     /// Test that all values used in rendering are valid
     #[test]
     fn test_rendering_values_valid() {
@@ -244,20 +289,20 @@ mod tests {
             let _y = boid.particle.position.y as f64;
             let vx = boid.particle.velocity.x as f64;
             let vy = boid.particle.velocity.y as f64;
-            
+
             // Angle calculation (used for rotation)
             let angle = vy.atan2(vx);
             assert!(angle.is_finite(), "Angle became non-finite");
-            
+
             // Speed calculation (used for color)
             let speed = (vx * vx + vy * vy).sqrt();
             assert!(speed.is_finite(), "Speed became non-finite");
-            
+
             // Hue calculation
             let hue = (speed * 30.0).min(120.0);
             assert!(hue.is_finite(), "Hue became non-finite");
             assert!(hue >= 0.0 && hue <= 120.0, "Hue out of range: {}", hue);
-            
+
             // EKF position
             let ekf_x = boid.ekf.state.x as f64;
             let ekf_y = boid.ekf.state.y as f64;
@@ -283,13 +328,18 @@ mod tests {
                 let dx = b1.particle.position.x - b2.particle.position.x;
                 let dy = b1.particle.position.y - b2.particle.position.y;
                 let dist_sq = dx * dx + dy * dy;
-                
+
                 assert!(dist_sq.is_finite(), "Distance squared became non-finite");
-                
+
                 // Connection threshold test
-                if dist_sq < 2500.0 { // 50^2
+                if dist_sq < 2500.0 {
+                    // 50^2
                     let alpha = 1.0 - (dist_sq / 2500.0);
-                    assert!(alpha >= 0.0 && alpha <= 1.0, "Alpha out of range: {}", alpha);
+                    assert!(
+                        alpha >= 0.0 && alpha <= 1.0,
+                        "Alpha out of range: {}",
+                        alpha
+                    );
                 }
             }
         }
@@ -307,7 +357,8 @@ mod tests {
             .map(|i| Boid::new(i, (i % 20) as f32 * 96.0, (i / 20) as f32 * 108.0))
             .collect();
 
-        for _ in 0..60 { // 1 second
+        for _ in 0..60 {
+            // 1 second
             simulate_frame(&mut flock, width, height, dt);
         }
 
@@ -342,4 +393,3 @@ mod tests {
         }
     }
 }
-
