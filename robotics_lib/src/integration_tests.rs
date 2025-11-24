@@ -15,7 +15,7 @@ mod tests {
     /// Simulates exactly what the canvas does each frame
     fn simulate_frame(flock: &mut [Boid], width: f32, height: f32, dt: f32) {
         // 1. Clone current state for read
-        let current_state = flock.clone();
+        let current_state = flock.to_owned();
 
         // 2. Update each boid
         for boid in flock.iter_mut() {
