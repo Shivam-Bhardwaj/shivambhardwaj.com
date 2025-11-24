@@ -1,10 +1,13 @@
 services:
   antimony-labs:
-    build: .
+    image: ghcr.io/shivam-bhardwaj/shivambhardwaj.com:latest
+    container_name: antimony-labs
     ports:
       - "3000:3000"
     environment:
       - LEPTOS_SITE_ADDR=0.0.0.0:3000
       - LEPTOS_ENV=PROD
     restart: always
+    volumes:
+      - ./config.yml:/app/config.yml:ro  # Optional tunnel config
 

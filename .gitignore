@@ -1,13 +1,21 @@
 # Rust
 /target/
-**/target/
+/**/target/
 
 # Node
 /node_modules/
-**/node_modules/
+/**/node_modules/
 
-# Logs
+# Logs / Secrets / Dev
 *.log
+.env*
+deploy_key*
+target/site/
+.devcontainer/
+server-setup/
+fetch-tunnel-credentials.sh
+setup-cloudflare-tunnel.sh
+compose.dev.yaml
 
 # Build artifacts
 style.processed.css

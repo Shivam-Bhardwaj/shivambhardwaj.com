@@ -1,10 +1,13 @@
 use leptos::*;
 use leptos::html::Canvas;
 use wasm_bindgen::prelude::*;
-use web_sys::{CanvasRenderingContext2d, window};
+use web_sys::{CanvasRenderingContext2d, window, console};
 use std::cell::RefCell;
 use std::rc::Rc;
 use robotics_lib::boids::Boid;
+
+use std::panic::{catch_unwind, AssertUnwindSafe};
+use wasm_bindgen::JsValue;
 
 #[component]
 pub fn SimulationCanvas() -> impl IntoView {
@@ -41,20 +44,39 @@ pub fn SimulationCanvas() -> impl IntoView {
             let flock_clone = flock.clone();
             
             *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
+                console::log_1(&JsValue::from_str("RAF"));
+
                 // Physics Update
                 {
                     let mut flock_data = flock_clone.borrow_mut();
                     let current_state = flock_data.clone();
                     
                     for boid in flock_data.iter_mut() {
-                        boid.flock(&current_state);
-                        boid.particle.update();
-                        boid.update_ekf(1.0/60.0);
-                        boid.edges(width, height);
+                        if let Err(_) = catch_unwind(AssertUnwindSafe(|| {
+                            boid.flock(&current_state);
+                        })) {
+                            console::log_1(&JsValue::from_str("flock panic"));
+                        }
+                        if let Err(_) = catch_unwind(AssertUnwindSafe(|| {
+                            boid.particle.update();
+                        })) {
+                            console::log_1(&JsValue::from_str("particle.update panic"));
+                        }
+                        if let Err(_) = catch_unwind(AssertUnwindSafe(|| {
+                            boid.update_ekf(1.0 / 60.0);
+                        })) {
+                            console::log_1(&JsValue::from_str("update_ekf panic"));
+                        }
+                        if let Err(_) = catch_unwind(AssertUnwindSafe(|| {
+                            boid.edges(width, height);
+                        })) {
+                            console::log_1(&JsValue::from_str("edges panic"));
+                        }
                     }
                 }
 
                 // Render
+                console::log_1(&JsValue::from_str("clear_rect"));
                 ctx.clear_rect(0.0, 0.0, width as f64, height as f64);
                 
                 // Visuals...
