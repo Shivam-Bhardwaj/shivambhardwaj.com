@@ -1,4 +1,3 @@
-use leptos::html::Canvas;
 use leptos::prelude::*;
 use robotics_lib::boids::Boid;
 use std::cell::RefCell;
@@ -75,7 +74,7 @@ fn render(ctx: &CanvasRenderingContext2d, flock: &[Boid], w: f64, h: f64) {
             boid.ekf.state.y as f64,
             2.0,
             0.0,
-            6.283,
+            std::f64::consts::TAU,
         );
         ctx.set_fill_style_str("rgba(0,255,100,0.4)");
         ctx.fill();

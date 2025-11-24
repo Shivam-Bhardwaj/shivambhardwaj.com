@@ -60,7 +60,7 @@ mod tests {
             g: 1.0,
             rhs: 2.0,
         };
-        let n2 = n1.clone();
+        let n2 = n1;
         assert_eq!(n1, n2);
     }
 

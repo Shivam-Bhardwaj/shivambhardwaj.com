@@ -13,7 +13,7 @@ mod tests {
     // ==================== SIMULATION LOOP ====================
 
     /// Simulates exactly what the canvas does each frame
-    fn simulate_frame(flock: &mut Vec<Boid>, width: f32, height: f32, dt: f32) {
+    fn simulate_frame(flock: &mut [Boid], width: f32, height: f32, dt: f32) {
         // 1. Clone current state for read
         let current_state = flock.clone();
 
