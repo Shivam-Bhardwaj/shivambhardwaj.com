@@ -9,17 +9,18 @@ lib-package = "app"
 bin = "server"
 site-root = "target/site"
 site-pkg-dir = "pkg"
-env = "PROD"
-site-addr = "0.0.0.0:3000"
-reload-port = 3001
+env = "DEV"
+site-addr = "0.0.0.0:3030"
+reload-port = 3031
 style-file = "style.css"
+lib-features = ["hydrate"]
 
 [workspace.dependencies]
 # Use stable versions where possible
-leptos = { version = "0.6.15", features = ["nightly"] }
-leptos_meta = { version = "0.6.15", features = ["nightly"] }
-leptos_router = { version = "0.6.15", features = ["nightly"] }
-leptos_axum = { version = "0.6.15" }
+leptos = "0.7.1"
+leptos_meta = "0.7.1"
+leptos_router = "0.7.1"
+leptos_axum = "0.7.1"
 axum = { version = "0.7", features = ["macros", "ws"] } # Added "ws" feature
 tokio = { version = "1", features = ["full"] }
 tower = { version = "0.4", features = ["util"] }
@@ -36,6 +37,6 @@ pulldown-cmark = "0.9"
 cfg-if = "1"
 thiserror = "1"
 http = "1"
-web-sys = { version = "0.3", features = ["CanvasRenderingContext2d", "Document", "Element", "HtmlCanvasElement", "Window", "Performance", "AnimationEvent"] }
+web-sys = { version = "0.3", features = ["CanvasRenderingContext2d", "Document", "Element", "HtmlCanvasElement", "Window", "Performance", "AnimationEvent", "console"] }
 libm = "0.2"
 futures = "0.3"

@@ -1,5 +1,4 @@
 use alloc::vec::Vec;
-use crate::math::Vec2;
 
 // Simplified D* Lite node
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -31,7 +30,7 @@ impl GridMap {
             self.obstacles[y * self.width + x] = is_obs;
         }
     }
-    
+
     pub fn is_obstacle(&self, x: usize, y: usize) -> bool {
         if x < self.width && y < self.height {
             self.obstacles[y * self.width + x]
@@ -60,7 +59,7 @@ impl DStarLite {
             path: Vec::new(),
         }
     }
-    
+
     // Replan path using simple BFS/A* for now as "Dynamic" aspect
     // is triggered when map changes.
     pub fn compute_shortest_path(&mut self) {
@@ -68,16 +67,20 @@ impl DStarLite {
         // In production, use A* with heuristic
         // let mut queue = Vec::new(); // alloc
         // queue.push(self.start);
-        
+
         // let mut came_from = Vec::new(); // map equivalent
         // ... Full implementation requires Map/HashMap which are in std or hashbrown
-        // For no_std pure logic, we'd need a custom Map. 
+        // For no_std pure logic, we'd need a custom Map.
         // Skipping full pathfinding implementation for this specific tool step
         // to focus on integrating the *structure* first.
-        
+
         // Just drawing a direct line if no obstacles for visual filler
         self.path.clear();
         self.path.push(self.start);
         self.path.push(self.goal);
     }
 }
+
+#[cfg(test)]
+#[path = "dstar_tests.rs"]
+mod tests;

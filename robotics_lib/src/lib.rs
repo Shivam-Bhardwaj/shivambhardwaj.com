@@ -2,9 +2,12 @@
 
 extern crate alloc; // needed for Vec
 
+pub mod boids;
+pub mod dstar;
+pub mod ekf;
 pub mod math;
 pub mod physics;
-pub mod boids;
 pub mod spatial;
-pub mod ekf;
-pub mod dstar;
+
+#[cfg(test)]
+mod integration_tests;

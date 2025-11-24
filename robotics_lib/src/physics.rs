@@ -32,3 +32,6 @@ impl Particle {
     }
 }
 
+#[cfg(test)]
+#[path = "physics_tests.rs"]
+mod tests;

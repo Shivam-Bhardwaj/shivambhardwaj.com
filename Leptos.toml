@@ -1,0 +1,12 @@
+[[workspace.metadata.leptos]]
+name = "antimony-labs"
+bin-package = "server"
+lib-package = "app"
+bin = "server"
+site-root = "target/site"
+site-pkg-dir = "pkg"
+env = "DEV"
+site-addr = "0.0.0.0:3030"
+reload-port = 3031
+style-file = "style.css"
+

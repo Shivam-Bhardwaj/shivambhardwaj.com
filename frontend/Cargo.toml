@@ -4,8 +4,15 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-app = { path = "../app", features = ["hydrate"] }
-leptos = { workspace = true, features = ["hydrate"] }
+app = { path = "../app" }
+leptos = { workspace = true }
 console_error_panic_hook = { workspace = true }
 wasm-bindgen = { workspace = true }
+web-sys = { workspace = true }
+
+[features]
+hydrate = ["leptos/hydrate", "app/hydrate"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 

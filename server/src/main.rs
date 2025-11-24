@@ -4,7 +4,7 @@ use axum::{
         ws::{Message, WebSocket},
         State, WebSocketUpgrade,
     },
-    http::{header, HeaderValue},
+    http::{header, HeaderValue, StatusCode},
     middleware,
     response::{IntoResponse, Response},
     routing::get,
@@ -12,11 +12,8 @@ use axum::{
 };
 use leptos::config::get_configuration;
 use leptos::prelude::*;
-use leptos_axum::{generate_route_list, LeptosRoutes, file_and_error_handler};
+use leptos_axum::{generate_route_list, LeptosRoutes};
 use tower_http::{compression::CompressionLayer, services::ServeDir};
-
-use axum::http::StatusCode;
-use tokio::fs;
 
 #[tokio::main]
 async fn main() {
@@ -43,8 +40,6 @@ async fn main() {
             let leptos_options = leptos_options.clone();
             move || shell(leptos_options.clone())
         })
-        // Fallback to SSR rendering for unmatched routes
-        .fallback(leptos_axum::file_and_error_handler)
         // Apply compression layer
         .layer(CompressionLayer::new())
         // Apply security headers middleware
@@ -67,9 +62,8 @@ async fn handle_socket(mut socket: WebSocket) {
     while let Some(msg) = socket.recv().await {
         if let Ok(msg) = msg {
             if let Message::Text(t) = msg {
-                // Echo logic or simulation processing
                 let response = format!("{{\"status\": \"processed\", \"input\": \"{}\"}}", t);
-                if socket.send(Message::Text(response)).await.is_err() {
+                if socket.send(Message::Text(response.into())).await.is_err() {
                     break;
                 }
             }
@@ -96,21 +90,6 @@ async fn security_headers_middleware(
     }
 
     headers.insert(header::X_CONTENT_TYPE_OPTIONS, HeaderValue::from_static("nosniff"));
-    headers.insert(header::X_FRAME_OPTIONS, HeaderValue::from_static("DENY"));
-    headers.insert(
-        header::STRICT_TRANSPORT_SECURITY,
-        HeaderValue::from_static("max-age=31536000; includeSubDomains"),
-    );
-    headers.insert(
-        header::REFERRER_POLICY,
-        HeaderValue::from_static("strict-origin-when-cross-origin"),
-    );
-    headers.insert(
-        header::CONTENT_SECURITY_POLICY,
-        HeaderValue::from_static(
-            "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' ws: wss:;"
-        ),
-    );
 
     res
 }
@@ -128,4 +107,3 @@ async fn serve_css(State(options): State<LeptosOptions>) -> impl IntoResponse {
     ];
     (headers, css_content).into_response()
 }
-
