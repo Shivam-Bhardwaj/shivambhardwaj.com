@@ -1,5 +1,5 @@
 # Use the official Rust image as a builder
-FROM rustlang/rust:nightly-2024-10-01 as builder
+FROM --platform=linux/amd64 rustlang/rust:nightly as builder
 
 # Install cargo-binstall for easy tool installation
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
@@ -13,6 +13,8 @@ RUN rustup target add wasm32-unknown-unknown
 # Create a new empty shell project
 WORKDIR /app
 COPY . .
+
+ENV LEPTOS_WASM_BINDGEN_VERSION=0.2.105
 
 # Build the application (this builds both the SSR binary and the WASM frontend)
 RUN cargo leptos build --release
