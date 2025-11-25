@@ -313,3 +313,4 @@ mod tests {
         assert!(!map.is_obstacle(1, 0)); // 1+0 = 1, 1%3 = 1 -> not obstacle
     }
 }
+

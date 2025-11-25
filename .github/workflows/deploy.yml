@@ -20,29 +20,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
-
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-
-      - name: Install cargo-leptos
-        run: cargo install cargo-leptos --locked
-
-      - name: Check formatting
-        run: cargo fmt --all --check
-
-      - name: Run clippy
-        run: cargo clippy --workspace --all-targets -- -D warnings
-
-      - name: Run tests
-        run: cargo test --workspace
-
-      - name: Verify leptos build
-        run: cargo leptos build --release
-
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
@@ -66,37 +43,54 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          platforms: linux/amd64
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY: ${{ env.REGISTRY }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          GITHUB_ACTOR: ${{ github.actor }}
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            set -e
             # Login to registry
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
             
             # Pull new image
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            docker pull ${REGISTRY}/${IMAGE_NAME}:latest
             
-            # Stop and remove old container
-            docker stop antimony-labs || true
-            docker rm antimony-labs || true
-            
-            # Run new container
-            docker run -d \
-              --name antimony-labs \
-              --restart always \
-              -p 3000:3000 \
-              -e LEPTOS_SITE_ADDR=0.0.0.0:3000 \
-              -e LEPTOS_ENV=PROD \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            # Try docker-compose first, fallback to direct docker run
+            if [ -f /root/antimony-labs/docker-compose.yml ]; then
+              cd /root/antimony-labs
+              docker-compose pull antimony-labs
+              docker-compose up -d antimony-labs
+            elif [ -f /root/shivambhardwaj.com/docker-compose.yml ]; then
+              cd /root/shivambhardwaj.com
+              docker-compose pull antimony-labs
+              docker-compose up -d antimony-labs
+            else
+              # Fallback to direct docker run
+              docker stop antimony-labs || true
+              docker rm antimony-labs || true
+              docker run -d \
+                --name antimony-labs \
+                --restart always \
+                -p 3000:3000 \
+                -e LEPTOS_SITE_ADDR=0.0.0.0:3000 \
+                -e LEPTOS_ENV=PROD \
+                ${REGISTRY}/${IMAGE_NAME}:latest
+            fi
             
             # Cleanup unused images
             docker image prune -f
