@@ -20,7 +20,7 @@ fi
 
 echo ""
 echo "🔨 Building Docker image locally..."
-docker build --platform linux/amd64 -t ${REGISTRY}/${IMAGE_NAME}:latest .
+docker buildx build --platform linux/amd64 -t ${REGISTRY}/${IMAGE_NAME}:latest --load .
 
 echo ""
 echo "📤 Pushing to GitHub Container Registry..."
