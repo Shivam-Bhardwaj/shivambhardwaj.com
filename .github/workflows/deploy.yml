@@ -51,6 +51,12 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64
 
+      - name: Debug secrets
+        run: |
+          echo "SERVER_IP is set: ${{ secrets.SERVER_IP != '' }}"
+          echo "SERVER_USER is set: ${{ secrets.SERVER_USER != '' }}"
+          echo "SERVER_SSH_KEY is set: ${{ secrets.SERVER_SSH_KEY != '' }}"
+
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
         env:
@@ -62,6 +68,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: GITHUB_TOKEN,REGISTRY,IMAGE_NAME,GITHUB_ACTOR
           script: |
             set -e
             # Login to registry
