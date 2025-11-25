@@ -45,6 +45,10 @@ jobs:
             docker stop antimony-labs || true
             docker rm antimony-labs || true
             
+            # Kill anything using port 3000
+            fuser -k 3000/tcp || true
+            sleep 2
+            
             # Start new container
             docker run -d \
               --name antimony-labs \
