@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.4
+
 # Use the official Rust image as a builder
 FROM --platform=linux/amd64 rustlang/rust:nightly as builder
 
@@ -10,14 +12,20 @@ RUN cargo binstall cargo-leptos -y
 # Add the WASM target
 RUN rustup target add wasm32-unknown-unknown
 
-# Create a new empty shell project
 WORKDIR /app
-COPY . .
 
 ENV LEPTOS_WASM_BINDGEN_VERSION=0.2.105
 
-# Build the application (this builds both the SSR binary and the WASM frontend)
-RUN cargo leptos build --release
+# Copy everything (cache mounts will handle incremental builds)
+COPY . .
+
+# Build with cache mounts for cargo registry and target directory
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    --mount=type=cache,target=/app/target \
+    cargo leptos build --release && \
+    cp target/release/server /tmp/server && \
+    cp -r target/site /tmp/site
 
 # Runtime image (Debian Slim is smaller/safer than full Ubuntu)
 FROM debian:bookworm-slim
@@ -28,10 +36,10 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the builder
-COPY --from=builder /app/target/release/server /app/server
+COPY --from=builder /tmp/server /app/server
 
 # Copy the static assets (JS/WASM/CSS) built by cargo-leptos
-COPY --from=builder /app/target/site /app/site
+COPY --from=builder /tmp/site /app/site
 
 # Expose the port (default Leptos port is 3000)
 EXPOSE 3000
@@ -42,4 +50,3 @@ ENV LEPTOS_SITE_ROOT="site"
 
 # Run the server
 CMD ["./server"]
-
