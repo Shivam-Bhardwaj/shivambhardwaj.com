@@ -16,6 +16,9 @@ jobs:
       packages: read
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set lowercase image name
         id: image
         run: echo "name=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
@@ -41,24 +44,53 @@ jobs:
             # Pull new image
             docker pull ${REGISTRY}/${IMAGE_NAME}:latest
             
-            # Stop and remove old container
-            docker stop antimony-labs || true
-            docker rm antimony-labs || true
+            # Navigate to deployment directory
+            DEPLOY_DIR="/root/shivambhardwaj.com"
+            mkdir -p "$DEPLOY_DIR"
+            cd "$DEPLOY_DIR"
             
-            # Kill anything using port 3000
-            fuser -k 3000/tcp || true
-            sleep 2
+            # Copy docker-compose.yml from repo (or use existing)
+            # For now, we'll use docker-compose if available, fallback to docker run
             
-            # Start new container
-            docker run -d \
-              --name antimony-labs \
-              --restart always \
-              -p 3000:3000 \
-              -e LEPTOS_SITE_ADDR=0.0.0.0:3000 \
-              -e LEPTOS_ENV=PROD \
-              ${REGISTRY}/${IMAGE_NAME}:latest
+            # Use docker-compose if available, otherwise fallback
+            if command -v docker-compose &> /dev/null || docker compose version &> /dev/null; then
+              # Stop old container
+              docker compose down antimony-labs 2>/dev/null || docker-compose down antimony-labs 2>/dev/null || true
+              
+              # Start new container
+              docker compose up -d antimony-labs 2>/dev/null || docker-compose up -d antimony-labs || {
+                # Fallback if compose file doesn't exist
+                docker stop antimony-labs || true
+                docker rm antimony-labs || true
+                docker run -d \
+                  --name antimony-labs \
+                  --restart always \
+                  --network web-network \
+                  -p 127.0.0.1:3000:3000 \
+                  -e LEPTOS_SITE_ADDR=0.0.0.0:3000 \
+                  -e LEPTOS_ENV=PROD \
+                  ${REGISTRY}/${IMAGE_NAME}:latest
+              }
+            else
+              # Fallback to direct docker run
+              docker stop antimony-labs || true
+              docker rm antimony-labs || true
+              
+              # Create network if it doesn't exist
+              docker network create web-network 2>/dev/null || true
+              
+              docker run -d \
+                --name antimony-labs \
+                --restart always \
+                --network web-network \
+                -p 127.0.0.1:3000:3000 \
+                -e LEPTOS_SITE_ADDR=0.0.0.0:3000 \
+                -e LEPTOS_ENV=PROD \
+                ${REGISTRY}/${IMAGE_NAME}:latest
+            fi
             
             # Cleanup unused images
             docker image prune -f
             
             echo "✅ Deployment complete!"
+            echo "🌐 Service available via Cloudflare Tunnel at shivambhardwaj.com"

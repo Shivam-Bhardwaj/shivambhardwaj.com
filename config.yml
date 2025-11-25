@@ -3,6 +3,10 @@ credentials-file: /root/.cloudflared/bf19909d-fa18-4c94-8524-87c2b3c0f538.json
 origincert: /root/.cloudflared/cert.pem
 
 ingress:
+  # Route shivambhardwaj.com to localhost:3000 (only accessible locally)
   - hostname: shivambhardwaj.com
     service: http://localhost:3000
+  # Add more services with different ports:
+  # - hostname: other-site.com
+  #   service: http://localhost:3001
   - service: http_status:404
